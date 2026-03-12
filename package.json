@@ -1,0 +1,22 @@
+{
+    "name": "vault-1",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "workspaces": [
+        "apps/*"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ellieoconnor/vault_1.git"
+    },
+    "author": "Elizabeth O'Connor",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ellieoconnor/vault_1/issues"
+    },
+    "homepage": "https://github.com/ellieoconnor/vault_1#readme",
+    "description": ""
+}
