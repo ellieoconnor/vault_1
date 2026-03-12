@@ -1,0 +1,2512 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vault 1 — UX Design Directions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #0a0e14;
+        font-family: "Inter", sans-serif;
+        color: #e6edf3;
+        min-height: 100vh;
+      }
+
+      /* ─── SHELL ─── */
+      .shell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 16px 48px;
+        gap: 16px;
+      }
+
+      .shell-header {
+        text-align: center;
+        margin-bottom: 8px;
+      }
+      .shell-header h1 {
+        font-family: "VT323", monospace;
+        font-size: 36px;
+        color: #f59e0b;
+        letter-spacing: 2px;
+      }
+      .shell-header p {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 13px;
+        color: #7d8590;
+        margin-top: 4px;
+      }
+
+      /* ─── DIRECTION NAV ─── */
+      .dir-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        max-width: 900px;
+      }
+      .dir-btn {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        padding: 6px 14px;
+        background: #161b22;
+        border: 1px solid #30363d;
+        color: #7d8590;
+        cursor: pointer;
+        transition: all 0.15s;
+        letter-spacing: 0.5px;
+      }
+      .dir-btn:hover {
+        border-color: #f59e0b;
+        color: #f59e0b;
+      }
+      .dir-btn.active {
+        border-color: #f59e0b;
+        color: #f59e0b;
+        background: #1a1f28;
+      }
+
+      /* ─── DIRECTIONS GRID ─── */
+      .directions-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        justify-content: center;
+        max-width: 1400px;
+        width: 100%;
+      }
+
+      .direction-card {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+      }
+      .direction-card.visible {
+        display: flex;
+      }
+      .direction-card.show-all {
+        display: flex;
+      }
+
+      .direction-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        color: #7d8590;
+        text-align: center;
+        letter-spacing: 1px;
+      }
+      .direction-label strong {
+        display: block;
+        font-family: "VT323", monospace;
+        font-size: 20px;
+        color: #f59e0b;
+        letter-spacing: 1px;
+      }
+
+      /* ─── PHONE FRAME ─── */
+      .phone {
+        width: 375px;
+        min-height: 680px;
+        background: #0d1117;
+        border: 1px solid #30363d;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      .phone-statusbar {
+        background: #0a0e14;
+        padding: 6px 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #21262d;
+      }
+      .phone-statusbar span {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+      }
+      .phone-statusbar .status-time {
+        color: #f59e0b;
+      }
+
+      /* ─── SHARED TOKENS ─── */
+      .vt {
+        font-family: "VT323", monospace;
+      }
+      .stm {
+        font-family: "Share Tech Mono", monospace;
+      }
+
+      .c-amber {
+        color: #f59e0b;
+      }
+      .c-green {
+        color: #22c55e;
+      }
+      .c-blue {
+        color: #3b82f6;
+      }
+      .c-orange {
+        color: #ea580c;
+      }
+      .c-muted {
+        color: #7d8590;
+      }
+      .c-brand {
+        color: #f59e0b;
+      }
+
+      .bg-surface {
+        background: #161b22;
+      }
+      .border-dim {
+        border: 1px solid #30363d;
+      }
+
+      /* progress bar shared */
+      .prog-track {
+        height: 8px;
+        background: #21262d;
+        width: 100%;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        transition: width 0.3s;
+      }
+      .prog-amber {
+        background: #f59e0b;
+      }
+      .prog-green {
+        background: #22c55e;
+      }
+      .prog-blue {
+        background: #3b82f6;
+      }
+      .prog-orange {
+        background: #ea580c;
+      }
+
+      /* day complete button shared */
+      .day-complete-btn {
+        width: 100%;
+        padding: 14px;
+        background: transparent;
+        border: 2px solid #f59e0b;
+        color: #f59e0b;
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+        transition: all 0.15s;
+      }
+      .day-complete-btn:hover {
+        background: #f59e0b22;
+      }
+
+      /* ─── DIRECTION 1: TERMINAL CLASSIC ─── */
+      .d1 .content {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .d1 .screen-title {
+        font-family: "VT323", monospace;
+        font-size: 28px;
+        color: #f59e0b;
+        letter-spacing: 1px;
+      }
+      .d1 .date-line {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #7d8590;
+        margin-top: -8px;
+      }
+      .d1 .metric-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d1 .metric-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .d1 .metric-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        color: #7d8590;
+        text-transform: uppercase;
+      }
+      .d1 .metric-value {
+        font-family: "VT323", monospace;
+        font-size: 26px;
+      }
+      .d1 .metric-subtext {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+      }
+      .d1 .divider {
+        border: none;
+        border-top: 1px solid #21262d;
+      }
+      .d1 .section-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .d1 .goals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d1 .goal-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+      }
+      .d1 .goal-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .d1 .cheat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d1 .cheat-item {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #e6edf3;
+        padding: 6px 8px;
+        background: #161b22;
+        border-left: 2px solid #f59e0b;
+      }
+
+      /* ─── DIRECTION 2: VAULT DASHBOARD ─── */
+      .d2 .content {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .d2 .app-header {
+        padding: 12px 16px;
+        background: #0a0e14;
+        border-bottom: 1px solid #30363d;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .d2 .app-title {
+        font-family: "VT323", monospace;
+        font-size: 24px;
+        color: #f59e0b;
+        letter-spacing: 2px;
+      }
+      .d2 .consistency-badge {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        padding: 3px 8px;
+        border: 1px solid #22c55e;
+        color: #22c55e;
+      }
+      .d2 .panel {
+        margin: 8px 12px;
+        background: #161b22;
+        border: 1px solid #30363d;
+        padding: 12px;
+      }
+      .d2 .panel-title {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #21262d;
+      }
+      .d2 .metric-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .d2 .metric-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .d2 .metric-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #7d8590;
+      }
+      .d2 .metric-val {
+        font-family: "VT323", monospace;
+        font-size: 22px;
+      }
+      .d2 .metric-zone {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        padding: 2px 6px;
+        border: 1px solid;
+      }
+      .d2 .zone-amber {
+        color: #f59e0b;
+        border-color: #f59e0b;
+      }
+      .d2 .zone-green {
+        color: #22c55e;
+        border-color: #22c55e;
+      }
+      .d2 .zone-blue {
+        color: #3b82f6;
+        border-color: #3b82f6;
+      }
+      .d2 .goal-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px solid #21262d;
+      }
+      .d2 .goal-row:last-child {
+        border-bottom: none;
+      }
+      .d2 .goal-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+      }
+      .d2 .goal-status {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+      }
+      .d2 .cheat-item {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #e6edf3;
+        padding: 6px 0;
+        border-bottom: 1px solid #21262d;
+        display: flex;
+        gap: 8px;
+      }
+      .d2 .cheat-item:last-child {
+        border-bottom: none;
+      }
+      .d2 .cheat-bullet {
+        color: #f59e0b;
+      }
+      .d2 .btn-wrap {
+        padding: 12px;
+      }
+
+      /* ─── DIRECTION 3: STATS DOMINANCE ─── */
+      .d3 .content {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .d3 .date-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .d3 .date-str {
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        color: #7d8590;
+      }
+      .d3 .week-str {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #22c55e;
+      }
+      .d3 .big-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .d3 .big-metric {
+        background: #161b22;
+        border: 1px solid #30363d;
+        padding: 12px;
+        text-align: center;
+      }
+      .d3 .big-num {
+        font-family: "VT323", monospace;
+        font-size: 44px;
+        line-height: 1;
+      }
+      .d3 .big-unit {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        color: #7d8590;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 2px;
+      }
+      .d3 .big-zone {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        margin-top: 4px;
+      }
+      .d3 .big-bar {
+        height: 4px;
+        margin-top: 8px;
+        background: #21262d;
+      }
+      .d3 .steps-row {
+        background: #161b22;
+        border: 1px solid #30363d;
+        padding: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .d3 .steps-left .steps-num {
+        font-family: "VT323", monospace;
+        font-size: 36px;
+        color: #22c55e;
+      }
+      .d3 .steps-left .steps-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        text-transform: uppercase;
+      }
+      .d3 .steps-bar-wrap {
+        flex: 1;
+        margin: 0 12px;
+      }
+      .d3 .workout-badge {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        padding: 4px 8px;
+        border: 1px solid #22c55e;
+        color: #22c55e;
+        text-align: center;
+      }
+      .d3 .goals-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .d3 .chip {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        padding: 4px 10px;
+        border: 1px solid;
+      }
+      .d3 .chip-amber {
+        border-color: #f59e0b;
+        color: #f59e0b;
+      }
+      .d3 .chip-green {
+        border-color: #22c55e;
+        color: #22c55e;
+      }
+      .d3 .cheat-scroll {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d3 .cheat-item {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        padding: 4px 0;
+      }
+      .d3 .cheat-item::before {
+        content: "> ";
+        color: #f59e0b;
+      }
+
+      /* ─── DIRECTION 4: GOALS FIRST ─── */
+      .d4 .content {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .d4 .top-bar {
+        padding: 10px 14px;
+        background: #161b22;
+        border-bottom: 1px solid #30363d;
+        display: flex;
+        justify-content: space-between;
+      }
+      .d4 .top-bar-title {
+        font-family: "VT323", monospace;
+        font-size: 20px;
+        color: #f59e0b;
+      }
+      .d4 .top-bar-date {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #7d8590;
+        align-self: center;
+      }
+      .d4 .section {
+        padding: 12px 14px;
+        border-bottom: 1px solid #21262d;
+      }
+      .d4 .section-head {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #f59e0b;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+      .d4 .goal-card {
+        background: #161b22;
+        border: 1px solid #30363d;
+        padding: 10px;
+        margin-bottom: 8px;
+      }
+      .d4 .goal-card:last-child {
+        margin-bottom: 0;
+      }
+      .d4 .goal-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+      }
+      .d4 .goal-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+      }
+      .d4 .goal-pct {
+        font-family: "VT323", monospace;
+        font-size: 20px;
+      }
+      .d4 .metric-compact {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+      .d4 .m-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        width: 60px;
+        flex-shrink: 0;
+      }
+      .d4 .m-val {
+        font-family: "VT323", monospace;
+        font-size: 18px;
+        width: 60px;
+      }
+      .d4 .m-bar {
+        flex: 1;
+      }
+      .d4 .cheat-strip {
+        padding: 10px 14px;
+        background: #161b22;
+        border-bottom: 1px solid #30363d;
+      }
+      .d4 .cheat-title {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #f59e0b;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .d4 .cheat-row {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #e6edf3;
+        padding: 4px 0;
+        border-bottom: 1px solid #21262d66;
+      }
+      .d4 .cheat-row:last-child {
+        border-bottom: none;
+      }
+      .d4 .btn-section {
+        padding: 12px 14px;
+      }
+
+      /* ─── DIRECTION 5: COACHING FORWARD ─── */
+      .d5 .content {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+      }
+      .d5 .cheat-header {
+        padding: 10px 14px;
+        background: #0a0e14;
+        border-bottom: 2px solid #f59e0b;
+      }
+      .d5 .cheat-eyebrow {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        color: #f59e0b;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 6px;
+      }
+      .d5 .cheat-items {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d5 .cheat-line {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #e6edf3;
+        display: flex;
+        gap: 6px;
+      }
+      .d5 .cheat-icon {
+        color: #f59e0b;
+      }
+      .d5 .metrics-section {
+        padding: 12px 14px;
+        border-bottom: 1px solid #30363d;
+      }
+      .d5 .metrics-title {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+      }
+      .d5 .metric-block {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .d5 .metric-block:last-child {
+        margin-bottom: 0;
+      }
+      .d5 .mb-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        width: 52px;
+        flex-shrink: 0;
+        text-transform: uppercase;
+      }
+      .d5 .mb-val {
+        font-family: "VT323", monospace;
+        font-size: 24px;
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .d5 .mb-bar {
+        flex: 1;
+      }
+      .d5 .mb-zone {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        width: 60px;
+        text-align: right;
+      }
+      .d5 .goals-section {
+        padding: 12px 14px;
+        border-bottom: 1px solid #30363d;
+      }
+      .d5 .goals-title {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+      }
+      .d5 .goal-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 0;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        border-bottom: 1px solid #21262d55;
+      }
+      .d5 .goal-line:last-child {
+        border-bottom: none;
+      }
+      .d5 .goal-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .d5 .btn-section {
+        padding: 12px 14px;
+      }
+      .d5 .consistency-footer {
+        padding: 8px 14px;
+        background: #161b22;
+        border-top: 1px solid #30363d;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .d5 .cons-pct {
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        color: #22c55e;
+      }
+      .d5 .cons-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+      }
+
+      /* ─── DIRECTION 6: MINIMAL HUD ─── */
+      .d6 .content {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .d6 .hud-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .d6 .hud-vault {
+        font-family: "VT323", monospace;
+        font-size: 32px;
+        color: #f59e0b;
+        line-height: 1;
+      }
+      .d6 .hud-date {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+        text-align: right;
+      }
+      .d6 .hud-day {
+        font-family: "VT323", monospace;
+        font-size: 18px;
+        color: #e6edf3;
+        display: block;
+      }
+      .d6 .bars-section {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .d6 .bar-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d6 .bar-label-row {
+        display: flex;
+        justify-content: space-between;
+      }
+      .d6 .bar-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #7d8590;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .d6 .bar-numbers {
+        font-family: "VT323", monospace;
+        font-size: 20px;
+      }
+      .d6 .bar-zone-tag {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        color: #7d8590;
+      }
+      .d6 .goals-minimal {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d6 .gm-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+      }
+      .d6 .gm-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .d6 .cheat-single {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        color: #f59e0b;
+        padding: 10px;
+        background: #161b22;
+        border: 1px solid #f59e0b33;
+        font-style: italic;
+      }
+      .d6 .cheat-hint {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        color: #7d8590;
+        margin-top: 4px;
+      }
+      .d6 .hud-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .d6 .cons-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .d6 .cons-num {
+        font-family: "VT323", monospace;
+        font-size: 28px;
+        color: #22c55e;
+      }
+      .d6 .cons-text {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #7d8590;
+      }
+
+      /* ─── SHOW ALL TOGGLE ─── */
+      .show-all-note {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #7d8590;
+        text-align: center;
+        margin-top: 8px;
+      }
+
+      @media (max-width: 420px) {
+        .phone {
+          width: 340px;
+        }
+      }
+
+      /* ─── PHONE COLOR VARIANTS ─── */
+      .phone-blue {
+        background: #060a14;
+        border-color: #1a2840;
+      }
+      .phone-blue .phone-statusbar {
+        background: #040710;
+        border-bottom-color: #1a2840;
+      }
+      .phone-blue .prog-track {
+        background: #0f1c30;
+      }
+
+      .phone-green {
+        background: #030a04;
+        border-color: #173a17;
+      }
+      .phone-green .phone-statusbar {
+        background: #020602;
+        border-bottom-color: #173a17;
+      }
+      .phone-green .prog-track {
+        background: #0c1e0c;
+      }
+
+      /* ─── DIRECTION 7: BLUE VAULT-TEC VARIANT ─── */
+      .d7 .content {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .d7 .screen-title {
+        font-family: "VT323", monospace;
+        font-size: 28px;
+        color: #f59e0b;
+        letter-spacing: 1px;
+      }
+      .d7 .date-line {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #5c7099;
+        margin-top: -8px;
+      }
+      .d7 .metric-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d7 .metric-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .d7 .metric-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        color: #5c7099;
+        text-transform: uppercase;
+      }
+      .d7 .metric-value {
+        font-family: "VT323", monospace;
+        font-size: 26px;
+      }
+      .d7 .metric-subtext {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #5c7099;
+      }
+      .d7 .divider {
+        border: none;
+        border-top: 1px solid #172235;
+      }
+      .d7 .section-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #5c7099;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .d7 .goals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d7 .goal-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+      }
+      .d7 .goal-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .d7 .cheat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d7 .cheat-item {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #c0d0f0;
+        padding: 6px 8px;
+        background: #0d1a2e;
+        border-left: 2px solid #f59e0b;
+      }
+
+      /* ─── DIRECTION 8: GREEN PIP-BOY VARIANT ─── */
+      .d8 .content {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .d8 .screen-title {
+        font-family: "VT323", monospace;
+        font-size: 28px;
+        color: #f59e0b;
+        letter-spacing: 1px;
+      }
+      .d8 .date-line {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #4a7050;
+        margin-top: -8px;
+      }
+      .d8 .metric-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d8 .metric-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .d8 .metric-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        color: #4a7050;
+        text-transform: uppercase;
+      }
+      .d8 .metric-value {
+        font-family: "VT323", monospace;
+        font-size: 26px;
+      }
+      .d8 .metric-subtext {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #4a7050;
+      }
+      .d8 .divider {
+        border: none;
+        border-top: 1px solid #163520;
+      }
+      .d8 .section-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #4a7050;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .d8 .goals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d8 .goal-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+      }
+      .d8 .goal-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .d8 .cheat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d8 .cheat-item {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #b8e8c0;
+        padding: 6px 8px;
+        background: #081408;
+        border-left: 2px solid #f59e0b;
+      }
+
+      /* ─── PHONE NAVY VAULT-TEC ─── */
+      .phone-navy {
+        background: #0a1628;
+        border-color: #1a3055;
+      }
+      .phone-navy .phone-statusbar {
+        background: #060f1e;
+        border-bottom-color: #1a3055;
+      }
+      .phone-navy .prog-track {
+        background: #0d1a2e;
+      }
+
+      /* ─── DIRECTION 9: VAULT-TEC YELLOW ON NAVY ─── */
+      .d9 .content {
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .d9 .screen-title {
+        font-family: "VT323", monospace;
+        font-size: 28px;
+        color: #ffd700;
+        letter-spacing: 1px;
+      }
+      .d9 .date-line {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #5a7099;
+        margin-top: -8px;
+      }
+      .d9 .metric-row {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .d9 .metric-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .d9 .metric-name {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+        color: #5a7099;
+        text-transform: uppercase;
+      }
+      .d9 .metric-value {
+        font-family: "VT323", monospace;
+        font-size: 26px;
+      }
+      .d9 .metric-subtext {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #5a7099;
+      }
+      .d9 .divider {
+        border: none;
+        border-top: 1px solid #1a3055;
+      }
+      .d9 .section-label {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 10px;
+        color: #ffd700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .d9 .goals-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d9 .goal-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 12px;
+      }
+      .d9 .goal-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .d9 .cheat-list {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .d9 .cheat-item {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #e0ecf8;
+        padding: 6px 8px;
+        background: #0f1f3a;
+        border-left: 2px solid #ffd700;
+      }
+      /* muted gold #a87800 for below-floor zone — separates from brand yellow */
+      .d9 .c-amber { color: #a87800 !important; }
+      .phone-navy .prog-fill.prog-amber { background: #a87800; }
+      .d9 .day-btn {
+        width: 100%;
+        padding: 14px;
+        background: transparent;
+        border: 2px solid #ffd700;
+        color: #ffd700;
+        font-family: "VT323", monospace;
+        font-size: 22px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+      }
+
+      /* ─── DIRECTION 10: HYBRID (COACHING FORWARD + VAULT DASHBOARD + YELLOW/NAVY) ─── */
+      .d10 .content { padding: 0; display: flex; flex-direction: column; }
+      .d10 .app-header {
+        padding: 10px 14px;
+        background: #060f1e;
+        border-bottom: 1px solid #1a3055;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .d10 .app-title { font-family: "VT323", monospace; font-size: 26px; color: #ffd700; letter-spacing: 2px; }
+      .d10 .app-date { font-family: "Share Tech Mono", monospace; font-size: 11px; color: #5a7099; }
+      /* cheat codes — ambient band, not a boxed panel */
+      .d10 .cheat-band {
+        padding: 10px 14px;
+        border-bottom: 2px solid #ffd700;
+        background: #0d1c35;
+      }
+      .d10 .cheat-eyebrow {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        color: #ffd700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 7px;
+      }
+      .d10 .cheat-line {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        color: #e0ecf8;
+        display: flex;
+        gap: 7px;
+        padding: 2px 0;
+      }
+      .d10 .cheat-arrow { color: #ffd700; }
+      /* panels for metrics and goals */
+      .d10 .panel {
+        margin: 6px 10px;
+        background: #0f1f3a;
+        border: 1px solid #1a3055;
+        padding: 10px 12px;
+      }
+      .d10 .panel-title {
+        font-family: "Share Tech Mono", monospace;
+        font-size: 9px;
+        color: #5a7099;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #1a3055;
+      }
+      .d10 .metric-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+      .d10 .metric-row:last-child { margin-bottom: 0; }
+      .d10 .m-label { font-family: "Share Tech Mono", monospace; font-size: 10px; color: #5a7099; text-transform: uppercase; width: 54px; flex-shrink: 0; }
+      .d10 .m-val { font-family: "VT323", monospace; font-size: 22px; width: 60px; flex-shrink: 0; }
+      .d10 .m-bar { flex: 1; }
+      .d10 .m-zone { font-family: "Share Tech Mono", monospace; font-size: 9px; width: 62px; text-align: right; flex-shrink: 0; }
+      .d10 .goal-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 0;
+        font-family: "Share Tech Mono", monospace;
+        font-size: 11px;
+        border-bottom: 1px solid #1a305544;
+      }
+      .d10 .goal-row:last-child { border-bottom: none; }
+      .d10 .goal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+      .d10 .goal-progress { margin-left: auto; font-family: "VT323", monospace; font-size: 18px; }
+      .d10 .btn-wrap { padding: 10px; }
+      .d10 .complete-btn {
+        width: 100%;
+        padding: 14px;
+        background: transparent;
+        border: 2px solid #ffd700;
+        color: #ffd700;
+        font-family: "VT323", monospace;
+        font-size: 24px;
+        letter-spacing: 2px;
+        cursor: pointer;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="shell-header">
+        <h1>VAULT 1 // DESIGN DIRECTIONS</h1>
+        <p>
+          Select a direction to view &nbsp;·&nbsp; All mockups use real content
+          &nbsp;·&nbsp; Tuesday March 8, logged 1,340 cal / 87g protein / 5,200
+          steps
+        </p>
+      </div>
+
+      <div class="dir-nav">
+        <button class="dir-btn active" onclick="showDir('all')">
+          VIEW ALL
+        </button>
+        <button class="dir-btn" onclick="showDir('d1')">
+          1 · Terminal Classic
+        </button>
+        <button class="dir-btn" onclick="showDir('d2')">
+          2 · Vault Dashboard
+        </button>
+        <button class="dir-btn" onclick="showDir('d3')">
+          3 · Stats Dominance
+        </button>
+        <button class="dir-btn" onclick="showDir('d4')">4 · Goals First</button>
+        <button class="dir-btn" onclick="showDir('d5')">
+          5 · Coaching Forward
+        </button>
+        <button class="dir-btn" onclick="showDir('d6')">6 · Minimal HUD</button>
+        <button class="dir-btn" onclick="showDir('d7')">
+          7 · Blue Vault-Tec ✦
+        </button>
+        <button class="dir-btn" onclick="showDir('d8')">
+          8 · Green Pip-Boy ✦
+        </button>
+        <button class="dir-btn" onclick="showDir('d9')">
+          9 · Vault-Tec Yellow ★
+        </button>
+        <button class="dir-btn" onclick="showDir('d10')">
+          10 · FINAL DIRECTION ◆
+        </button>
+      </div>
+
+      <div class="directions-grid" id="grid">
+        <!-- ───────────────────────────────────────
+         DIRECTION 1: TERMINAL CLASSIC
+    ─────────────────────────────────────────── -->
+        <div class="direction-card visible show-all" data-dir="d1">
+          <div class="direction-label">
+            <strong>01 · TERMINAL CLASSIC</strong>
+            Dense + text-heavy readouts. Everything in one column, minimal
+            chrome.
+          </div>
+          <div class="phone d1">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span>VAULT 1</span>
+              <span>■■■ 87%</span>
+            </div>
+            <div class="content">
+              <div>
+                <div class="screen-title">WIN THE DAY</div>
+                <div class="date-line">TUE 08 MAR 2026</div>
+              </div>
+
+              <hr class="divider" />
+
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">CALORIES</span>
+                  <span class="metric-value c-amber">1,340</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 56%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 1,550 · TARGET 1,800 · Below floor — neutral data
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">PROTEIN</span>
+                  <span class="metric-value c-amber">87g</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 50%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 104g · TARGET 130g · Below floor — neutral data
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">STEPS</span>
+                  <span class="metric-value c-green">5,200</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-green" style="width: 65%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 4,000 · TARGET 8,000 · On track
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">WORKOUT</span>
+                  <span class="metric-value c-green">✓</span>
+                </div>
+              </div>
+
+              <hr class="divider" />
+
+              <div class="section-label">ACTIVE GOALS — WEEK 10</div>
+              <div class="goals-list">
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span class="c-muted">Calorie floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span class="c-muted">Protein floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #22c55e"></div>
+                  <span style="color: #e6edf3">Walk 3 days/wk — 2/3</span>
+                </div>
+              </div>
+
+              <hr class="divider" />
+
+              <div class="section-label">CHEAT CODES</div>
+              <div class="cheat-list">
+                <div class="cheat-item">Eat the protein first</div>
+                <div class="cheat-item">Plan the snack before you need it</div>
+                <div class="cheat-item">One rough day is just data</div>
+              </div>
+
+              <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+         DIRECTION 2: VAULT DASHBOARD
+    ─────────────────────────────────────────── -->
+        <div class="direction-card visible show-all" data-dir="d2">
+          <div class="direction-label">
+            <strong>02 · VAULT DASHBOARD</strong>
+            Panel-based sections. Clear visual hierarchy with headers.
+          </div>
+          <div class="phone d2">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span>VAULT 1</span>
+              <span>■■■ 87%</span>
+            </div>
+            <div class="content">
+              <div class="app-header">
+                <span class="app-title">WIN THE DAY</span>
+                <span class="consistency-badge">68% · SURVIVING</span>
+              </div>
+
+              <div class="panel">
+                <div class="panel-title">Today's Metrics — Tue 8 Mar</div>
+
+                <div class="metric-row">
+                  <div class="metric-line">
+                    <span class="metric-name">Calories</span>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <span class="metric-val c-amber">1,340</span>
+                      <span class="metric-zone zone-amber">BELOW FLOOR</span>
+                    </div>
+                  </div>
+                  <div class="prog-track">
+                    <div class="prog-fill prog-amber" style="width: 56%"></div>
+                  </div>
+                </div>
+
+                <div class="metric-row" style="margin-top: 8px">
+                  <div class="metric-line">
+                    <span class="metric-name">Protein</span>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <span class="metric-val c-amber">87g</span>
+                      <span class="metric-zone zone-amber">BELOW FLOOR</span>
+                    </div>
+                  </div>
+                  <div class="prog-track">
+                    <div class="prog-fill prog-amber" style="width: 50%"></div>
+                  </div>
+                </div>
+
+                <div class="metric-row" style="margin-top: 8px">
+                  <div class="metric-line">
+                    <span class="metric-name">Steps</span>
+                    <div style="display: flex; align-items: center; gap: 8px">
+                      <span class="metric-val c-green">5,200</span>
+                      <span class="metric-zone zone-green">ON TRACK</span>
+                    </div>
+                  </div>
+                  <div class="prog-track">
+                    <div class="prog-fill prog-green" style="width: 65%"></div>
+                  </div>
+                </div>
+
+                <div
+                  style="
+                    margin-top: 10px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  <span class="metric-name">Workout</span>
+                  <span
+                    style="
+                      font-family: &quot;VT323&quot;, monospace;
+                      font-size: 18px;
+                      color: #22c55e;
+                    "
+                    >✓ Completed</span
+                  >
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-title">Active Goals</div>
+                <div class="goal-row">
+                  <span class="goal-name c-muted">Calorie floor</span
+                  ><span class="goal-status c-amber">3/5 days</span>
+                </div>
+                <div class="goal-row">
+                  <span class="goal-name c-muted">Protein floor</span
+                  ><span class="goal-status c-amber">3/5 days</span>
+                </div>
+                <div class="goal-row">
+                  <span class="goal-name" style="color: #e6edf3"
+                    >Walk 3 days/wk</span
+                  ><span class="goal-status c-green">2/3 ✓</span>
+                </div>
+              </div>
+
+              <div class="panel">
+                <div class="panel-title">Cheat Codes</div>
+                <div class="cheat-item">
+                  <span class="cheat-bullet">▶</span> Eat the protein first
+                </div>
+                <div class="cheat-item">
+                  <span class="cheat-bullet">▶</span> Plan the snack before you
+                  need it
+                </div>
+                <div class="cheat-item">
+                  <span class="cheat-bullet">▶</span> One rough day is just data
+                </div>
+              </div>
+
+              <div class="btn-wrap">
+                <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+         DIRECTION 3: STATS DOMINANCE
+    ─────────────────────────────────────────── -->
+        <div class="direction-card visible show-all" data-dir="d3">
+          <div class="direction-label">
+            <strong>03 · STATS DOMINANCE</strong>
+            Large metric numbers front and center. VT323 at full size.
+          </div>
+          <div class="phone d3">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span>VAULT 1</span>
+              <span>■■■ 87%</span>
+            </div>
+            <div class="content">
+              <div class="date-header">
+                <span class="date-str">TUE MAR 8</span>
+                <span class="week-str">WK · 68% SURVIVING</span>
+              </div>
+
+              <div class="big-metrics">
+                <div class="big-metric">
+                  <div class="big-num c-amber">1,340</div>
+                  <div class="big-unit">CALORIES</div>
+                  <div class="big-zone c-amber">↓ BELOW FLOOR</div>
+                  <div class="big-bar">
+                    <div
+                      style="height: 4px; background: #f59e0b; width: 56%"
+                    ></div>
+                  </div>
+                </div>
+                <div class="big-metric">
+                  <div class="big-num c-amber">87g</div>
+                  <div class="big-unit">PROTEIN</div>
+                  <div class="big-zone c-amber">↓ BELOW FLOOR</div>
+                  <div class="big-bar">
+                    <div
+                      style="height: 4px; background: #f59e0b; width: 50%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="steps-row">
+                <div class="steps-left">
+                  <div class="steps-num">5,200</div>
+                  <div class="steps-label">Steps · On track</div>
+                </div>
+                <div class="steps-bar-wrap">
+                  <div class="prog-track">
+                    <div class="prog-fill prog-green" style="width: 65%"></div>
+                  </div>
+                </div>
+                <div class="workout-badge">WORKOUT ✓</div>
+              </div>
+
+              <div>
+                <div
+                  style="
+                    font-family: &quot;Share Tech Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: #7d8590;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    margin-bottom: 8px;
+                  "
+                >
+                  Active Goals
+                </div>
+                <div class="goals-chips">
+                  <span class="chip chip-amber">Calorie floor 3/5</span>
+                  <span class="chip chip-amber">Protein floor 3/5</span>
+                  <span class="chip chip-green">Walk 3 days ✓ 2/3</span>
+                </div>
+              </div>
+
+              <div>
+                <div
+                  style="
+                    font-family: &quot;Share Tech Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: #7d8590;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    margin-bottom: 6px;
+                  "
+                >
+                  Cheat Codes
+                </div>
+                <div class="cheat-scroll">
+                  <div class="cheat-item">Eat the protein first</div>
+                  <div class="cheat-item">
+                    Plan the snack before you need it
+                  </div>
+                  <div class="cheat-item">One rough day is just data</div>
+                </div>
+              </div>
+
+              <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+         DIRECTION 4: GOALS FIRST
+    ─────────────────────────────────────────── -->
+        <div class="direction-card visible show-all" data-dir="d4">
+          <div class="direction-label">
+            <strong>04 · GOALS FIRST</strong>
+            Active goals at the top. Metrics as supporting data.
+          </div>
+          <div class="phone d4">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span>VAULT 1</span>
+              <span>■■■ 87%</span>
+            </div>
+            <div class="content">
+              <div class="top-bar">
+                <span class="top-bar-title">WIN THE DAY</span>
+                <span class="top-bar-date">TUE 8 MAR</span>
+              </div>
+
+              <div class="section">
+                <div class="section-head">Active Goals — Week 10</div>
+
+                <div class="goal-card">
+                  <div class="goal-top">
+                    <span class="goal-name c-muted">Calorie floor</span>
+                    <span class="goal-pct c-amber">3/5 days</span>
+                  </div>
+                  <div class="prog-track">
+                    <div class="prog-fill prog-amber" style="width: 60%"></div>
+                  </div>
+                </div>
+
+                <div class="goal-card">
+                  <div class="goal-top">
+                    <span class="goal-name c-muted">Protein floor</span>
+                    <span class="goal-pct c-amber">3/5 days</span>
+                  </div>
+                  <div class="prog-track">
+                    <div class="prog-fill prog-amber" style="width: 60%"></div>
+                  </div>
+                </div>
+
+                <div class="goal-card">
+                  <div class="goal-top">
+                    <span class="goal-name" style="color: #e6edf3"
+                      >Walk 3 days / wk</span
+                    >
+                    <span class="goal-pct c-green">2/3 ✓</span>
+                  </div>
+                  <div class="prog-track">
+                    <div class="prog-fill prog-green" style="width: 66%"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section">
+                <div class="section-head">Today's Metrics</div>
+                <div class="metric-compact">
+                  <span class="m-label">CAL</span>
+                  <span class="m-val c-amber">1,340</span>
+                  <div class="m-bar">
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill prog-amber"
+                        style="width: 56%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="metric-compact">
+                  <span class="m-label">PROTEIN</span>
+                  <span class="m-val c-amber">87g</span>
+                  <div class="m-bar">
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill prog-amber"
+                        style="width: 50%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="metric-compact">
+                  <span class="m-label">STEPS</span>
+                  <span class="m-val c-green">5,200</span>
+                  <div class="m-bar">
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill prog-green"
+                        style="width: 65%"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cheat-strip">
+                <div class="cheat-title">Cheat Codes</div>
+                <div class="cheat-row">Eat the protein first</div>
+                <div class="cheat-row">Plan the snack before you need it</div>
+                <div class="cheat-row">One rough day is just data</div>
+              </div>
+
+              <div class="btn-section">
+                <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+         DIRECTION 5: COACHING FORWARD
+    ─────────────────────────────────────────── -->
+        <div class="direction-card visible show-all" data-dir="d5">
+          <div class="direction-label">
+            <strong>05 · COACHING FORWARD</strong>
+            Cheat Codes anchored at very top — always in first view.
+          </div>
+          <div class="phone d5">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span>VAULT 1</span>
+              <span>■■■ 87%</span>
+            </div>
+            <div class="content">
+              <div class="cheat-header">
+                <div class="cheat-eyebrow">⚡ CHEAT CODES — ALWAYS ACTIVE</div>
+                <div class="cheat-items">
+                  <div class="cheat-line">
+                    <span class="cheat-icon">›</span> Eat the protein first
+                  </div>
+                  <div class="cheat-line">
+                    <span class="cheat-icon">›</span> Plan the snack before you
+                    need it
+                  </div>
+                  <div class="cheat-line">
+                    <span class="cheat-icon">›</span> One rough day is just data
+                  </div>
+                </div>
+              </div>
+
+              <div class="metrics-section">
+                <div class="metrics-title">Today — Tue 8 Mar</div>
+                <div class="metric-block">
+                  <span class="mb-label">CAL</span>
+                  <span class="mb-val c-amber">1,340</span>
+                  <div class="mb-bar">
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill prog-amber"
+                        style="width: 56%"
+                      ></div>
+                    </div>
+                  </div>
+                  <span class="mb-zone c-amber">below floor</span>
+                </div>
+                <div class="metric-block">
+                  <span class="mb-label">PROTEIN</span>
+                  <span class="mb-val c-amber">87g</span>
+                  <div class="mb-bar">
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill prog-amber"
+                        style="width: 50%"
+                      ></div>
+                    </div>
+                  </div>
+                  <span class="mb-zone c-amber">below floor</span>
+                </div>
+                <div class="metric-block">
+                  <span class="mb-label">STEPS</span>
+                  <span class="mb-val c-green">5,200</span>
+                  <div class="mb-bar">
+                    <div class="prog-track">
+                      <div
+                        class="prog-fill prog-green"
+                        style="width: 65%"
+                      ></div>
+                    </div>
+                  </div>
+                  <span class="mb-zone c-green">on track</span>
+                </div>
+                <div class="metric-block">
+                  <span class="mb-label">WORKOUT</span>
+                  <span class="mb-val c-green" style="font-size: 18px">✓</span>
+                </div>
+              </div>
+
+              <div class="goals-section">
+                <div class="goals-title">Active Goals</div>
+                <div class="goal-line">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span class="c-muted">Calorie floor</span
+                  ><span
+                    style="
+                      margin-left: auto;
+                      font-family: &quot;VT323&quot;, monospace;
+                      font-size: 18px;
+                      color: #f59e0b;
+                    "
+                    >3/5</span
+                  >
+                </div>
+                <div class="goal-line">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span class="c-muted">Protein floor</span
+                  ><span
+                    style="
+                      margin-left: auto;
+                      font-family: &quot;VT323&quot;, monospace;
+                      font-size: 18px;
+                      color: #f59e0b;
+                    "
+                    >3/5</span
+                  >
+                </div>
+                <div class="goal-line">
+                  <div class="goal-dot" style="background: #22c55e"></div>
+                  <span style="color: #e6edf3">Walk 3 days/wk</span
+                  ><span
+                    style="
+                      margin-left: auto;
+                      font-family: &quot;VT323&quot;, monospace;
+                      font-size: 18px;
+                      color: #22c55e;
+                    "
+                    >2/3</span
+                  >
+                </div>
+              </div>
+
+              <div class="btn-section">
+                <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+              </div>
+
+              <div class="consistency-footer">
+                <div>
+                  <div class="cons-pct">68%</div>
+                  <div class="cons-label">this week</div>
+                </div>
+                <div style="text-align: right">
+                  <div
+                    style="
+                      font-family: &quot;VT323&quot;, monospace;
+                      font-size: 16px;
+                      color: #7d8590;
+                    "
+                  >
+                    SURVIVING THE
+                  </div>
+                  <div
+                    style="
+                      font-family: &quot;VT323&quot;, monospace;
+                      font-size: 16px;
+                      color: #f59e0b;
+                    "
+                  >
+                    WASTELAND
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+         DIRECTION 6: MINIMAL HUD
+    ─────────────────────────────────────────── -->
+        <div class="direction-card visible show-all" data-dir="d6">
+          <div class="direction-label">
+            <strong>06 · MINIMAL HUD</strong>
+            Stripped back. Day Complete is the visual centerpiece.
+          </div>
+          <div class="phone d6">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span>VAULT 1</span>
+              <span>■■■ 87%</span>
+            </div>
+            <div class="content">
+              <div class="hud-header">
+                <div>
+                  <div class="hud-vault">VAULT 1</div>
+                  <div
+                    style="
+                      font-family: &quot;Share Tech Mono&quot;, monospace;
+                      font-size: 10px;
+                      color: #7d8590;
+                      margin-top: 2px;
+                    "
+                  >
+                    WIN THE DAY
+                  </div>
+                </div>
+                <div class="hud-date">
+                  <span class="hud-day">TUE 8</span>
+                  <span>MARCH 2026</span>
+                </div>
+              </div>
+
+              <div class="bars-section">
+                <div class="bar-row">
+                  <div class="bar-label-row">
+                    <span class="bar-name">Calories</span>
+                    <span class="bar-numbers c-amber">1,340 / 1,800</span>
+                  </div>
+                  <div class="prog-track" style="height: 10px">
+                    <div class="prog-fill prog-amber" style="width: 56%"></div>
+                  </div>
+                  <span class="bar-zone-tag c-amber"
+                    >below floor · neutral</span
+                  >
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label-row">
+                    <span class="bar-name">Protein</span>
+                    <span class="bar-numbers c-amber">87g / 130g</span>
+                  </div>
+                  <div class="prog-track" style="height: 10px">
+                    <div class="prog-fill prog-amber" style="width: 50%"></div>
+                  </div>
+                  <span class="bar-zone-tag c-amber"
+                    >below floor · neutral</span
+                  >
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label-row">
+                    <span class="bar-name">Steps</span>
+                    <span class="bar-numbers c-green">5,200 / 8,000</span>
+                  </div>
+                  <div class="prog-track" style="height: 10px">
+                    <div class="prog-fill prog-green" style="width: 65%"></div>
+                  </div>
+                  <span class="bar-zone-tag c-green">on track</span>
+                </div>
+              </div>
+
+              <div class="goals-minimal">
+                <div
+                  style="
+                    font-family: &quot;Share Tech Mono&quot;, monospace;
+                    font-size: 10px;
+                    color: #7d8590;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    margin-bottom: 6px;
+                  "
+                >
+                  Goals
+                </div>
+                <div class="gm-row">
+                  <div class="gm-dot" style="background: #f59e0b"></div>
+                  <span class="c-muted">Calorie floor — 3/5</span>
+                </div>
+                <div class="gm-row">
+                  <div class="gm-dot" style="background: #f59e0b"></div>
+                  <span class="c-muted">Protein floor — 3/5</span>
+                </div>
+                <div class="gm-row">
+                  <div class="gm-dot" style="background: #22c55e"></div>
+                  <span style="color: #e6edf3">Walk 3 days/wk — 2/3</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="cheat-single">"One rough day is just data"</div>
+                <div class="cheat-hint">
+                  + 2 more cheat codes · tap to expand
+                </div>
+              </div>
+
+              <div class="hud-footer">
+                <div class="cons-row">
+                  <div>
+                    <span class="cons-num">68%</span>
+                    <span class="cons-text" style="margin-left: 8px"
+                      >this week · SURVIVING THE WASTELAND</span
+                    >
+                  </div>
+                </div>
+                <button
+                  class="day-complete-btn"
+                  style="font-size: 28px; padding: 18px; border-width: 2px"
+                >
+                  [ DAY COMPLETE ]
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+             DIRECTION 7: BLUE VAULT-TEC VARIANT
+        ─────────────────────────────────────────── -->
+        <div class="direction-card" data-dir="d7">
+          <div class="direction-label">
+            <strong>07 · BLUE VAULT-TEC</strong>
+            Terminal Classic · deep blue-tinted · institutional cold
+          </div>
+          <div class="phone d7 phone-blue">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span
+                style="
+                  font-family: &quot;Share Tech Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: #5c7099;
+                "
+                >VAULT 1</span
+              >
+              <span
+                style="
+                  font-family: &quot;Share Tech Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: #5c7099;
+                "
+                >■■■ 87%</span
+              >
+            </div>
+            <div class="content">
+              <div>
+                <div class="screen-title">WIN THE DAY</div>
+                <div class="date-line">TUE 08 MAR 2026</div>
+              </div>
+              <hr class="divider" />
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">CALORIES</span>
+                  <span class="metric-value c-amber">1,340</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 56%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 1,550 · TARGET 1,800 · Below floor — neutral data
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">PROTEIN</span>
+                  <span class="metric-value c-amber">87g</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 50%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 104g · TARGET 130g · Below floor — neutral data
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">STEPS</span>
+                  <span class="metric-value c-green">5,200</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-green" style="width: 65%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 4,000 · TARGET 8,000 · On track
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">WORKOUT</span>
+                  <span class="metric-value c-green">✓</span>
+                </div>
+              </div>
+              <hr class="divider" />
+              <div class="section-label">ACTIVE GOALS — WEEK 10</div>
+              <div class="goals-list">
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span style="color: #5c7099">Calorie floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span style="color: #5c7099">Protein floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #22c55e"></div>
+                  <span style="color: #c0d0f0">Walk 3 days/wk — 2/3</span>
+                </div>
+              </div>
+              <hr class="divider" />
+              <div class="section-label">CHEAT CODES</div>
+              <div class="cheat-list">
+                <div class="cheat-item">Eat the protein first</div>
+                <div class="cheat-item">Plan the snack before you need it</div>
+                <div class="cheat-item">One rough day is just data</div>
+              </div>
+              <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+             DIRECTION 8: GREEN PIP-BOY VARIANT
+        ─────────────────────────────────────────── -->
+        <div class="direction-card" data-dir="d8">
+          <div class="direction-label">
+            <strong>08 · GREEN PIP-BOY</strong>
+            Terminal Classic · phosphor green-tinted · Pip-Boy authentic
+          </div>
+          <div class="phone d8 phone-green">
+            <div class="phone-statusbar">
+              <span class="status-time">09:14</span>
+              <span
+                style="
+                  font-family: &quot;Share Tech Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: #4a7050;
+                "
+                >VAULT 1</span
+              >
+              <span
+                style="
+                  font-family: &quot;Share Tech Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: #4a7050;
+                "
+                >■■■ 87%</span
+              >
+            </div>
+            <div class="content">
+              <div>
+                <div class="screen-title">WIN THE DAY</div>
+                <div class="date-line">TUE 08 MAR 2026</div>
+              </div>
+              <hr class="divider" />
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">CALORIES</span>
+                  <span class="metric-value c-amber">1,340</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 56%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 1,550 · TARGET 1,800 · Below floor — neutral data
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">PROTEIN</span>
+                  <span class="metric-value c-amber">87g</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 50%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 104g · TARGET 130g · Below floor — neutral data
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">STEPS</span>
+                  <span class="metric-value c-green">5,200</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-green" style="width: 65%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 4,000 · TARGET 8,000 · On track
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">WORKOUT</span>
+                  <span class="metric-value c-green">✓</span>
+                </div>
+              </div>
+              <hr class="divider" />
+              <div class="section-label">ACTIVE GOALS — WEEK 10</div>
+              <div class="goals-list">
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span style="color: #4a7050">Calorie floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span style="color: #4a7050">Protein floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #22c55e"></div>
+                  <span style="color: #b8e8c0">Walk 3 days/wk — 2/3</span>
+                </div>
+              </div>
+              <hr class="divider" />
+              <div class="section-label">CHEAT CODES</div>
+              <div class="cheat-list">
+                <div class="cheat-item">Eat the protein first</div>
+                <div class="cheat-item">Plan the snack before you need it</div>
+                <div class="cheat-item">One rough day is just data</div>
+              </div>
+              <button class="day-complete-btn">[ DAY COMPLETE ]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+             DIRECTION 9: VAULT-TEC YELLOW ON NAVY
+        ─────────────────────────────────────────── -->
+        <div class="direction-card" data-dir="d9">
+          <div class="direction-label">
+            <strong>09 · VAULT-TEC YELLOW ★</strong>
+            Navy blue background · #FFD700 brand yellow · canonical Vault-Tec
+          </div>
+          <div class="phone d9 phone-navy">
+            <div class="phone-statusbar">
+              <span
+                style="
+                  font-family: &quot;VT323&quot;, monospace;
+                  font-size: 14px;
+                  color: #ffd700;
+                "
+                >09:14</span
+              >
+              <span
+                style="
+                  font-family: &quot;Share Tech Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: #5a7099;
+                "
+                >VAULT 1</span
+              >
+              <span
+                style="
+                  font-family: &quot;Share Tech Mono&quot;, monospace;
+                  font-size: 10px;
+                  color: #5a7099;
+                "
+                >■■■ 87%</span
+              >
+            </div>
+            <div class="content">
+              <div>
+                <div class="screen-title">WIN THE DAY</div>
+                <div class="date-line">TUE 08 MAR 2026</div>
+              </div>
+              <hr class="divider" />
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">CALORIES</span>
+                  <span class="metric-value c-amber">1,340</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 56%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 1,550 · TARGET 1,800 · Below floor — neutral data
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">PROTEIN</span>
+                  <span class="metric-value c-amber">87g</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-amber" style="width: 50%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 104g · TARGET 130g · Below floor — neutral data
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">STEPS</span>
+                  <span class="metric-value c-green">5,200</span>
+                </div>
+                <div class="prog-track">
+                  <div class="prog-fill prog-green" style="width: 65%"></div>
+                </div>
+                <div class="metric-subtext">
+                  FLOOR 4,000 · TARGET 8,000 · On track
+                </div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-header">
+                  <span class="metric-name">WORKOUT</span>
+                  <span class="metric-value c-green">✓</span>
+                </div>
+              </div>
+              <hr class="divider" />
+              <div class="section-label">ACTIVE GOALS — WEEK 10</div>
+              <div class="goals-list">
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span style="color: #5a7099">Calorie floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #f59e0b"></div>
+                  <span style="color: #5a7099">Protein floor — 3/5 days</span>
+                </div>
+                <div class="goal-item">
+                  <div class="goal-dot" style="background: #22c55e"></div>
+                  <span style="color: #e0ecf8">Walk 3 days/wk — 2/3</span>
+                </div>
+              </div>
+              <hr class="divider" />
+              <div class="section-label">CHEAT CODES</div>
+              <div class="cheat-list">
+                <div class="cheat-item">Eat the protein first</div>
+                <div class="cheat-item">Plan the snack before you need it</div>
+                <div class="cheat-item">One rough day is just data</div>
+              </div>
+              <button class="day-btn">[ DAY COMPLETE ]</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ───────────────────────────────────────
+             DIRECTION 10: FINAL HYBRID
+             Coaching Forward hierarchy + Vault Dashboard panels + Yellow/Navy
+        ─────────────────────────────────────────── -->
+        <div class="direction-card" data-dir="d10">
+          <div class="direction-label">
+            <strong>10 · FINAL DIRECTION ◆</strong>
+            Cheat Codes first (ambient band) · Metric + Goal panels · Yellow/Navy
+          </div>
+          <div class="phone d10 phone-navy">
+            <div class="phone-statusbar">
+              <span style="font-family:'VT323',monospace;font-size:14px;color:#ffd700">09:14</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#5a7099">VAULT 1</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#5a7099">■■■ 87%</span>
+            </div>
+            <div class="content">
+
+              <!-- App header -->
+              <div class="app-header">
+                <span class="app-title">WIN THE DAY</span>
+                <span class="app-date">TUE 08 MAR 2026</span>
+              </div>
+
+              <!-- Cheat Codes — ambient band, always first -->
+              <div class="cheat-band">
+                <div class="cheat-eyebrow">⚡ cheat codes</div>
+                <div class="cheat-line"><span class="cheat-arrow">›</span> Eat the protein first</div>
+                <div class="cheat-line"><span class="cheat-arrow">›</span> Plan the snack before you need it</div>
+                <div class="cheat-line"><span class="cheat-arrow">›</span> One rough day is just data</div>
+              </div>
+
+              <!-- Metrics panel -->
+              <div class="panel">
+                <div class="panel-title">Today's Metrics</div>
+                <div class="metric-row">
+                  <span class="m-label">Cal</span>
+                  <span class="m-val" style="color:#a87800">1,340</span>
+                  <div class="m-bar"><div class="prog-track"><div class="prog-fill" style="width:56%;background:#a87800"></div></div></div>
+                  <span class="m-zone" style="color:#a87800">below floor</span>
+                </div>
+                <div class="metric-row">
+                  <span class="m-label">Protein</span>
+                  <span class="m-val" style="color:#a87800">87g</span>
+                  <div class="m-bar"><div class="prog-track"><div class="prog-fill" style="width:50%;background:#a87800"></div></div></div>
+                  <span class="m-zone" style="color:#a87800">below floor</span>
+                </div>
+                <div class="metric-row">
+                  <span class="m-label">Steps</span>
+                  <span class="m-val" style="color:#22c55e">5,200</span>
+                  <div class="m-bar"><div class="prog-track"><div class="prog-fill prog-green" style="width:65%"></div></div></div>
+                  <span class="m-zone" style="color:#22c55e">on track</span>
+                </div>
+                <div class="metric-row">
+                  <span class="m-label">Workout</span>
+                  <span class="m-val" style="color:#22c55e;font-size:18px">✓</span>
+                  <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:#22c55e">logged</span>
+                </div>
+              </div>
+
+              <!-- Active Goals panel -->
+              <div class="panel">
+                <div class="panel-title">Active Goals — Week 10</div>
+                <div class="goal-row">
+                  <div class="goal-dot" style="background:#a87800"></div>
+                  <span style="color:#5a7099">Calorie floor</span>
+                  <span class="goal-progress" style="color:#a87800">3/5</span>
+                </div>
+                <div class="goal-row">
+                  <div class="goal-dot" style="background:#a87800"></div>
+                  <span style="color:#5a7099">Protein floor</span>
+                  <span class="goal-progress" style="color:#a87800">3/5</span>
+                </div>
+                <div class="goal-row">
+                  <div class="goal-dot" style="background:#22c55e"></div>
+                  <span style="color:#e0ecf8">Walk 3 days / wk</span>
+                  <span class="goal-progress" style="color:#22c55e">2/3</span>
+                </div>
+              </div>
+
+              <!-- Day Complete -->
+              <div class="btn-wrap">
+                <button class="complete-btn">[ DAY COMPLETE ]</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /grid -->
+
+      <div class="show-all-note">
+        Evaluate: layout intuitiveness · visual weight · cheat code visibility ·
+        Day Complete prominence · information hierarchy
+      </div>
+    </div>
+
+    <script>
+      function showDir(id) {
+        const cards = document.querySelectorAll(".direction-card");
+        const btns = document.querySelectorAll(".dir-btn");
+
+        btns.forEach((b) => b.classList.remove("active"));
+        event.target.classList.add("active");
+
+        if (id === "all") {
+          cards.forEach((c) => {
+            c.classList.remove("visible");
+            c.classList.add("show-all");
+          });
+        } else {
+          cards.forEach((c) => {
+            c.classList.remove("show-all", "visible");
+            if (c.dataset.dir === id) c.classList.add("visible");
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
