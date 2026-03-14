@@ -84,7 +84,7 @@ The architecture doc also specifies branch `main`. The repo uses `master`. Updat
   - [x] 4.1 Connected Vercel project to GitHub repo `ellieoconnor/vault_1`
   - [x] 4.2 `vercel.json` created at repo root — sets `rootDirectory: apps/frontend`, framework: vite
   - [ ] 4.3 **[You]** In Vercel project settings → Environment Variables → add `DATABASE_URL` (copy from `apps/backend/.env`)
-  - [ ] 4.4 **[You]** Add `DATABASE_URL` as a GitHub Actions secret: repo Settings → Secrets → Actions → New secret
+  - [x] 4.4 `DATABASE_URL` added as GitHub Actions secret
 
 - [x] Task 5: Update CI for migrations on master push (AC: CI deploys on push)
   - [x] 5.1 Added `migrate` job to CI: runs `prisma migrate deploy` on `master` push only, after typecheck
