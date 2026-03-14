@@ -1,7 +1,3 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "framework": "vite",
-  "installCommand": "npm install",
-  "rootDirectory": "apps/frontend"
+  "framework": "vite"
 }
