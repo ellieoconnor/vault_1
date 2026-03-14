@@ -22,7 +22,7 @@ jobs:
         run: npm ci
 
       - name: Generate Prisma client
-        run: npx prisma generate --schema=apps/backend/prisma/schema.prisma
+        run: npx prisma generate --schema=prisma/schema.prisma
         working-directory: apps/backend
 
       - name: Type check frontend
