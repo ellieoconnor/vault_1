@@ -1,3 +1,4 @@
+$$
 # Story 1.2: User Registration
 
 Status: ready-for-dev
@@ -32,14 +33,14 @@ So that my data is stored securely and tied to my identity.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Install backend dependencies
-  - [ ] 1.1 In `apps/backend`, install runtime deps: `argon2 express-session connect-pg-simple zod cors cookie-parser`
-  - [ ] 1.2 Install type deps: `@types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple`
-  - [ ] 1.3 Add `SESSION_SECRET` to `apps/backend/.env` (generate a random 32+ char string)
+- [x] Task 1: Install backend dependencies
+  - [x] 1.1 In `apps/backend`, install runtime deps: `argon2 express-session connect-pg-simple zod cors cookie-parser`
+  - [x] 1.2 Install type deps: `@types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple`
+  - [x] 1.3 Add `SESSION_SECRET` to `apps/backend/.env` (generate a random 32+ char string)
 
 - [ ] Task 2: Backend middleware setup
-  - [ ] 2.1 Create `apps/backend/src/middleware/validate.ts` — Zod validation middleware factory
-  - [ ] 2.2 Create `apps/backend/src/middleware/errorHandler.ts` — central Express error handler
+  - [x] 2.1 Create `apps/backend/src/middleware/validate.ts` — Zod validation middleware factory
+  - [x] 2.2 Create `apps/backend/src/middleware/errorHandler.ts` — central Express error handler
   - [ ] 2.3 Update `apps/backend/src/index.ts`: add `cors`, `cookie-parser`, `express-session` with `connect-pg-simple`; mount error handler last
 
 - [ ] Task 3: Registration endpoint
@@ -70,7 +71,7 @@ So that my data is stored securely and tied to my identity.
 **Backend (`apps/backend`):**
 ```bash
 npm install argon2 express-session connect-pg-simple zod cors cookie-parser
-npm install -D @types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple
+$$npm install -D @types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple
 ```
 
 **Frontend (`apps/frontend`):**
@@ -342,3 +343,4 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+$$
