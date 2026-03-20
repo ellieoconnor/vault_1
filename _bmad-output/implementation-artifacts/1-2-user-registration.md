@@ -1,7 +1,7 @@
 $$
 # Story 1.2: User Registration
 
-Status: ready-for-dev
+Status: in-progress
 
 ## Story
 
@@ -38,16 +38,16 @@ So that my data is stored securely and tied to my identity.
   - [x] 1.2 Install type deps: `@types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple`
   - [x] 1.3 Add `SESSION_SECRET` to `apps/backend/.env` (generate a random 32+ char string)
 
-- [ ] Task 2: Backend middleware setup
+- [x] Task 2: Backend middleware setup
   - [x] 2.1 Create `apps/backend/src/middleware/validate.ts` — Zod validation middleware factory
   - [x] 2.2 Create `apps/backend/src/middleware/errorHandler.ts` — central Express error handler
-  - [ ] 2.3 Update `apps/backend/src/index.ts`: add `cors`, `cookie-parser`, `express-session` with `connect-pg-simple`; mount error handler last
+  - [x] 2.3 Update `apps/backend/src/index.ts`: add `cors`, `cookie-parser`, `express-session` with `connect-pg-simple`; mount error handler last
 
-- [ ] Task 3: Registration endpoint
-  - [ ] 3.1 Create `apps/backend/src/routes/auth.ts` with `POST /api/auth/register`
-  - [ ] 3.2 Register the auth router in `apps/backend/src/index.ts` under `/api/auth`
-  - [ ] 3.3 Confirm `POST /api/auth/register` with valid body returns 201 and sets session cookie
-  - [ ] 3.4 Confirm duplicate username returns `{ "error": "USERNAME_TAKEN", "message": "Username already taken", "details": {} }`
+- [x] Task 3: Registration endpoint
+  - [x] 3.1 Create `apps/backend/src/routes/auth.ts` with `POST /api/auth/register`
+  - [x] 3.2 Register the auth router in `apps/backend/src/index.ts` under `/api/auth`
+  - [x] 3.3 Confirm `POST /api/auth/register` with valid body returns 201 and sets session cookie
+  - [x] 3.4 Confirm duplicate username returns `{ "error": "USERNAME_TAKEN", "message": "Username already taken", "details": {} }`
 
 - [ ] Task 4: Install frontend dependencies
   - [ ] 4.1 In `apps/frontend`, install: `react-router-dom @tanstack/react-query zod`

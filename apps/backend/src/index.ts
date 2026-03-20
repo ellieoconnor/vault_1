@@ -8,6 +8,7 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import router from "./routes/auth.js";
 
 const app = express();
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -27,7 +28,6 @@ app.use(
 );
 
 app.use(cookieParser());
-
 app.use(express.json());
 
 app.use(
@@ -52,10 +52,7 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/users", async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
-});
+app.use("/api/auth", router);
 
 app.use(errorHandler);
 
