@@ -49,9 +49,9 @@ So that my data is stored securely and tied to my identity.
   - [x] 3.3 Confirm `POST /api/auth/register` with valid body returns 201 and sets session cookie
   - [x] 3.4 Confirm duplicate username returns `{ "error": "USERNAME_TAKEN", "message": "Username already taken", "details": {} }`
 
-- [ ] Task 4: Install frontend dependencies
-  - [ ] 4.1 In `apps/frontend`, install: `react-router-dom @tanstack/react-query zod`
-  - [ ] 4.2 Add `VITE_API_URL=http://localhost:3000` to `apps/frontend/.env.local`
+- [x] Task 4: Install frontend dependencies
+  - [x] 4.1 In `apps/frontend`, install: `react-router-dom @tanstack/react-query zod`
+  - [x] 4.2 Add `VITE_API_URL=http://localhost:3000` to `apps/frontend/.env.local`
 
 - [ ] Task 5: Frontend routing and providers
   - [ ] 5.1 Wrap `apps/frontend/src/main.tsx` with `QueryClientProvider` (TanStack Query)
