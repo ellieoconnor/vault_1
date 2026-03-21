@@ -53,9 +53,9 @@ So that my data is stored securely and tied to my identity.
   - [x] 4.1 In `apps/frontend`, install: `react-router-dom @tanstack/react-query zod`
   - [x] 4.2 Add `VITE_API_URL=http://localhost:3000` to `apps/frontend/.env.local`
 
-- [ ] Task 5: Frontend routing and providers
-  - [ ] 5.1 Wrap `apps/frontend/src/main.tsx` with `QueryClientProvider` (TanStack Query)
-  - [ ] 5.2 Update `apps/frontend/src/App.tsx` — add `BrowserRouter` + routes: `/register`, `/onboarding` (placeholder page)
+- [x] Task 5: Frontend routing and providers
+  - [x] 5.1 Wrap `apps/frontend/src/main.tsx` with `QueryClientProvider` (TanStack Query)
+  - [x] 5.2 Update `apps/frontend/src/App.tsx` — add `BrowserRouter` + routes: `/register`, `/onboarding` (placeholder page)
 
 - [ ] Task 6: Registration form
   - [ ] 6.1 Create `apps/frontend/src/pages/RegisterPage.tsx` — form with username and password fields
