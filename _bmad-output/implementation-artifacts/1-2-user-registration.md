@@ -343,4 +343,18 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+- apps/backend/package.json
+- apps/backend/src/index.ts
+- apps/backend/src/middleware/errorHandler.ts
+- apps/backend/src/middleware/validate.ts
+- apps/backend/src/routes/auth.ts
+- apps/backend/src/schemas/auth.ts
+- apps/backend/src/types/session.d.ts
+- apps/frontend/package.json
+- apps/frontend/src/App.tsx
+- apps/frontend/src/main.tsx
+- apps/frontend/src/pages/OnboardingPage.tsx
+- apps/frontend/src/pages/RegisterPage.tsx
+- apps/frontend/src/schemas/auth.ts
 $$

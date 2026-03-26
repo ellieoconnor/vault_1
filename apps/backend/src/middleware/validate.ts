@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ZodType } from "zod";
+import { z, ZodType } from "zod";
 
 /**
  * Check if request is valid
@@ -15,11 +15,10 @@ export function validateBody(schema: ZodType) {
       return res.status(400).json({
         error: "VALIDATION_ERROR",
         message: "Invalid request body",
-        details: result.error.flatten().fieldErrors,
+        details: z.flattenError(result.error).fieldErrors,
       });
-    } else {
-      req.body = result.data;
-      next();
     }
+    req.body = result.data;
+    next();
   };
 }

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { z } from "zod";
 import { registerSchema } from "../schemas/auth";
 
 export default function RegisterPage() {
@@ -41,8 +42,8 @@ export default function RegisterPage() {
     e.preventDefault();
     const result = registerSchema.safeParse({ username, password });
     if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setFieldErrors(fieldErrors);
+      const validationErrors = z.flattenError(result.error).fieldErrors;
+      setFieldErrors(validationErrors);
       return;
     }
 
