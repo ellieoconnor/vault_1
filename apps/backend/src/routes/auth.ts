@@ -28,8 +28,25 @@ router.post(
       });
 
       req.session.userId = user.id;
-      res.status(201).json({ id: user.id, username: user.username });
-    } catch (err) {
+      req.session.save((saveErr) => {
+        if (saveErr) return next(saveErr);
+        res.status(201).json({ id: user.id, username: user.username });
+      });
+    } catch (err: unknown) {
+      // Handle concurrent registration race condition: if two requests slip past
+      // the findUnique check simultaneously, Prisma throws P2002 (unique constraint).
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "code" in err &&
+        (err as { code: string }).code === "P2002"
+      ) {
+        return res.status(409).json({
+          error: "USERNAME_TAKEN",
+          message: "Username already taken",
+          details: {},
+        });
+      }
       next(err);
     }
   },
