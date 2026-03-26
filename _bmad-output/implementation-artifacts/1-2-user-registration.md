@@ -1,7 +1,7 @@
 $$
 # Story 1.2: User Registration
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -57,12 +57,12 @@ So that my data is stored securely and tied to my identity.
   - [x] 5.1 Wrap `apps/frontend/src/main.tsx` with `QueryClientProvider` (TanStack Query)
   - [x] 5.2 Update `apps/frontend/src/App.tsx` — add `BrowserRouter` + routes: `/register`, `/onboarding` (placeholder page)
 
-- [ ] Task 6: Registration form
-  - [ ] 6.1 Create `apps/frontend/src/pages/RegisterPage.tsx` — form with username and password fields
-  - [ ] 6.2 Add Zod schema: username 3–30 chars, password 8+ chars; show field-level errors before submission
-  - [ ] 6.3 On submit, call `POST /api/auth/register`; on success redirect to `/onboarding`
-  - [ ] 6.4 On duplicate username error from server, display "Username already taken" inline on the username field
-  - [ ] 6.5 Create `apps/frontend/src/pages/OnboardingPage.tsx` — placeholder only (full implementation in Story 2.1)
+- [x] Task 6: Registration form
+  - [x] 6.1 Create `apps/frontend/src/pages/RegisterPage.tsx` — form with username and password fields
+  - [x] 6.2 Add Zod schema: username 3–30 chars, password 8+ chars; show field-level errors before submission
+  - [x] 6.3 On submit, call `POST /api/auth/register`; on success redirect to `/onboarding`
+  - [x] 6.4 On duplicate username error from server, display "Username already taken" inline on the username field
+  - [x] 6.5 Create `apps/frontend/src/pages/OnboardingPage.tsx` — placeholder only (full implementation in Story 2.1)
 
 ## Dev Notes
 
