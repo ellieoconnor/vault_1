@@ -1,7 +1,7 @@
 import { prisma } from "../index.js";
 import argon2 from "argon2";
 import { validateBody } from "../middleware/validate.js";
-import { registerSchema } from "../schemas/auth.js";
+import { loginSchema, registerSchema } from "../schemas/auth.js";
 import { Router } from "express";
 
 const router = Router();
@@ -51,5 +51,36 @@ router.post(
     }
   },
 );
+
+router.post("/login", validateBody(loginSchema), async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+    const user = await prisma.user.findUnique({ where: { username } });
+    if (!user) {
+      return res.status(401).json({
+        error: "INVALID_CREDENTIALS",
+        message: "Invalid username or password",
+        details: {},
+      });
+    }
+
+    const validPassword = await argon2.verify(user.passwordHash, password);
+    if (!validPassword) {
+      return res.status(401).json({
+        error: "INVALID_CREDENTIALS",
+        message: "Invalid username or password",
+        details: {},
+      });
+    }
+
+    req.session.userId = user.id;
+    req.session.save((saveErr) => {
+      if (saveErr) return next(saveErr);
+      res.status(200).json({ id: user.id, username: user.username });
+    });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;
