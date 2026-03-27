@@ -11,6 +11,7 @@ export default function RegisterPage() {
     username?: string[];
     password?: string[];
   }>({});
+  const [generalError, setGeneralError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const mutation = useMutation({
@@ -34,6 +35,8 @@ export default function RegisterPage() {
     onError: (err: { error: string }) => {
       if (err.error === "USERNAME_TAKEN") {
         setFieldErrors({ username: ["Username already taken"] });
+      } else {
+        setGeneralError("Something went wrong");
       }
     },
   });
@@ -52,6 +55,7 @@ export default function RegisterPage() {
 
   return (
     <form onSubmit={handleSubmit}>
+      {generalError && <span>{generalError}</span>}
       <label>
         Username
         <input
@@ -71,7 +75,9 @@ export default function RegisterPage() {
         />
       </label>
       {fieldErrors.password?.[0] && <span>{fieldErrors.password?.[0]}</span>}
-      <button type="submit">Register</button>
+      <button disabled={mutation.isPending} type="submit">
+        Register
+      </button>
     </form>
   );
 }
