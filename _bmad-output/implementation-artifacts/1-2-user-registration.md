@@ -1,7 +1,7 @@
 $$
 # Story 1.2: User Registration
 
-Status: review
+Status: done
 
 ## Story
 

@@ -13,7 +13,7 @@ export function errorHandler(
   res: Response,
   _next: NextFunction,
 ) {
-  console.error(err);
+  console.error(err.stack);
   res.status(500).json({
     error: "INTERNAL_ERROR",
     message: "An unexpected error occurred",
