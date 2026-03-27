@@ -1,6 +1,7 @@
+$$
 # Story 1.2: User Registration
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -32,36 +33,36 @@ So that my data is stored securely and tied to my identity.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Install backend dependencies
-  - [ ] 1.1 In `apps/backend`, install runtime deps: `argon2 express-session connect-pg-simple zod cors cookie-parser`
-  - [ ] 1.2 Install type deps: `@types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple`
-  - [ ] 1.3 Add `SESSION_SECRET` to `apps/backend/.env` (generate a random 32+ char string)
+- [x] Task 1: Install backend dependencies
+  - [x] 1.1 In `apps/backend`, install runtime deps: `argon2 express-session connect-pg-simple zod cors cookie-parser`
+  - [x] 1.2 Install type deps: `@types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple`
+  - [x] 1.3 Add `SESSION_SECRET` to `apps/backend/.env` (generate a random 32+ char string)
 
-- [ ] Task 2: Backend middleware setup
-  - [ ] 2.1 Create `apps/backend/src/middleware/validate.ts` — Zod validation middleware factory
-  - [ ] 2.2 Create `apps/backend/src/middleware/errorHandler.ts` — central Express error handler
-  - [ ] 2.3 Update `apps/backend/src/index.ts`: add `cors`, `cookie-parser`, `express-session` with `connect-pg-simple`; mount error handler last
+- [x] Task 2: Backend middleware setup
+  - [x] 2.1 Create `apps/backend/src/middleware/validate.ts` — Zod validation middleware factory
+  - [x] 2.2 Create `apps/backend/src/middleware/errorHandler.ts` — central Express error handler
+  - [x] 2.3 Update `apps/backend/src/index.ts`: add `cors`, `cookie-parser`, `express-session` with `connect-pg-simple`; mount error handler last
 
-- [ ] Task 3: Registration endpoint
-  - [ ] 3.1 Create `apps/backend/src/routes/auth.ts` with `POST /api/auth/register`
-  - [ ] 3.2 Register the auth router in `apps/backend/src/index.ts` under `/api/auth`
-  - [ ] 3.3 Confirm `POST /api/auth/register` with valid body returns 201 and sets session cookie
-  - [ ] 3.4 Confirm duplicate username returns `{ "error": "USERNAME_TAKEN", "message": "Username already taken", "details": {} }`
+- [x] Task 3: Registration endpoint
+  - [x] 3.1 Create `apps/backend/src/routes/auth.ts` with `POST /api/auth/register`
+  - [x] 3.2 Register the auth router in `apps/backend/src/index.ts` under `/api/auth`
+  - [x] 3.3 Confirm `POST /api/auth/register` with valid body returns 201 and sets session cookie
+  - [x] 3.4 Confirm duplicate username returns `{ "error": "USERNAME_TAKEN", "message": "Username already taken", "details": {} }`
 
-- [ ] Task 4: Install frontend dependencies
-  - [ ] 4.1 In `apps/frontend`, install: `react-router-dom @tanstack/react-query zod`
-  - [ ] 4.2 Add `VITE_API_URL=http://localhost:3000` to `apps/frontend/.env.local`
+- [x] Task 4: Install frontend dependencies
+  - [x] 4.1 In `apps/frontend`, install: `react-router-dom @tanstack/react-query zod`
+  - [x] 4.2 Add `VITE_API_URL=http://localhost:3000` to `apps/frontend/.env.local`
 
-- [ ] Task 5: Frontend routing and providers
-  - [ ] 5.1 Wrap `apps/frontend/src/main.tsx` with `QueryClientProvider` (TanStack Query)
-  - [ ] 5.2 Update `apps/frontend/src/App.tsx` — add `BrowserRouter` + routes: `/register`, `/onboarding` (placeholder page)
+- [x] Task 5: Frontend routing and providers
+  - [x] 5.1 Wrap `apps/frontend/src/main.tsx` with `QueryClientProvider` (TanStack Query)
+  - [x] 5.2 Update `apps/frontend/src/App.tsx` — add `BrowserRouter` + routes: `/register`, `/onboarding` (placeholder page)
 
-- [ ] Task 6: Registration form
-  - [ ] 6.1 Create `apps/frontend/src/pages/RegisterPage.tsx` — form with username and password fields
-  - [ ] 6.2 Add Zod schema: username 3–30 chars, password 8+ chars; show field-level errors before submission
-  - [ ] 6.3 On submit, call `POST /api/auth/register`; on success redirect to `/onboarding`
-  - [ ] 6.4 On duplicate username error from server, display "Username already taken" inline on the username field
-  - [ ] 6.5 Create `apps/frontend/src/pages/OnboardingPage.tsx` — placeholder only (full implementation in Story 2.1)
+- [x] Task 6: Registration form
+  - [x] 6.1 Create `apps/frontend/src/pages/RegisterPage.tsx` — form with username and password fields
+  - [x] 6.2 Add Zod schema: username 3–30 chars, password 8+ chars; show field-level errors before submission
+  - [x] 6.3 On submit, call `POST /api/auth/register`; on success redirect to `/onboarding`
+  - [x] 6.4 On duplicate username error from server, display "Username already taken" inline on the username field
+  - [x] 6.5 Create `apps/frontend/src/pages/OnboardingPage.tsx` — placeholder only (full implementation in Story 2.1)
 
 ## Dev Notes
 
@@ -70,7 +71,7 @@ So that my data is stored securely and tied to my identity.
 **Backend (`apps/backend`):**
 ```bash
 npm install argon2 express-session connect-pg-simple zod cors cookie-parser
-npm install -D @types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple
+$$npm install -D @types/express-session @types/cookie-parser @types/cors @types/connect-pg-simple
 ```
 
 **Frontend (`apps/frontend`):**
@@ -342,3 +343,18 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+- apps/backend/package.json
+- apps/backend/src/index.ts
+- apps/backend/src/middleware/errorHandler.ts
+- apps/backend/src/middleware/validate.ts
+- apps/backend/src/routes/auth.ts
+- apps/backend/src/schemas/auth.ts
+- apps/backend/src/types/session.d.ts
+- apps/frontend/package.json
+- apps/frontend/src/App.tsx
+- apps/frontend/src/main.tsx
+- apps/frontend/src/pages/OnboardingPage.tsx
+- apps/frontend/src/pages/RegisterPage.tsx
+- apps/frontend/src/schemas/auth.ts
+$$
