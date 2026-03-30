@@ -32,15 +32,15 @@ So that I can open the app on my phone without re-authenticating every time.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Backend — Add `loginSchema` and login route (AC: #1, #2)
+- [x] Task 1: Backend — Add `loginSchema` and login route (AC: #1, #2)
   - [x] 1.1 Add `loginSchema` to `apps/backend/src/schemas/auth.ts` — same shape as registerSchema (username + password fields, no length validation on password to avoid leaking info)
   - [x] 1.2 Add `POST /api/auth/login` to `apps/backend/src/routes/auth.ts` — look up user by username, verify password with `argon2.verify`, set `req.session.userId`, call `req.session.save()`
   - [x] 1.3 Return 401 with `{ error: "INVALID_CREDENTIALS", message: "Invalid username or password", details: {} }` for both user-not-found and wrong-password cases (no field hint)
 
-- [ ] Task 2: Backend — Session check endpoint and auth middleware (AC: #3, #4)
-  - [ ] 2.1 Add `GET /api/auth/me` to `apps/backend/src/routes/auth.ts` — returns `{ id, username }` if session is valid, 401 if not
-  - [ ] 2.2 Create `apps/backend/src/middleware/auth.ts` — export `requireAuth` middleware that checks `req.session.userId`; calls `next()` if authenticated, returns 401 JSON if not
-  - [ ] 2.3 Add a placeholder protected route to verify `requireAuth` works (can be removed or repurposed in future stories)
+- [x] Task 2: Backend — Session check endpoint and auth middleware (AC: #3, #4)
+  - [x] 2.1 Add `GET /api/auth/me` to `apps/backend/src/routes/auth.ts` — returns `{ id, username }` if session is valid, 401 if not
+  - [x] 2.2 Create `apps/backend/src/middleware/auth.ts` — export `requireAuth` middleware that checks `req.session.userId`; calls `next()` if authenticated, returns 401 JSON if not
+  - [x] 2.3 Add a placeholder protected route to verify `requireAuth` works (can be removed or repurposed in future stories)
 
 - [ ] Task 3: Frontend — Login page (AC: #1, #2)
   - [ ] 3.1 Create `apps/frontend/src/schemas/auth.ts` — add `loginSchema` (username: string, password: string — no length validation to match server message)
