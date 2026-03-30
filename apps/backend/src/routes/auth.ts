@@ -3,6 +3,7 @@ import argon2 from "argon2";
 import { validateBody } from "../middleware/validate.js";
 import { loginSchema, registerSchema } from "../schemas/auth.js";
 import { Router } from "express";
+import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -78,6 +79,40 @@ router.post("/login", validateBody(loginSchema), async (req, res, next) => {
       if (saveErr) return next(saveErr);
       res.status(200).json({ id: user.id, username: user.username });
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// remove later
+router.get("/some-route", requireAuth, (req, res) => {
+  res.json({ message: "protected route works" });
+});
+
+router.get("/me", async (req, res, next) => {
+  try {
+    if (!req.session.userId) {
+      return res.status(401).json({
+        error: "UNAUTHENTICATED",
+        message: "Not authenticated",
+        details: {},
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.session.userId },
+      select: { id: true, username: true },
+    });
+
+    if (!user) {
+      req.session.destroy(() => {});
+      return res.status(401).json({
+        error: "UNAUTHENTICATED",
+        message: "Not authenticated",
+        details: {},
+      });
+    }
+    res.status(200).json(user);
   } catch (err) {
     next(err);
   }
