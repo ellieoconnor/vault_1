@@ -11,11 +11,11 @@ async function fetchMe() {
 }
 
 export function useAuth() {
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading, isError } = useQuery({
     queryKey: ["auth", "me"],
     queryFn: fetchMe,
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
-  return { user: user ?? null, isLoading, isAuthenticated: !!user };
+  return { user: user ?? null, isLoading, isError, isAuthenticated: !!user };
 }
