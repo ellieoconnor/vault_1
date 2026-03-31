@@ -3,7 +3,6 @@ import argon2 from "argon2";
 import { validateBody } from "../middleware/validate.js";
 import { loginSchema, registerSchema } from "../schemas/auth.js";
 import { Router } from "express";
-import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
@@ -82,11 +81,6 @@ router.post("/login", validateBody(loginSchema), async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
-
-// remove later
-router.get("/some-route", requireAuth, (req, res) => {
-  res.json({ message: "protected route works" });
 });
 
 router.get("/me", async (req, res, next) => {

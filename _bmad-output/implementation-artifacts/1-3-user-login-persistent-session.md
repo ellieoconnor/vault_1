@@ -1,6 +1,6 @@
 # Story 1.3: User Login & Persistent Session
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -429,3 +429,13 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+- `apps/backend/src/middleware/auth.ts` (new — requireAuth middleware)
+- `apps/backend/src/routes/auth.ts` (modified — added login + /me routes)
+- `apps/backend/src/schemas/auth.ts` (modified — added loginSchema)
+- `apps/frontend/src/api/useAuth.ts` (new — useAuth query hook)
+- `apps/frontend/src/components/shared/AuthGuard.tsx` (new — route protection wrapper)
+- `apps/frontend/src/pages/LoginPage.tsx` (new — login form)
+- `apps/frontend/src/pages/DashboardPage.tsx` (new — placeholder dashboard)
+- `apps/frontend/src/schemas/auth.ts` (modified — added loginSchema)
+- `apps/frontend/src/App.tsx` (modified — added login/protected routes)
