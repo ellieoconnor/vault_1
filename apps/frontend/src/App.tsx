@@ -1,13 +1,61 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import OnboardingPage from "./pages/OnboardingPage";
 import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import { AuthGuard } from "./components/shared/AuthGuard";
+import DashboardPage from "./pages/DashboardPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/onboarding" element={<OnboardingPage />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/"
+          element={
+            <AuthGuard>
+              <DashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/onboarding"
+          element={
+            <AuthGuard>
+              <OnboardingPage />
+            </AuthGuard>
+          }
+        />
+
+        {/* Placeholders for future epics */}
+        <Route
+          path="/week"
+          element={
+            <AuthGuard>
+              <div>Weekly Plan — coming soon</div>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <AuthGuard>
+              <div>Goals — coming soon</div>
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <AuthGuard>
+              <div>Settings — coming soon</div>
+            </AuthGuard>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
