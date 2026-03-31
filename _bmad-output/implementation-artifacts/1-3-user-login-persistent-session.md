@@ -42,17 +42,17 @@ So that I can open the app on my phone without re-authenticating every time.
   - [x] 2.2 Create `apps/backend/src/middleware/auth.ts` — export `requireAuth` middleware that checks `req.session.userId`; calls `next()` if authenticated, returns 401 JSON if not
   - [x] 2.3 Add a placeholder protected route to verify `requireAuth` works (can be removed or repurposed in future stories)
 
-- [ ] Task 3: Frontend — Login page (AC: #1, #2)
+- [x] Task 3: Frontend — Login page (AC: #1, #2)
   - [x] 3.1 Create `apps/frontend/src/schemas/auth.ts` — add `loginSchema` (username: string, password: string — no length validation to match server message)
-  - [ ] 3.2 Create `apps/frontend/src/pages/LoginPage.tsx` — form with username + password fields, plain `useState` validation (no form library), call `POST /api/auth/login` via TanStack Query `useMutation`
-  - [ ] 3.3 On success, navigate to `/` (dashboard); on 401 error, display "Invalid username or password" as a form-level error (not field-level)
-  - [ ] 3.4 Add a "Don't have an account? Register" link to `/register`
+  - [x] 3.2 Create `apps/frontend/src/pages/LoginPage.tsx` — form with username + password fields, plain `useState` validation (no form library), call `POST /api/auth/login` via TanStack Query `useMutation`
+  - [x] 3.3 On success, navigate to `/` (dashboard); on 401 error, display "Invalid username or password" as a form-level error (not field-level)
+  - [x] 3.4 Add a "Don't have an account? Register" link to `/register`
 
-- [ ] Task 4: Frontend — Auth guard and session persistence (AC: #3, #4)
-  - [ ] 4.1 Create `apps/frontend/src/api/useAuth.ts` — `useQuery` hook that calls `GET /api/auth/me`; returns `{ user, isLoading, isAuthenticated }`
-  - [ ] 4.2 Create `apps/frontend/src/components/shared/AuthGuard.tsx` — wraps protected routes; shows loading state while session check is pending; redirects to `/login` if unauthenticated
-  - [ ] 4.3 Create `apps/frontend/src/pages/DashboardPage.tsx` — placeholder only ("Dashboard — coming in Epic 2")
-  - [ ] 4.4 Update `apps/frontend/src/App.tsx` — add routes: `/login` (LoginPage), `/` and `/onboarding` wrapped in AuthGuard; add `/week`, `/goals`, `/settings` as AuthGuard-wrapped placeholders
+- [x] Task 4: Frontend — Auth guard and session persistence (AC: #3, #4)
+  - [x] 4.1 Create `apps/frontend/src/api/useAuth.ts` — `useQuery` hook that calls `GET /api/auth/me`; returns `{ user, isLoading, isAuthenticated }`
+  - [x] 4.2 Create `apps/frontend/src/components/shared/AuthGuard.tsx` — wraps protected routes; shows loading state while session check is pending; redirects to `/login` if unauthenticated
+  - [x] 4.3 Create `apps/frontend/src/pages/DashboardPage.tsx` — placeholder only ("Dashboard — coming in Epic 2")
+  - [x] 4.4 Update `apps/frontend/src/App.tsx` — add routes: `/login` (LoginPage), `/` and `/onboarding` wrapped in AuthGuard; add `/week`, `/goals`, `/settings` as AuthGuard-wrapped placeholders
 
 ## Dev Notes
 
