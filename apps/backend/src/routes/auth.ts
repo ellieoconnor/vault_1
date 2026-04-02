@@ -11,7 +11,7 @@ router.post(
   validateBody(registerSchema),
   async (req, res, next) => {
     try {
-      const { username, password } = req.body;
+      const { email, username, password } = req.body;
       const existing = await prisma.user.findUnique({ where: { username } });
 
       if (existing) {
@@ -24,7 +24,7 @@ router.post(
 
       const passwordHash = await argon2.hash(password);
       const user = await prisma.user.create({
-        data: { username, passwordHash },
+        data: { username, email: email ?? null, passwordHash },
       });
 
       req.session.userId = user.id;
