@@ -1,6 +1,6 @@
 # Story 1.4: Password Reset via Email
 
-Status: ready-for-dev
+Status: in-progress
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -36,16 +36,16 @@ So that I can regain access without losing my data.
   - [x] 1.3 ADD optional `email` field to `registerSchema` in `apps/frontend/src/schemas/auth.ts` — `z.string().email("Please enter a valid email address").optional().or(z.literal(''))`
   - [x] 1.4 Add optional email input to `apps/frontend/src/pages/RegisterPage.tsx` — label it "Email (needed for password reset)" so the purpose is clear; include it in the `mutation.mutate()` call only if non-empty
 
-- [ ] Task 2: Backend — Prisma migration — add PasswordResetToken model (AC: all)
-  - [ ] 2.1 Add `PasswordResetToken` model to `apps/backend/prisma/schema.prisma` (see Dev Notes for full model definition)
-  - [ ] 2.2 Run `npx prisma migrate dev --name add-password-reset-token` from `apps/backend/`
-  - [ ] 2.3 Verify generated client includes `PasswordResetToken` via `npx prisma generate` (auto-runs on migrate, but confirm)
+- [x] Task 2: Backend — Prisma migration — add PasswordResetToken model (AC: all)
+  - [x] 2.1 Add `PasswordResetToken` model to `apps/backend/prisma/schema.prisma` (see Dev Notes for full model definition)
+  - [x] 2.2 Run `npx prisma migrate dev --name add-password-reset-token` from `apps/backend/`
+  - [x] 2.3 Verify generated client includes `PasswordResetToken` via `npx prisma generate` (auto-runs on migrate, but confirm)
 
-- [ ] Task 3: Backend — Install Resend and create emailService (AC: #1)
-  - [ ] 3.1 Install resend: `npm install resend` in `apps/backend/`
-  - [ ] 3.2 Add `RESEND_API_KEY=` and `RESEND_FROM_EMAIL=` to `apps/backend/.env` and `apps/backend/.env.example`
-  - [ ] 3.3 Create `apps/backend/src/services/` directory (does not exist yet)
-  - [ ] 3.4 Create `apps/backend/src/services/emailService.ts` — exports `sendPasswordResetEmail(to, resetUrl)` (see Dev Notes for full implementation)
+- [x] Task 3: Backend — Install Resend and create emailService (AC: #1)
+  - [x] 3.1 Install resend: `npm install resend` in `apps/backend/`
+  - [x] 3.2 Add `RESEND_API_KEY=` and `RESEND_FROM_EMAIL=` to `apps/backend/.env` and `apps/backend/.env.example`
+  - [x] 3.3 Create `apps/backend/src/services/` directory (does not exist yet)
+  - [x] 3.4 Create `apps/backend/src/services/emailService.ts` — exports `sendPasswordResetEmail(to, resetUrl)` (see Dev Notes for full implementation)
 
 - [ ] Task 4: Backend — Auth schemas for forgot/reset (AC: all)
   - [ ] 4.1 ADD to `apps/backend/src/schemas/auth.ts` — `forgotPasswordSchema` and `resetPasswordSchema` (do NOT replace existing schemas)
