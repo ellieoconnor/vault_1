@@ -1,17 +1,27 @@
 import { prisma } from "../index.js";
 import argon2 from "argon2";
 import { validateBody } from "../middleware/validate.js";
-import { loginSchema, registerSchema } from "../schemas/auth.js";
+import {
+  forgotPasswordSchema,
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "../schemas/auth.js";
 import { Router } from "express";
+import crypto from "node:crypto";
+import { sendPasswordResetEmail } from "../services/emailService.js";
 
 const router = Router();
 
+/**
+ * Route to register a new user
+ */
 router.post(
   "/register",
   validateBody(registerSchema),
   async (req, res, next) => {
     try {
-      const { email, username, password } = req.body;
+      const { username, email, password } = req.body;
       const existing = await prisma.user.findUnique({ where: { username } });
 
       if (existing) {
@@ -52,6 +62,9 @@ router.post(
   },
 );
 
+/**
+ * Route for user login
+ */
 router.post("/login", validateBody(loginSchema), async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -83,6 +96,10 @@ router.post("/login", validateBody(loginSchema), async (req, res, next) => {
   }
 });
 
+/**
+ * Route for homepage?
+ * todo: find out what this goes to
+ */
 router.get("/me", async (req, res, next) => {
   try {
     if (!req.session.userId) {
@@ -112,4 +129,52 @@ router.get("/me", async (req, res, next) => {
   }
 });
 
+/**
+ * Route to forgot password
+ * find by username → if user exists AND has email on file, generate secure token
+ * create PasswordResetToken in DB (1 hr expiry)
+ * Send reset email via emailService
+ */
+router.post(
+  "/forgot-password",
+  validateBody(forgotPasswordSchema),
+  async (req, res, next) => {
+    try {
+      const { username } = req.body;
+      const user = await prisma.user.findUnique({ where: { username } });
+      // Always return 200 - never reveal whether user/email exists
+      if (!user || !user.email) {
+        return res.status(200).json({
+          message:
+            "If an account with that username has an email on file, you'll receive a reset link shortly.",
+        });
+      }
+
+      // Clean up expired tokens for this user
+      await prisma.passwordResetToken.deleteMany({
+        where: { userId: user.id, expiresAt: { lt: new Date() } },
+      });
+
+      // Generate token
+      const token = crypto.randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      await prisma.passwordResetToken.create({
+        data: { userId: user.id, token, expiresAt },
+      });
+
+      const clientOrigin = process.env.CLIENT_ORIGIN ?? "http://localhost:5173";
+      const resetUrl = `${clientOrigin}/reset-password/${token}`;
+
+      await sendPasswordResetEmail(user.email, resetUrl);
+
+      return res.status(200).json({
+        message:
+          "If an account with that username has an email on file, you'll receive a reset link shortly.",
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 export default router;
