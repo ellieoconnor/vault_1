@@ -47,14 +47,14 @@ So that I can regain access without losing my data.
   - [x] 3.3 Create `apps/backend/src/services/` directory (does not exist yet)
   - [x] 3.4 Create `apps/backend/src/services/emailService.ts` — exports `sendPasswordResetEmail(to, resetUrl)` (see Dev Notes for full implementation)
 
-- [ ] Task 4: Backend — Auth schemas for forgot/reset (AC: all)
-  - [ ] 4.1 ADD to `apps/backend/src/schemas/auth.ts` — `forgotPasswordSchema` and `resetPasswordSchema` (do NOT replace existing schemas)
+- [x] Task 4: Backend — Auth schemas for forgot/reset (AC: all)
+  - [x] 4.1 ADD to `apps/backend/src/schemas/auth.ts` — `forgotPasswordSchema` and `resetPasswordSchema` (do NOT replace existing schemas)
 
-- [ ] Task 5: Backend — Forgot password route (AC: #1)
-  - [ ] 5.1 ADD `POST /api/auth/forgot-password` to `apps/backend/src/routes/auth.ts`
-  - [ ] 5.2 Route: find user by username → if user exists AND has email on file, generate secure token (crypto.randomBytes), create PasswordResetToken in DB (1 hour expiry), send reset email via emailService
-  - [ ] 5.3 ALWAYS return 200 with generic message regardless of whether user/email found — never reveal account existence
-  - [ ] 5.4 Clean up expired tokens when a new one is requested for the same user (delete where userId matches AND expiresAt < now)
+- [x] Task 5: Backend — Forgot password route (AC: #1)
+  - [x] 5.1 ADD `POST /api/auth/forgot-password` to `apps/backend/src/routes/auth.ts`
+  - [x] 5.2 Route: find user by username → if user exists AND has email on file, generate secure token (crypto.randomBytes), create PasswordResetToken in DB (1 hour expiry), send reset email via emailService
+  - [x] 5.3 ALWAYS return 200 with generic message regardless of whether user/email found — never reveal account existence
+  - [x] 5.4 Clean up expired tokens when a new one is requested for the same user (delete where userId matches AND expiresAt < now)
 
 - [ ] Task 6: Backend — Reset password routes (AC: #2, #3, #4)
   - [ ] 6.1 ADD `GET /api/auth/reset-password/:token` — validate token exists, not expired, not used; return 200 (valid) or 400 with specific error code
