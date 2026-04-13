@@ -56,10 +56,10 @@ So that I can regain access without losing my data.
   - [x] 5.3 ALWAYS return 200 with generic message regardless of whether user/email found — never reveal account existence
   - [x] 5.4 Clean up expired tokens when a new one is requested for the same user (delete where userId matches AND expiresAt < now)
 
-- [ ] Task 6: Backend — Reset password routes (AC: #2, #3, #4)
-  - [ ] 6.1 ADD `GET /api/auth/reset-password/:token` — validate token exists, not expired, not used; return 200 (valid) or 400 with specific error code
-  - [ ] 6.2 ADD `POST /api/auth/reset-password/:token` — validate token, hash new password with Argon2, update User.passwordHash, mark token as usedAt = now, create new session (req.session.userId = user.id + req.session.save()), return 200 with user
-  - [ ] 6.3 Error responses must use specific codes: `TOKEN_EXPIRED`, `TOKEN_ALREADY_USED`, `TOKEN_NOT_FOUND`
+- [x] Task 6: Backend — Reset password routes (AC: #2, #3, #4)
+  - [x] 6.1 ADD `GET /api/auth/reset-password/:token` — validate token exists, not expired, not used; return 200 (valid) or 400 with specific error code
+  - [x] 6.2 ADD `POST /api/auth/reset-password/:token` — validate token, hash new password with Argon2, update User.passwordHash, mark token as usedAt = now, create new session (req.session.userId = user.id + req.session.save()), return 200 with user
+  - [x] 6.3 Error responses must use specific codes: `TOKEN_EXPIRED`, `TOKEN_ALREADY_USED`, `TOKEN_NOT_FOUND`
 
 - [ ] Task 7: Frontend — Forgot password page (AC: #1)
   - [ ] 7.1 Create `apps/frontend/src/pages/ForgotPasswordPage.tsx` — form with username field, calls `POST /api/auth/forgot-password`, shows generic success message on completion (regardless of whether email was sent)
@@ -765,4 +765,16 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- Tasks 1–6 implemented: email field on registration, PasswordResetToken Prisma model, Resend emailService, forgot-password and reset-password routes
+- Token validation order: usedAt checked before expiresAt (TOKEN_ALREADY_USED takes priority over TOKEN_EXPIRED)
+- Atomic transaction used for password hash update + token usedAt mark
+- req.session.save() callback pattern followed for POST /reset-password/:token login-after-reset
+
 ### File List
+
+- apps/backend/prisma/schema.prisma
+- apps/backend/src/schemas/auth.ts
+- apps/backend/src/services/emailService.ts
+- apps/backend/src/routes/auth.ts
+- apps/frontend/src/schemas/auth.ts
+- apps/frontend/src/pages/RegisterPage.tsx
