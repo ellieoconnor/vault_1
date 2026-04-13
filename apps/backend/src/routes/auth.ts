@@ -7,7 +7,7 @@ import {
   registerSchema,
   resetPasswordSchema,
 } from "../schemas/auth.js";
-import { Router } from "express";
+import { Router, Request } from "express";
 import crypto from "node:crypto";
 import { sendPasswordResetEmail } from "../services/emailService.js";
 
@@ -177,4 +177,121 @@ router.post(
     }
   },
 );
+
+/**
+ * Route to GET password reset
+ * Validate token exists, isn't expired, and not used
+ * Return 200 (valid) or 400 with specific error code
+ */
+router.get("/reset-password/:token", async (req, res, next) => {
+  try {
+    const { token } = req.params;
+    const record = await prisma.passwordResetToken.findUnique({
+      where: { token },
+    });
+
+    if (!record) {
+      return res.status(400).json({
+        error: "TOKEN_NOT_FOUND",
+        message: "This reset link is invalid.",
+        details: {},
+      });
+    }
+
+    if (record.usedAt) {
+      return res.status(400).json({
+        error: "TOKEN_ALREADY_USED",
+        message: "This link has already been used.",
+        details: {},
+      });
+    }
+
+    if (record.expiresAt < new Date()) {
+      return res.status(400).json({
+        error: "TOKEN_EXPIRED",
+        message: "This link has expired — request a new one.",
+        details: {},
+      });
+    }
+
+    return res.status(200).json({ valid: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * Route to POST that an forgot password token was used
+ * Validate token, hash new password with Argon2
+ * Update User.passwordHash
+ * Mark token as usedAt = now,
+ * create new session (req.session.userId = user.id + req.session.save())
+ * return 200 with user
+ */
+router.post(
+  "/reset-password/:token",
+  validateBody(resetPasswordSchema),
+  async (req: Request<{ token: string }>, res, next) => {
+    try {
+      // 1. get data from the request (params, body, etc.)
+      const { token } = req.params;
+      const { password } = req.body;
+      // 2. do the work (DB queries, logic)
+      const record = await prisma.passwordResetToken.findUnique({
+        where: { token },
+        include: { user: true },
+      });
+      // 3. send a response
+      if (!record) {
+        return res.status(400).json({
+          error: "TOKEN_NOT_FOUND",
+          message: "This reset link is invalid.",
+          details: {},
+        });
+      }
+
+      if (record.usedAt) {
+        return res.status(400).json({
+          error: "TOKEN_ALREADY_USED",
+          message: "This link has already been used.",
+          details: {},
+        });
+      }
+
+      if (record.expiresAt < new Date()) {
+        return res.status(400).json({
+          error: "TOKEN_EXPIRED",
+          message: "This link has expired — request a new one.",
+          details: {},
+        });
+      }
+
+      // Hash new password and update user in a transaction
+      const passwordHash = await argon2.hash(password);
+      await prisma.$transaction([
+        prisma.user.update({
+          where: { id: record.userId },
+          data: { passwordHash },
+        }),
+        prisma.passwordResetToken.update({
+          where: { id: record.id },
+          data: { usedAt: new Date() },
+        }),
+      ]);
+
+      // Log the user in after reset
+      req.session.userId = record.userId;
+      req.session.save((saveErr) => {
+        if (saveErr) return next(saveErr);
+        res.status(200).json({
+          id: record.user.id,
+          username: record.user.username,
+        });
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
 export default router;
