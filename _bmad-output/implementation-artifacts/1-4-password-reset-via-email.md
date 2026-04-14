@@ -72,8 +72,8 @@ So that I can regain access without losing my data.
   - [x] 8.3 ADD `resetPasswordSchema` to `apps/frontend/src/schemas/auth.ts` — ADD only, do not replace
 
 - [ ] Task 9: Frontend — Wire new routes in App.tsx (AC: all)
-  - [ ] 9.1 ADD to `apps/frontend/src/App.tsx`: `<Route path="/forgot-password" element={<ForgotPasswordPage />} />` (public, no AuthGuard)
-  - [ ] 9.2 ADD to `apps/frontend/src/App.tsx`: `<Route path="/reset-password/:token" element={<ResetPasswordPage />} />` (public, no AuthGuard)
+  - [x] 9.1 ADD to `apps/frontend/src/App.tsx`: `<Route path="/forgot-password" element={<ForgotPasswordPage />} />` (public, no AuthGuard)
+  - [x] 9.2 ADD to `apps/frontend/src/App.tsx`: `<Route path="/reset-password/:token" element={<ResetPasswordPage />} />` (public, no AuthGuard)
 
 ## Dev Notes
 
