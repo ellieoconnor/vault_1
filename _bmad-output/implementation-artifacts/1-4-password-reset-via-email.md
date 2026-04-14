@@ -66,10 +66,10 @@ So that I can regain access without losing my data.
   - [x] 7.2 Add "Forgot password?" link to `apps/frontend/src/pages/LoginPage.tsx` (link to `/forgot-password`)
   - [x] 7.3 ADD `forgotPasswordSchema` to `apps/frontend/src/schemas/auth.ts` (do NOT replace existing schemas)
 
-- [ ] Task 8: Frontend — Reset password page (AC: #2, #3, #4)
-  - [ ] 8.1 Create `apps/frontend/src/pages/ResetPasswordPage.tsx` — reads token from URL params, validates token via `GET /api/auth/reset-password/:token` on mount, shows expired/used error or new-password form; form calls `POST /api/auth/reset-password/:token`
-  - [ ] 8.2 On successful reset, invalidate `['auth', 'me']` TanStack Query cache and navigate to `/`
-  - [ ] 8.3 ADD `resetPasswordSchema` to `apps/frontend/src/schemas/auth.ts` — ADD only, do not replace
+- [x] Task 8: Frontend — Reset password page (AC: #2, #3, #4)
+  - [x] 8.1 Create `apps/frontend/src/pages/ResetPasswordPage.tsx` — reads token from URL params, validates token via `GET /api/auth/reset-password/:token` on mount, shows expired/used error or new-password form; form calls `POST /api/auth/reset-password/:token`
+  - [x] 8.2 On successful reset, invalidate `['auth', 'me']` TanStack Query cache and navigate to `/`
+  - [x] 8.3 ADD `resetPasswordSchema` to `apps/frontend/src/schemas/auth.ts` — ADD only, do not replace
 
 - [ ] Task 9: Frontend — Wire new routes in App.tsx (AC: all)
   - [ ] 9.1 ADD to `apps/frontend/src/App.tsx`: `<Route path="/forgot-password" element={<ForgotPasswordPage />} />` (public, no AuthGuard)
