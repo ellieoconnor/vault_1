@@ -1,0 +1,56 @@
+name: Contract Test - Consumer
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [master]
+
+env:
+  PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+  PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+  GITHUB_SHA: ${{ github.sha }}
+  GITHUB_BRANCH: ${{ github.head_ref || github.ref_name }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  consumer-contract-test:
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Detect Pact breaking change
+        uses: ./.github/actions/detect-breaking-change
+
+      - name: Install dependencies
+        run: npm ci
+
+      # (1) Generate pact files
+      - name: Run consumer contract tests
+        run: npm run test:pact:consumer
+
+      # (2) Publish pacts to broker
+      - name: Publish pacts to PactFlow
+        run: npm run publish:pact
+
+      # After publish, PactFlow fires a webhook that triggers
+      # the provider's contract-test-provider.yml workflow.
+      # can-i-deploy retries while waiting for provider verification.
+
+      # (4) Check deployment safety (master only — on PRs, local verification is the gate)
+      - name: Can I deploy consumer? (master only)
+        if: github.ref == 'refs/heads/master' && env.PACT_BREAKING_CHANGE != 'true'
+        run: npm run can:i:deploy:consumer
+
+      # (5) Record deployment (master only)
+      - name: Record consumer deployment (master only)
+        if: github.ref == 'refs/heads/master'
+        run: npm run record:consumer:deployment --env=dev
