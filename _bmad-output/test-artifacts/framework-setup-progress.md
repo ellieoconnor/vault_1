@@ -1,7 +1,8 @@
 ---
-stepsCompleted: ['step-01-preflight', 'step-02-select-framework', 'step-03-scaffold-framework']
-lastStep: 'step-03-scaffold-framework'
+stepsCompleted: ['step-01-preflight', 'step-02-select-framework', 'step-03-scaffold-framework', 'step-04-docs-and-scripts', 'step-05-validate-and-summary']
+lastStep: 'step-05-validate-and-summary'
 lastSaved: '2026-04-15'
+status: 'complete'
 ---
 
 # Test Framework Setup Progress
@@ -107,3 +108,36 @@ lastSaved: '2026-04-15'
 2. Extract frontend fetch calls into a standalone `auth-client.ts` for real Pact consumer testing
 3. Add `data-testid` attributes to form inputs in LoginPage, RegisterPage, etc.
 4. Add `PACT_BROKER_BASE_URL` + `PACT_BROKER_TOKEN` as GitHub repository secrets when PactFlow is set up
+
+## Step 5: Validation & Summary
+
+### Checklist result: ✅ PASS (with 3 known deferred items)
+
+| Area | Status | Notes |
+|---|---|---|
+| Preflight | ✅ | fullstack detected |
+| Framework selection | ✅ | Playwright + Vitest/Supertest |
+| Directory structure | ✅ | all dirs created |
+| Config files | ✅ | timeouts, reporters, CI settings |
+| Environment | ✅ | .env.test.example + .nvmrc |
+| Fixtures | ✅ | mergeTests composition |
+| Factories | ✅ | user.factory.ts with Faker |
+| Sample tests | ✅ | auth.spec.ts + auth.test.ts + auth.pacttest.ts |
+| Helpers | ✅ | auth-provider.ts |
+| Documentation | ✅ | README with troubleshooting |
+| Scripts | ✅ | all package.json scripts wired |
+| Pact CDC alignment | ✅ | all 22 items pass |
+| Security | ✅ | no real credentials |
+
+### Deferred items (known, acceptable)
+1. `data-testid` attrs on form inputs (purely frontend markup — not a framework gap)
+2. Extract frontend fetch to `auth-client.ts` + URL injection (prerequisite for real Pact CDC testing)
+3. Export `app` from `apps/backend/src/index.ts` (prerequisite for supertest integration tests)
+
+### Next steps for user
+1. `npm install`
+2. `npm install -D @seontechnologies/playwright-utils @faker-js/faker @pact-foundation/pact`
+3. `cd apps/backend && npm install -D vitest supertest @types/supertest`
+4. `npx playwright install --with-deps`
+5. `cp .env.test.example .env.test` and fill in values
+6. `npm run test:e2e` (with frontend + backend running)
