@@ -10,7 +10,7 @@ import { PrismaClient } from "./generated/prisma/client.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import router from "./routes/auth.js";
 
-const app = express();
+export const app = express();
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const PgSession = connectPgSimple(session);
 const adapter = new PrismaPg(pool);
