@@ -76,8 +76,8 @@ Full-stack SPA PWA: React (TypeScript) frontend + Node/Express (TypeScript) back
 ### Project Structure Decision: Monorepo
 
 Two packages in a single repository:
-- `/client` — React TypeScript PWA (Vite)
-- `/server` — Express TypeScript API
+- `apps/frontend` — React TypeScript PWA (Vite)
+- `apps/backend` — Express TypeScript API
 
 Monorepo keeps everything in one place (single git repo, shared types possible), without the complexity of a full monorepo toolchain (no Turborepo/Nx needed at this scale).
 
@@ -99,12 +99,12 @@ Monorepo keeps everything in one place (single git repo, shared types possible),
 
 ```bash
 # Frontend (run from project root)
-npm create vite@latest client -- --template react-ts
-cd client
+npm create vite@latest apps/frontend -- --template react-ts
+cd apps/frontend
 npm install -D vite-plugin-pwa workbox-window
 
 # Backend (run from project root)
-mkdir server && cd server
+mkdir apps/backend && cd apps/backend
 npm init -y
 npm install express cors cookie-parser
 npm install -D typescript @types/express @types/node @types/cors @types/cookie-parser tsx
@@ -130,7 +130,7 @@ npx prisma init
 
 ```
 vault_1/
-├── client/                  # Vite React PWA
+├── apps/frontend/           # Vite React PWA
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
@@ -138,7 +138,7 @@ vault_1/
 │   │   ├── lib/             # calculation engine, utilities
 │   │   └── service-worker/
 │   └── vite.config.ts
-├── server/                  # Express API
+├── apps/backend/            # Express API
 │   ├── src/
 │   │   ├── routes/
 │   │   ├── middleware/
@@ -184,7 +184,7 @@ vault_1/
 - Rationale: Beginner-friendly, excellent documentation, handles migrations automatically
 
 **Validation:** Zod — shared schemas between client and server
-- Define once in a shared `types/` location (or duplicate deliberately in client/server)
+- Define once in a shared `types/` location (or duplicate deliberately in frontend/backend)
 - Server: validate all incoming API request bodies with Zod before they touch Prisma
 - Client: validate form inputs before submission
 - Rationale: Single source of truth for data shapes; TypeScript inference from schemas
@@ -362,7 +362,7 @@ model DailyLog {
 
 **Project File Organization:**
 ```
-client/src/
+apps/frontend/src/
 ├── components/          # Reusable UI components, organized by feature
 │   ├── dashboard/       # ProgressBar, CheatCodes, DayCompleteButton, ActiveGoalList
 │   ├── goals/           # GoalCard, GoalLibrary, GoalForm
@@ -389,7 +389,7 @@ client/src/
     ├── dexieDb.ts
     └── offlineQueue.ts
 
-server/src/
+apps/backend/src/
 ├── routes/              # Express route handlers (thin — delegate to services)
 │   ├── auth.ts
 │   ├── logs.ts
@@ -536,7 +536,7 @@ vault_1/
 ├── .gitignore
 ├── README.md
 │
-├── client/                           # Vite React PWA
+├── apps/frontend/                    # Vite React PWA
 │   ├── package.json
 │   ├── tsconfig.json
 │   ├── vite.config.ts                # vite-plugin-pwa config, path aliases
@@ -620,7 +620,7 @@ vault_1/
 │       └── types/                            # Shared TypeScript types (no Zod here)
 │           └── index.ts                      # DailyLog, Goal, WeeklyPlan, User, ZoneColor
 │
-└── server/                                   # Express TypeScript API
+└── apps/backend/                             # Express TypeScript API
     ├── package.json
     ├── tsconfig.json
     ├── .env                                  # DATABASE_URL, SESSION_SECRET, CLIENT_ORIGIN, RESEND_API_KEY
@@ -712,18 +712,18 @@ User action
 
 ```bash
 # Terminal 1 — Backend
-cd server && npx tsx watch src/index.ts
+cd apps/backend && npx tsx watch src/index.ts
 
 # Terminal 2 — Frontend
-cd client && npm run dev
+cd apps/frontend && npm run dev
 
 # Terminal 3 — Database (optional visual browser)
-cd server && npx prisma studio
+cd apps/backend && npx prisma studio
 ```
 
 **Deployment:**
-- `client/` → Vercel static deployment (auto on `main` push)
-- `server/` → Vercel Functions or Railway
+- `apps/frontend/` → Vercel static deployment (auto on `master` push)
+- `apps/backend/` → Vercel Functions or Railway
 - Database migrations run in CI before deploy: `npx prisma migrate deploy`
 
 ## Architecture Validation Results
@@ -734,10 +734,10 @@ cd server && npx prisma studio
 All technology choices work together without conflicts. React 18 + Vite 7 + TypeScript is a well-validated stack. TanStack Query v5 and Zustand occupy non-overlapping state domains (server state vs. UI state) with an explicit boundary enforced in patterns. Dexie.js and TanStack Query are additive — Dexie handles offline queue persistence while TanStack Query handles server-synchronised display state. Express sessions with connect-pg-simple use the same Neon database as the application data, eliminating a separate session store dependency. Argon2 (password hashing) and express-session (cookie-based auth) are compatible. Resend (email) has no conflicts with any other dependency. Prisma + Neon + PostgreSQL is a tested combination.
 
 **Pattern Consistency:**
-Naming conventions are consistent: PascalCase components/files throughout `client/src/`, camelCase JSON fields and TypeScript identifiers, snake_case Prisma `@map`/`@@map` for PostgreSQL columns, kebab-case API endpoints. The offline queue discriminated union pattern aligns with TypeScript and Dexie's typed table approach. Error handling patterns (backend: `next(err)` to central handler; frontend: TanStack Query `isError`) are consistent and complementary. ADHD UX invariants are enforced in code via `lib/zoneConstants.ts` rather than relying on developer discipline.
+Naming conventions are consistent: PascalCase components/files throughout `apps/frontend/src/`, camelCase JSON fields and TypeScript identifiers, snake_case Prisma `@map`/`@@map` for PostgreSQL columns, kebab-case API endpoints. The offline queue discriminated union pattern aligns with TypeScript and Dexie's typed table approach. Error handling patterns (backend: `next(err)` to central handler; frontend: TanStack Query `isError`) are consistent and complementary. ADHD UX invariants are enforced in code via `lib/zoneConstants.ts` rather than relying on developer discipline.
 
 **Structure Alignment:**
-The monorepo layout (`/client` + `/server`) cleanly separates concerns without Turborepo overhead — appropriate for a single-developer project. The `lib/` pure-function boundary means calculation logic can be shared (or duplicated without divergence risk) between client and server. All architectural decisions — offline-first writes, session auth, zone calculations — map to specific files in the directory tree.
+The monorepo layout (`apps/frontend` + `apps/backend`) cleanly separates concerns without Turborepo overhead — appropriate for a single-developer project. The `lib/` pure-function boundary means calculation logic can be shared (or duplicated without divergence risk) between client and server. All architectural decisions — offline-first writes, session auth, zone calculations — map to specific files in the directory tree.
 
 ### Requirements Coverage Validation ✅
 
@@ -772,7 +772,7 @@ Naming, structure, format, communication, and process patterns are fully specifi
 ### Gap Analysis Results
 
 **Critical Gaps Resolved During This Session:**
-- **Email service gap (NFR-S5, FR4):** No email provider had been selected for password reset. Resolved: Resend selected. `emailService.ts` added to `server/src/services/`. `RESEND_API_KEY` added to `.env`/`.env.example`. Auth section updated to document Resend decision.
+- **Email service gap (NFR-S5, FR4):** No email provider had been selected for password reset. Resolved: Resend selected. `emailService.ts` added to `apps/backend/src/services/`. `RESEND_API_KEY` added to `.env`/`.env.example`. Auth section updated to document Resend decision.
 
 **Important Notes (Non-Blocking):**
 - **Vercel serverless deployment pattern:** Express apps on Vercel Functions must export `app` as a handler, not call `app.listen()`. This diverges from the development `index.ts` setup and must be explicitly covered in the first implementation story to avoid a deployment-blocking discovery. *(Flagged by implementation review.)*
@@ -789,11 +789,11 @@ The following files carry the highest implementation risk and must have comprehe
 
 | File | Why Priority | Test Focus |
 |---|---|---|
-| `client/src/db/offlineQueue.ts` | Core reliability guarantee — silent failure here means data loss with no user feedback | Queue drain, retry backoff (3 attempts), action type discrimination, network-restored trigger |
-| `client/src/hooks/useOfflineQueue.ts` | Consumer of `offlineQueue.ts` — most components write through this hook | Optimistic UI update, queue-vs-send decision, error surface |
-| `client/src/lib/zoneCalculator.ts` | ADHD UX correctness depends entirely on this function — wrong zone color = wrong emotional signal | Calorie asymmetry (below floor ≠ above target), amber as neutral, boundary values, all zone transitions |
-| `client/src/lib/consistencyCalc.ts` | Consistency % drives weekly planning ritual — wrong calc = misleading progress | roughDay flag, tier label thresholds, 0%/100% edge cases |
-| `client/src/lib/floorCalculator.ts` | Floor derivation is foundational — all zone calculations depend on correct floors | Target-to-floor ratio, rounding, zero/negative guards |
+| `apps/frontend/src/db/offlineQueue.ts` | Core reliability guarantee — silent failure here means data loss with no user feedback | Queue drain, retry backoff (3 attempts), action type discrimination, network-restored trigger |
+| `apps/frontend/src/hooks/useOfflineQueue.ts` | Consumer of `offlineQueue.ts` — most components write through this hook | Optimistic UI update, queue-vs-send decision, error surface |
+| `apps/frontend/src/lib/zoneCalculator.ts` | ADHD UX correctness depends entirely on this function — wrong zone color = wrong emotional signal | Calorie asymmetry (below floor ≠ above target), amber as neutral, boundary values, all zone transitions |
+| `apps/frontend/src/lib/consistencyCalc.ts` | Consistency % drives weekly planning ritual — wrong calc = misleading progress | roughDay flag, tier label thresholds, 0%/100% edge cases |
+| `apps/frontend/src/lib/floorCalculator.ts` | Floor derivation is foundational — all zone calculations depend on correct floors | Target-to-floor ratio, rounding, zero/negative guards |
 
 All five files are pure functions or thin hooks — tests run without mocking and execute fast.
 
@@ -841,7 +841,7 @@ All five files are pure functions or thin hooks — tests run without mocking an
 - Offline-first architecture is fully specified: Dexie queue → typed discriminated union → retry → TanStack invalidation. No ambiguity for agents.
 - ADHD UX invariants are enforced in code (`zoneConstants.ts`), not just in documentation — agents cannot accidentally introduce streaks or negative language without violating an explicit rule.
 - Pure function calculation engine (`lib/`) is isolated from all frameworks — testable, shareable, predictable.
-- Monorepo without Turborepo keeps the setup learnable for Elizabeth while maintaining clear `client/server` separation.
+- Monorepo without Turborepo keeps the setup learnable for Elizabeth while maintaining clear `apps/frontend/apps/backend` separation.
 - All naming convention conflicts are pre-resolved: no agent will guess a different casing convention for any context.
 
 **Areas for Future Enhancement:**
@@ -865,22 +865,22 @@ All five files are pure functions or thin hooks — tests run without mocking an
 mkdir vault_1 && cd vault_1
 git init
 
-# Scaffold client (Vite + React + TypeScript + PWA)
-npm create vite@latest client -- --template react-ts
-cd client && npm install
+# Scaffold frontend (Vite + React + TypeScript + PWA)
+npm create vite@latest apps/frontend -- --template react-ts
+cd apps/frontend && npm install
 
-# Scaffold server (Express + TypeScript)
-mkdir -p server/src && cd ../server
+# Scaffold backend (Express + TypeScript)
+mkdir -p apps/backend/src && cd apps/backend
 npm init -y && npm install express typescript tsx @types/express
 
-# CRITICAL FIRST STORY: Configure server/src/index.ts to export app
+# CRITICAL FIRST STORY: Configure apps/backend/src/index.ts to export app
 # for Vercel Functions compatibility — do NOT use app.listen() in production path
 # Pattern: export default app (for Vercel) + conditional listen (for local dev)
 ```
 
 **Vercel Serverless Export Pattern (Must Implement in Story 1):**
 ```typescript
-// server/src/index.ts
+// apps/backend/src/index.ts
 const app = express()
 // ... middleware and routes setup ...
 
