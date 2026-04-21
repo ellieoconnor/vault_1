@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set up Pact CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/pact-foundation/pact-ruby-standalone/master/install.sh | bash
+          echo "${PWD}/pact/bin" >> $GITHUB_PATH
+
       # (1) Generate pact files
       - name: Run consumer contract tests
         run: npm run test:pact:consumer
