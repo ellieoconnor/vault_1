@@ -33,8 +33,8 @@ so that my session is properly ended.
 - [x] Task 2: Frontend — Add logout mutation hook to `useAuth.ts` (AC: #1, #2)
   - [x] 2.1 ADD `useLogout` hook (or `logout` mutation) to `apps/frontend/src/api/useAuth.ts` — calls `POST /api/auth/logout`, on success: clears `['auth', 'me']` query cache and navigates to `/login`
 
-- [ ] Task 3: Frontend — Wire logout button to DashboardPage (AC: #1, #2)
-  - [ ] 3.1 Add a logout button to `apps/frontend/src/pages/DashboardPage.tsx` — on click calls the logout mutation; button is disabled while mutation is pending
+- [x] Task 3: Frontend — Wire logout button to DashboardPage (AC: #1, #2)
+  - [x] 3.1 Add a logout button to `apps/frontend/src/pages/DashboardPage.tsx` — on click calls the logout mutation; button is disabled while mutation is pending
 
 ## Dev Notes
 
