@@ -46,7 +46,7 @@ development_status:
   1-2-user-registration: done
   1-3-user-login-persistent-session: done
   1-4-password-reset-via-email: done
-  1-5-logout: ready-for-dev
+  1-5-logout: done
   1-6-session-invalidation-on-password-reset: done
   epic-1-retrospective: optional
 

@@ -41,7 +41,13 @@ export function useLogout() {
             return res.json();
         },
         onSuccess: () => {
-            // Clear the auth cache - AuthGuard will see is Authenticated: false and redirect to /login
+            // Clear the auth cache - AuthGuard will see isAuthenticated: false and redirect to /login
+            queryClient.removeQueries({ queryKey: ["auth", "me"]});
+            navigate("/login");
+        },
+        onError: () => {
+            // Force clear local auth state even if the server request failed,
+            // so the user is not stuck in a logged-in UI state
             queryClient.removeQueries({ queryKey: ["auth", "me"]});
             navigate("/login");
         },
