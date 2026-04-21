@@ -8,6 +8,5 @@ if [ -f .env ]; then
   set +a
 fi
 
-export PATH="./node_modules/.bin:$PATH"
 export GITHUB_SHA="${GITHUB_SHA:-$(git rev-parse --short HEAD)}"
 export GITHUB_BRANCH="${GITHUB_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}"
