@@ -1,6 +1,6 @@
 # Story 1.6: Session Invalidation on Password Reset
 
-Status: ready-for-dev
+Status: done
 
 <!-- Security hardening story. Tracked as SEC-001 (score 6) in test-design-epic-1.4.md. Waived from Story 1.4 and deferred here. -->
 

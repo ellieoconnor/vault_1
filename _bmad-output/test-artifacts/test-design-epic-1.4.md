@@ -36,7 +36,7 @@ lastSaved: ''
 | Item | Reasoning | Mitigation |
 | --- | --- | --- |
 | Resend email delivery verification (live email) | No email capture service (Mailosaur/Ethereal) configured | E2E happy path seeds token directly in DB; full email flow tracked as P2 (1.4-E2E-007) |
-| Existing session invalidation on password reset | Not implemented in Story 1.4 (SEC-001) | Accepted waiver — tracked as separate security hardening story in backlog |
+| Existing session invalidation on password reset | Implemented in Story 1.6 (SEC-001) | Resolved — `req.session.regenerate()` applied in POST /reset-password/:token; regression test added |
 | Rate limiting on forgot-password endpoint | No rate limiting implemented in current story | Known gap; acceptable for single-user app in early development |
 | Resend webhook / delivery status callbacks | Out of scope for this story | Not implemented |
 
@@ -52,7 +52,7 @@ lastSaved: ''
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | TECH-001 | TECH | No test framework installed — cannot run any tests | 3 | 3 | **9 BLOCK** | Run `/bmad-tea-testarch-framework` to scaffold Vitest + Playwright before writing any tests | Developer | Before 1.4-API-001 |
 | BUS-001 | BUS | Auto-login after reset: `session.save` failure leaves password changed but user not logged in | 2 | 3 | **6** | Cover with 1.4-API-009 — after POST /reset-password/:token, follow-up GET /api/auth/me must return the user | Developer | Sprint |
-| SEC-001 | SEC | Existing sessions not invalidated after password reset — old session cookie remains valid | 2 | 3 | **6** | Accepted waiver for this story. Document as security hardening backlog item. Requires `req.session.regenerate()` or session store cleanup | Developer | Backlog |
+| SEC-001 | SEC | Existing sessions not invalidated after password reset — old session cookie remains valid | 2 | 3 | **6** | Resolved in Story 1.6 — `req.session.regenerate()` applied; regression test 1.4-API-018 added | Developer | Done |
 
 ### Medium-Priority Risks (Score 3–5)
 
@@ -96,7 +96,7 @@ lastSaved: ''
 - [ ] All P1 tests passing (≥95%)
 - [ ] BUS-001 verified: 1.4-API-009 passes (GET /me returns user after reset)
 - [ ] BUS-002 verified: 1.4-API-014 passes (token check order correct)
-- [ ] SEC-001 waiver documented in backlog
+- [x] SEC-001 resolved in Story 1.6 — `req.session.regenerate()` + regression test 1.4-API-018
 - [ ] No open P0/P1 bugs
 
 ---
@@ -205,7 +205,7 @@ lastSaved: ''
 | P1 pass rate | ≥95% |
 | BUS-001 (auto-login) | 1.4-API-009 must pass |
 | BUS-002 (token order) | 1.4-API-014 must pass |
-| SEC-001 (session not regenerated) | Waiver accepted; backlog item created |
+| SEC-001 (session not regenerated) | Resolved in Story 1.6; regression test 1.4-API-018 passing |
 | OPS-001 (Resend failure) | Accepted; 1-hour TTL mitigates orphaned token risk |
 | Critical path coverage | ≥80% of ACs covered by passing tests |
 
@@ -242,15 +242,15 @@ lastSaved: ''
 
 ---
 
-### SEC-001: Existing Sessions Not Invalidated (Score: 6 — WAIVED)
+### SEC-001: Existing Sessions Not Invalidated (Score: 6 — RESOLVED)
 
 **Mitigation Strategy:**
-Accepted waiver for Story 1.4. The correct fix is `req.session.regenerate()` before setting the new `userId`, or clearing all sessions for the user from the session store. This is a security hardening item.
+Resolved in Story 1.6. Applied `req.session.regenerate()` in `POST /api/auth/reset-password/:token` before setting the new `userId`, ensuring the old session is destroyed and a fresh session ID is issued on password reset.
 
 **Owner:** Developer
-**Timeline:** Backlog (post-Epic 1)
-**Status:** Waived — backlog story to be created
-**Verification:** N/A for this story
+**Timeline:** Completed in Story 1.6
+**Status:** Resolved — fix shipped, regression test passing
+**Verification:** Test 1.4-API-018 (`old session cookie is rejected after password reset`) in `apps/backend/tests/api/auth.test.ts`
 
 ---
 
