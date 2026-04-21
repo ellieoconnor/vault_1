@@ -6,9 +6,18 @@ export const registerSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters")
     .max(128, "Password must be at most 128 characters"),
+  email: z.string().email().optional(),
 });
 
 export const loginSchema = z.object({
   username: z.string().min(1),
   password: z.string().min(1),
+});
+
+export const forgotPasswordSchema = z.object({
+  username: z.string().min(1),
+});
+
+export const resetPasswordSchema = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });

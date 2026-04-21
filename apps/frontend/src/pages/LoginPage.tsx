@@ -72,6 +72,9 @@ export default function LoginPage() {
         {mutation.isPending ? "Logging in..." : "Log In"}
       </button>
       <p>
+        <Link to="/forgot-password">Forgot your password?</Link>
+      </p>
+      <p>
         <Link to="/register">Don't have an account? Register</Link>
       </p>
     </form>
