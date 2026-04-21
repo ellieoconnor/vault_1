@@ -97,8 +97,7 @@ router.post("/login", validateBody(loginSchema), async (req, res, next) => {
 });
 
 /**
- * Route for homepage?
- * todo: find out what this goes to
+ * Route to check current session — returns the authenticated user or 401
  */
 router.get("/me", async (req, res, next) => {
   try {
@@ -279,13 +278,13 @@ router.post(
         }),
       ]);
 
-      // Log the user in after reset
-      req.session.userId = record.userId;
-      req.session.save((saveErr) => {
-        if (saveErr) return next(saveErr);
-        res.status(200).json({
-          id: record.user.id,
-          username: record.user.username,
+      // Invalidate the old session before creating a new one
+      req.session.regenerate((regenErr) => {
+        if(regenErr) return next(regenErr);
+        req.session.userId = record.userId
+        req.session.save((saveErr) => {
+            if(saveErr) return next(saveErr);
+            res.status(200).json({ id: record.user.id, username: record.user.username });
         });
       });
     } catch (err) {

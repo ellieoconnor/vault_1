@@ -289,4 +289,41 @@ describe('POST /api/auth/reset-password/:token', () => {
 
     expect(res.status).toBe(400);
   });
+
+  it('old session cookie is rejected after password reset', async () => {
+    const sessionUsername = uniqueUsername();
+    const sessionPassword = 'SessionTest123!';
+    const registerRes = await request(app)
+      .post('/api/auth/register')
+      .send({ username: sessionUsername, password: sessionPassword });
+    const sessionUserId = registerRes.body.id;
+
+    const token = await seedResetToken(sessionUserId);
+
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ username: sessionUsername, password: sessionPassword });
+    const oldCookie = loginRes.headers['set-cookie'] as string[];
+
+    const resetRes = await request(app)
+      .post(`/api/auth/reset-password/${token}`)
+      .set('Cookie', oldCookie)
+      .send({ password: 'NewPassword123!' });
+    expect(resetRes.status).toBe(200);
+    const newCookie = resetRes.headers['set-cookie'] as string[];
+
+    const meOld = await request(app)
+      .get('/api/auth/me')
+      .set('Cookie', oldCookie);
+    expect(meOld.status).toBe(401);
+
+    const meNew = await request(app)
+      .get('/api/auth/me')
+      .set('Cookie', newCookie);
+    expect(meNew.status).toBe(200);
+    expect(meNew.body.username).toBe(sessionUsername);
+
+    await prisma.passwordResetToken.deleteMany({ where: { userId: sessionUserId } });
+    await prisma.user.delete({ where: { id: sessionUserId } });
+  })
 });
