@@ -1,6 +1,6 @@
 # Story 1.6: Session Invalidation on Password Reset
 
-Status: done
+Status: ready-for-dev
 
 <!-- Security hardening story. Tracked as SEC-001 (score 6) in test-design-epic-1.4.md. Waived from Story 1.4 and deferred here. -->
 
@@ -20,9 +20,9 @@ so that a stolen pre-reset session cookie cannot be used to access the account a
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 — Apply `req.session.regenerate()` fix in the reset-password POST handler (AC: #1, #2, #3)
-  - [ ] In `apps/backend/src/routes/auth.ts` (lines 283–288), replace the direct `req.session.userId = ...` + `req.session.save()` block with a `req.session.regenerate()` callback that sets `userId` and then calls `save()`
-  - [ ] Do NOT touch the login route (`/login`), register route (`/register`), or any other handler
+- [ x] Task 1 — Apply `req.session.regenerate()` fix in the reset-password POST handler (AC: #1, #2, #3)
+  - [ x] In `apps/backend/src/routes/auth.ts` (lines 283–288), replace the direct `req.session.userId = ...` + `req.session.save()` block with a `req.session.regenerate()` callback that sets `userId` and then calls `save()`
+  - [ x] Do NOT touch the login route (`/login`), register route (`/register`), or any other handler
 
 - [ ] Task 2 — Write regression test `1.4-API-018`: old session cookie returns 401 after reset (AC: #1, #2)
   - [ ] In `apps/backend/src/__tests__/auth/reset-password.test.ts`, add a test that: logs in → captures old session cookie → resets password → asserts `GET /api/auth/me` with old cookie returns `401`

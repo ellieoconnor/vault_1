@@ -1,6 +1,7 @@
 import { prisma } from "../index.js";
 import argon2 from "argon2";
 import { validateBody } from "../middleware/validate.js";
+import { requireAuth } from '../middleware/auth.js';
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -292,5 +293,17 @@ router.post(
     }
   },
 );
+
+/**
+ * POST to logout
+ */
+router.post("/logout", requireAuth, async(req, res, next) => {
+    req.session.destroy((err) => {
+        if(err) return next(err);
+        //Clear the session cookie on the client
+        res.clearCookie("connect.sid");  // default express-session cookie name
+        return res.status(200).json({ message: "Logged out" });
+    });
+});
 
 export default router;
