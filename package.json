@@ -4,11 +4,11 @@
     "private": true,
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-    "test:e2e": "playwright test",
-    "test:pact:consumer": "vitest run --config vitest.config.pact.ts",
-    "publish:pact": ". ./scripts/env-setup.sh && ./scripts/publish-pact.sh",
-    "can:i:deploy:consumer": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/can-i-deploy.sh",
-    "record:consumer:deployment": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/record-deployment.sh"
+        "test:e2e": "playwright test",
+        "test:pact:consumer": "vitest run --config vitest.config.pact.ts",
+        "publish:pact": ". ./scripts/env-setup.sh && ./scripts/publish-pact.sh",
+        "can:i:deploy:consumer": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/can-i-deploy.sh",
+        "record:consumer:deployment": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/record-deployment.sh"
     },
     "workspaces": [
         "apps/*"
@@ -23,5 +23,8 @@
         "url": "https://github.com/ellieoconnor/vault_1/issues"
     },
     "homepage": "https://github.com/ellieoconnor/vault_1#readme",
-    "description": ""
+    "description": "",
+    "devDependencies": {
+        "@pact-foundation/pact": "^16.3.0"
+    }
 }
