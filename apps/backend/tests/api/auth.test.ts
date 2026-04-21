@@ -92,15 +92,6 @@ describe("POST /api/auth/login", () => {
   });
 });
 
-describe("POST /api/auth/logout", () => {
-  const username = uniqueUsername();
-  const password = "TestPassword123!";
-
-  beforeAll(async () => {
-    await request(app).post("/api/auth/register").send({ username, password });
-  });
-});
-
 describe("GET /api/auth/me", () => {
   it("returns 401 when not authenticated", async () => {
     const res = await request(app).get("/api/auth/me");
@@ -351,15 +342,21 @@ describe("POST /api/auth/logout", () => {
   const username = uniqueUsername();
   const password = "TestPassword123!";
   let sessionCookie: string[];
+  let userId: string;
 
   beforeAll(async () => {
-    await request(app).post("/api/auth/register").send({ username, password });
+    const registerRes = await request(app).post("/api/auth/register").send({ username, password });
+    userId = registerRes.body.id;
 
     const loginRes = await request(app)
       .post("/api/auth/login")
       .send({ username, password });
 
     sessionCookie = loginRes.headers["set-cookie"] as unknown as string[];
+  });
+
+  afterAll(async () => {
+    await prisma.user.delete({ where: { id: userId } });
   });
 
   it("returns 200 when authenticated", async () => {

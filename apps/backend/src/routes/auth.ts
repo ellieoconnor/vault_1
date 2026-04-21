@@ -297,7 +297,7 @@ router.post(
 /**
  * POST to logout
  */
-router.post("/logout", requireAuth, async(req, res, next) => {
+router.post("/logout", requireAuth, (req, res, next) => {
     req.session.destroy((err) => {
         if(err) return next(err);
         //Clear the session cookie on the client
