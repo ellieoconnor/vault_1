@@ -77,11 +77,15 @@ export default function RegisterPage() {
       {fieldErrors.username?.[0] && <span>{fieldErrors.username?.[0]}</span>}
 
       <label>
-        Email
+        Email{" "}
+        <span style={{ fontWeight: "normal", fontSize: "0.875rem" }}>
+          (optional — needed for password reset)
+        </span>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
         />
       </label>
       {fieldErrors.email?.[0] && <span>{fieldErrors.email?.[0]}</span>}

@@ -1,6 +1,6 @@
 # Story 1.4: Password Reset via Email
 
-Status: in-progress
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -766,3 +766,17 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+- `apps/backend/.env.example` — added RESEND_API_KEY and RESEND_FROM_EMAIL vars
+- `apps/backend/prisma/schema.prisma` — added PasswordResetToken model and relation on User
+- `apps/backend/prisma/migrations/20260404123708_add_password_reset_token/migration.sql` — generated migration
+- `apps/backend/src/schemas/auth.ts` — added forgotPasswordSchema and resetPasswordSchema; added email field to registerSchema
+- `apps/backend/src/routes/auth.ts` — added email to register route; added forgot-password, GET reset-password/:token, POST reset-password/:token routes; session.regenerate on password reset
+- `apps/backend/src/services/emailService.ts` — NEW: Resend-based sendPasswordResetEmail
+- `apps/backend/tests/api/auth.test.ts` — NEW: integration tests for forgot-password and reset-password routes including session fixation test
+- `apps/frontend/src/schemas/auth.ts` — added forgotPasswordSchema and resetPasswordSchema; added email field to registerSchema
+- `apps/frontend/src/pages/RegisterPage.tsx` — added optional email field (with purpose label and autoComplete)
+- `apps/frontend/src/pages/LoginPage.tsx` — added "Forgot your password?" link
+- `apps/frontend/src/pages/ForgotPasswordPage.tsx` — NEW: forgot password form
+- `apps/frontend/src/pages/ResetPasswordPage.tsx` — NEW: reset password form with token validation
+- `apps/frontend/src/App.tsx` — added /forgot-password and /reset-password/:token routes
