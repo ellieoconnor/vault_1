@@ -11,25 +11,44 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  username     String    @unique
-  passwordHash String    @map("password_hash")
-  email        String?   @unique
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  passwordResetTokens    PasswordResetToken[]
+  id                  String               @id @default(cuid())
+  username            String               @unique
+  passwordHash        String               @map("password_hash")
+  email               String?              @unique
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  passwordResetTokens PasswordResetToken[]
+  userConfig          UserConfig?
+
   @@map("users")
 }
 
 model PasswordResetToken {
-    id          String      @id @default(cuid())
-    userId      String      @map("user_id")
-    token       String      @unique
-    expiresAt   DateTime    @map("expires_at")
-    usedAt      DateTime?   @map("used_at")
-    createdAt   DateTime    @default(now()) @map("created_at")
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  token     String    @unique
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
 
-    user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@map("password_reset_tokens")
+}
+
+model UserConfig {
+  id            String   @id @default(cuid())
+  userId        String   @unique @map("user_id")
+  calorieTarget Int      @map("calorie_target")
+  proteinTarget Int      @map("protein_target")
+  stepsTarget   Int      @map("steps_target")
+  calorieFloor  Int      @map("calorie_floor")
+  proteinFloor  Int      @map("protein_floor")
+  stepsFloor    Int      @map("steps_floor")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_config")
 }
