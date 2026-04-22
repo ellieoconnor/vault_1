@@ -1,26 +1,36 @@
 ---
-title: 'Tailwind v4 + shadcn/ui Foundation Setup'
-slug: 'tailwind-v4-shadcn-setup'
-created: '2026-04-21'
-status: 'ready-for-dev'
+title: "Tailwind v4 + shadcn/ui Foundation Setup"
+slug: "tailwind-v4-shadcn-setup"
+created: "2026-04-21"
+status: "completed"
 stepsCompleted: [1, 2, 3, 4]
-tech_stack: ['tailwindcss v4', '@tailwindcss/vite', 'shadcn/ui', 'vite 7', 'react 19', 'typescript 5.9', 'node 22']
+tech_stack:
+  [
+    "tailwindcss v4",
+    "@tailwindcss/vite",
+    "shadcn/ui",
+    "vite 7",
+    "react 19",
+    "typescript 5.9",
+    "node 22",
+  ]
 files_to_modify:
-  - 'apps/frontend/package.json'
-  - 'apps/frontend/vite.config.ts'
-  - 'apps/frontend/tsconfig.app.json'
-  - 'apps/frontend/src/index.css'
+  - "apps/frontend/package.json"
+  - "apps/frontend/vite.config.ts"
+  - "apps/frontend/tsconfig.app.json"
+  - "apps/frontend/src/index.css"
 files_to_create:
-  - 'apps/frontend/src/lib/utils.ts'
-  - 'apps/frontend/components.json'
+  - "apps/frontend/src/lib/utils.ts"
+  - "apps/frontend/components.json"
 files_to_delete:
-  - 'apps/frontend/src/App.css'
+  - "apps/frontend/src/App.css"
 code_patterns:
   - 'CSS-first Tailwind v4 via @import "tailwindcss" in index.css'
-  - '@theme block in index.css for Vault-Tec token definitions'
-  - '@/ alias resolves to src/ — used in all internal imports from Epic 2 onward'
-  - 'shadcn components land in src/components/ui/ (owned/copied code)'
-test_patterns: ['no tests for this story — manual build + dev server verification only']
+  - "@theme block in index.css for Vault-Tec token definitions"
+  - "@/ alias resolves to src/ — used in all internal imports from Epic 2 onward"
+  - "shadcn components land in src/components/ui/ (owned/copied code)"
+test_patterns:
+  ["no tests for this story — manual build + dev server verification only"]
 ---
 
 # Tech-Spec: Tailwind v4 + shadcn/ui Foundation Setup
@@ -40,6 +50,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
 ### Scope
 
 **In Scope:**
+
 - Install `tailwindcss` and `@tailwindcss/vite`
 - Update `vite.config.ts`: add Tailwind plugin + `@/` → `src/` path alias
 - Update `tsconfig.app.json`: add `paths` mapping for `@/`
@@ -48,6 +59,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
 - Verify dev server runs and `npm run build` succeeds with no errors
 
 **Out of Scope:**
+
 - Installing any specific shadcn components (done per story in Epic 2)
 - PWA configuration (Epic 5)
 - Zone calculator implementation (Story 2.3)
@@ -66,14 +78,14 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
 
 ### Files to Reference
 
-| File | Purpose |
-| ---- | ------- |
-| `apps/frontend/vite.config.ts` | Currently: React plugin only. Add Tailwind plugin + `@/` resolve alias |
-| `apps/frontend/tsconfig.app.json` | Currently: no paths. Add `baseUrl` + `paths` for `@/` |
-| `apps/frontend/src/index.css` | Currently: vanilla Vite starter CSS. Replace entirely |
-| `apps/frontend/src/main.tsx` | Imports `./index.css` — no changes needed here |
-| `apps/frontend/src/App.css` | Orphaned Vite template file — delete |
-| `apps/frontend/package.json` | Add `tailwindcss` + `@tailwindcss/vite` to devDeps |
+| File                              | Purpose                                                                |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `apps/frontend/vite.config.ts`    | Currently: React plugin only. Add Tailwind plugin + `@/` resolve alias |
+| `apps/frontend/tsconfig.app.json` | Currently: no paths. Add `baseUrl` + `paths` for `@/`                  |
+| `apps/frontend/src/index.css`     | Currently: vanilla Vite starter CSS. Replace entirely                  |
+| `apps/frontend/src/main.tsx`      | Imports `./index.css` — no changes needed here                         |
+| `apps/frontend/src/App.css`       | Orphaned Vite template file — delete                                   |
+| `apps/frontend/package.json`      | Add `tailwindcss` + `@tailwindcss/vite` to devDeps                     |
 
 ### Technical Decisions
 
@@ -86,9 +98,9 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
   - `--color-zone-amber-over` → `zone-amber-over` (calories target→+200 threshold)
   - `--color-zone-orange` → `zone-orange` (calories above threshold — "Rad Zone")
   - `--color-zone-blue` → `zone-blue` (bonus — protein/steps above target)
-  Values are set to `transparent` as an obvious placeholder — Story 2.3 replaces them with final `oklch()`/hex values. Do NOT use `theme()` function syntax in `@theme` blocks — that is Tailwind v3/PostCSS only and is invalid in Tailwind v4's CSS-first mode.
+    Values are set to `transparent` as an obvious placeholder — Story 2.3 replaces them with final `oklch()`/hex values. Do NOT use `theme()` function syntax in `@theme` blocks — that is Tailwind v3/PostCSS only and is invalid in Tailwind v4's CSS-first mode.
 - **`baseUrl` in tsconfig**: add `"baseUrl": "."` even though `moduleResolution: "bundler"` doesn't strictly require it — explicit is safer and avoids IDE ambiguity.
-- **shadcn init runs before Vault-Tec `@theme` block is written**: shadcn modifies `index.css` on init, inserting its CSS variable block. Write the custom `@theme` Vault-Tec tokens *after* shadcn init completes, appended below shadcn's generated content. This preserves correct import order.
+- **shadcn init runs before Vault-Tec `@theme` block is written**: shadcn modifies `index.css` on init, inserting its CSS variable block. Write the custom `@theme` Vault-Tec tokens _after_ shadcn init completes, appended below shadcn's generated content. This preserves correct import order.
 - **shadcn init must run after `@/` alias is in `vite.config.ts`**: shadcn reads the Vite config during init to detect aliases. Alias config goes in first.
 - **shadcn dark mode**: select `none` during init. Deliberate deferral — see Notes.
 - **shadcn component directory**: use shadcn default `src/components/ui/`. Differs slightly from architecture's `shared/` — documented here so agents don't re-litigate it.
@@ -97,7 +109,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
 
 ### Tasks
 
-- [ ] Task 1: Install Tailwind v4 dependencies
+- [x] Task 1: Install Tailwind v4 dependencies
   - File: `apps/frontend/package.json` (via npm install)
   - Action: Run from `apps/frontend/`:
     ```bash
@@ -105,27 +117,29 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
     ```
   - Notes: Both packages are build-time-only tools — must be installed as devDependencies (`-D`). Do NOT install `autoprefixer` or `postcss` — not needed with v4. If this project uses npm workspaces and you see these land in the root `node_modules`, that is expected workspace hoisting behaviour — imports will still resolve correctly from `apps/frontend`.
 
-- [ ] Task 2: Update `vite.config.ts` — add Tailwind plugin and `@/` path alias
+- [x] Task 2: Update `vite.config.ts` — add Tailwind plugin and `@/` path alias
   - File: `apps/frontend/vite.config.ts`
   - Action: Replace entire file contents with:
+
     ```ts
-    import { defineConfig } from 'vite'
-    import react from '@vitejs/plugin-react'
-    import tailwindcss from '@tailwindcss/vite'
-    import path from 'path'
+    import { defineConfig } from "vite";
+    import react from "@vitejs/plugin-react";
+    import tailwindcss from "@tailwindcss/vite";
+    import path from "path";
 
     export default defineConfig({
       plugins: [react(), tailwindcss()],
       resolve: {
         alias: {
-          '@': path.resolve(__dirname, './src'),
+          "@": path.resolve(__dirname, "./src"),
         },
       },
-    })
+    });
     ```
+
   - Notes: `@types/node` is already installed so `path` is available. Plugin order matters — `react()` before `tailwindcss()`.
 
-- [ ] Task 3: Update `tsconfig.app.json` — add `baseUrl` and `paths` for `@/` alias
+- [x] Task 3: Update `tsconfig.app.json` — add `baseUrl` and `paths` for `@/` alias
   - File: `apps/frontend/tsconfig.app.json`
   - Action: Replace the entire file with the following (all existing options preserved, `baseUrl` and `paths` added):
     ```json
@@ -160,7 +174,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
     ```
   - Notes: `baseUrl: "."` means project root (`apps/frontend/`). `@/*` maps to `./src/*`. Both `baseUrl` and `paths` are required — `vite.config.ts` handles runtime resolution; `tsconfig` handles IDE and `tsc` type-checking. Adding these fields invalidates the existing `tsBuildInfoFile` cache, which is harmless — the cache regenerates automatically on next build.
 
-- [ ] Task 4: Verify and delete orphaned `App.css`
+- [x] Task 4: Verify and delete orphaned `App.css`
   - File: `apps/frontend/src/App.css`
   - Action:
     1. First, confirm no file in `src/` imports `App.css` by running:
@@ -171,7 +185,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
     2. Delete `apps/frontend/src/App.css`.
   - Notes: This was the original Vite template file. `main.tsx` imports only `index.css` and `App.tsx` has no CSS import — but verify with grep before deleting to be safe.
 
-- [ ] Task 5: Clear `index.css` and run `shadcn init`
+- [x] Task 5: Clear `index.css` and run `shadcn init`
   - File: `apps/frontend/src/index.css` (cleared first), then creates `apps/frontend/components.json`, `apps/frontend/src/lib/utils.ts`
   - Action:
     1. **Clear `index.css`**: Replace the entire contents of `apps/frontend/src/index.css` with a single blank line (or empty file). This removes the Vite starter styles (`body { display:flex }`, custom button/anchor rules, etc.) which conflict with Tailwind's reset and shadcn's base styles. **Known visual consequence**: the existing auth pages (login, register, forgot-password, reset-password) will lose their current centering and button styling — this is an accepted regression that Epic 2 UI stories will address with proper Tailwind classes.
@@ -188,7 +202,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
        - **Utils path**: leave as default (`src/lib/utils`)
   - Notes: shadcn reads `vite.config.ts` to detect the `@/` alias — Task 2 must be complete before this runs. shadcn will write its CSS variable block and `@import "tailwindcss"` into `index.css`. The dark mode prompt may not appear in all CLI versions — only select it if it is shown. If `clsx` or `tailwind-merge` are installed to the monorepo root due to workspace hoisting, this is expected and imports will still resolve correctly.
 
-- [ ] Task 6: Append Vault-Tec zone color tokens to `index.css`
+- [x] Task 6: Append Vault-Tec zone color tokens to `index.css`
   - File: `apps/frontend/src/index.css`
   - Action: After all of shadcn's generated content, append the following `@theme` block at the very end of the file:
     ```css
@@ -199,15 +213,15 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
        ============================================================= */
     @theme {
       --color-zone-amber-low: transparent; /* TODO Story 2.3: calories below floor */
-      --color-zone-green: transparent;     /* TODO Story 2.3: on track (floor→target) */
+      --color-zone-green: transparent; /* TODO Story 2.3: on track (floor→target) */
       --color-zone-amber-over: transparent; /* TODO Story 2.3: calories target→+200 threshold */
-      --color-zone-orange: transparent;    /* TODO Story 2.3: "Rad Zone" (calories above threshold) */
-      --color-zone-blue: transparent;      /* TODO Story 2.3: bonus (protein/steps above target) */
+      --color-zone-orange: transparent; /* TODO Story 2.3: "Rad Zone" (calories above threshold) */
+      --color-zone-blue: transparent; /* TODO Story 2.3: bonus (protein/steps above target) */
     }
     ```
   - Notes: Values are intentionally set to `transparent` so it is visually obvious these are placeholders — Story 2.3 replaces them with final color values. The names are the binding contract with `lib/zoneConstants.ts`. Do NOT use `theme()` function syntax (that is Tailwind v3 only — invalid in v4). Do NOT add this block before shadcn's content — append after.
 
-- [ ] Task 7: Verify setup is working
+- [x] Task 7: Verify setup is working
   - File: N/A
   - Action: Run from `apps/frontend/`:
     ```bash
@@ -222,21 +236,21 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
 
 ### Acceptance Criteria
 
-- [ ] AC 1: Given `tailwindcss` and `@tailwindcss/vite` are installed, when `npm run dev` runs, then the Vite dev server starts with no missing module errors related to Tailwind.
+- [x] AC 1: Given `tailwindcss` and `@tailwindcss/vite` are installed, when `npm run dev` runs, then the Vite dev server starts with no missing module errors related to Tailwind.
 
-- [ ] AC 2: Given the `@/` alias is configured in both `vite.config.ts` and `tsconfig.app.json`, when a file uses `import something from '@/lib/utils'`, then the import resolves correctly at runtime and shows no TypeScript error in the IDE.
+- [x] AC 2: Given the `@/` alias is configured in both `vite.config.ts` and `tsconfig.app.json`, when a file uses `import something from '@/lib/utils'`, then the import resolves correctly at runtime and shows no TypeScript error in the IDE.
 
-- [ ] AC 3: Given shadcn init has run, when `apps/frontend/components.json` is opened, then it exists and contains: `"aliases.components": "@/components/ui"`, `"aliases.utils": "@/lib/utils"`, and `"baseColor": "neutral"`. If the aliases do not use `@/` (i.e., shadcn fell back to relative paths), re-run init after confirming Task 2 is complete.
+- [x] AC 3: Given shadcn init has run, when `apps/frontend/components.json` is opened, then it exists and contains: `"aliases.components": "@/components/ui"`, `"aliases.utils": "@/lib/utils"`, and `"baseColor": "neutral"`. If the aliases do not use `@/` (i.e., shadcn fell back to relative paths), re-run init after confirming Task 2 is complete.
 
-- [ ] AC 4: Given shadcn init has run, when `apps/frontend/src/lib/utils.ts` is opened, then it exists and exports a `cn()` helper function using `clsx` and `tailwind-merge`.
+- [x] AC 4: Given shadcn init has run, when `apps/frontend/src/lib/utils.ts` is opened, then it exists and exports a `cn()` helper function using `clsx` and `tailwind-merge`.
 
-- [ ] AC 5: Given the five Vault-Tec `@theme` token declarations exist in `index.css`, when the file is opened, then all five `--color-zone-*` custom properties are present below shadcn's generated CSS variable block.
+- [x] AC 5: Given the five Vault-Tec `@theme` token declarations exist in `index.css`, when the file is opened, then all five `--color-zone-*` custom properties are present below shadcn's generated CSS variable block.
 
-- [ ] AC 6: Given `apps/frontend/src/App.css` existed before this story, when the story is complete, then the file no longer exists.
+- [x] AC 6: Given `apps/frontend/src/App.css` existed before this story, when the story is complete, then the file no longer exists.
 
-- [ ] AC 7: Given the full setup is in place, when `npm run build` is run in `apps/frontend/`, then the build completes successfully with no TypeScript errors and no Vite bundling errors.
+- [x] AC 7: Given the full setup is in place, when `npm run build` is run in `apps/frontend/`, then the build completes successfully with no TypeScript errors and no Vite bundling errors.
 
-- [ ] AC 8: Given the dev server is running, when the app is opened at `localhost:5173`, then the following manual smoke-test steps all pass:
+- [x] AC 8: Given the dev server is running, when the app is opened at `localhost:5173`, then the following manual smoke-test steps all pass:
   - Navigate to `/login` — page renders (visual styling may differ from pre-story; that is expected — see Task 5 notes)
   - Submit valid credentials — redirected to `/` (dashboard) with no JS errors in console
   - Navigate directly to `/register` — registration form renders
@@ -256,6 +270,7 @@ Install Tailwind CSS v4 using the CSS-first approach via `@tailwindcss/vite`, co
 ### Testing Strategy
 
 No automated tests for this story. Manual verification only (covered by AC 7 and AC 8):
+
 - `npm run build` — zero errors = primary pass criterion
 - `npm run dev` + open browser — app loads, existing auth flows work, no regressions
 
@@ -263,3 +278,12 @@ No automated tests for this story. Manual verification only (covered by AC 7 and
 
 **Dark mode — deferred decision:**
 Dark mode strategy (class-based vs. media-query-based) has not been documented in the architecture or UX spec. The Vault-Tec theme uses specific color tokens (amber, green, blue, orange) that may need separate light/dark variants in future. Before Epic 3 or whenever theming work begins, revisit: should dark mode be `class`-based (`.dark` on `<html>`) or `media`-based (`prefers-color-scheme`)? shadcn defaults to `class`. For now, dark mode is disabled/skipped during shadcn init.
+
+**Note:** shadcn v4.4.0 (Nova preset) generated `.dark` token block and `@custom-variant dark` in `index.css` regardless of the "none" selection. These are retained with explanatory comments — removing them would break future shadcn components that reference dark mode tokens. Do not wire up `.dark` on `<html>` until Epic 3 theming work begins.
+
+## Review Notes
+
+- Adversarial review completed 2026-04-21
+- Findings: 10 total, 1 fixed (F3), 9 noise/build-verified
+- Resolution approach: auto-fix
+- tsconfig.json required `paths` addition (not in original spec) — shadcn reads root tsconfig, not tsconfig.app.json
