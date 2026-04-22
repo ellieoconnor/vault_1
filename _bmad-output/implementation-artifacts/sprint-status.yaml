@@ -51,8 +51,8 @@ development_status:
   epic-1-retrospective: done
 
   # Epic 2: Daily Tracking Core
-  epic-2: backlog
-  2-1-user-onboarding-targets-floor-setup: backlog
+  epic-2: in-progress
+  2-1-user-onboarding-targets-floor-setup: ready-for-dev
   2-2-cheat-codes-setup: backlog
   2-3-zone-calculation-engine: backlog
   2-4-win-the-day-dashboard-progress-bars-daily-log: backlog
