@@ -175,6 +175,7 @@ vault_1/
 - Monitoring/error tracking (not needed for single-user MVP)
 - Advanced caching strategy (Workbox strategy to be finalized during PWA implementation spike)
 - Rate limiting (relevant if app ever opens to other users)
+- **pgvector / AI Coaching (Future Epic):** pgvector will be enabled as an extension on the existing Neon instance — same connection string, same Prisma setup, zero infrastructure change. Goals will be first-class entities with a three-tier structure: values → outcome → process, with parent-child linking. Semantic embeddings stored via pgvector for pattern-based queries (e.g. "do I tend to struggle on weekends?"). No separate database, no new service — additive capability on existing stack. Decision recorded: 2026-04-22.
 
 ---
 
@@ -793,7 +794,9 @@ The following files carry the highest implementation risk and must have comprehe
 | `apps/frontend/src/hooks/useOfflineQueue.ts` | Consumer of `offlineQueue.ts` — most components write through this hook | Optimistic UI update, queue-vs-send decision, error surface |
 | `apps/frontend/src/lib/zoneCalculator.ts` | ADHD UX correctness depends entirely on this function — wrong zone color = wrong emotional signal | Calorie asymmetry (below floor ≠ above target), amber as neutral, boundary values, all zone transitions |
 | `apps/frontend/src/lib/consistencyCalc.ts` | Consistency % drives weekly planning ritual — wrong calc = misleading progress | roughDay flag, tier label thresholds, 0%/100% edge cases |
-| `apps/frontend/src/lib/floorCalculator.ts` | Floor derivation is foundational — all zone calculations depend on correct floors | Target-to-floor ratio, rounding, zero/negative guards |
+| `apps/frontend/src/lib/bmrCalculator.ts` | BMR is the calorie floor — wrong BMR = wrong floor = wrong emotional signal on every dashboard load | Mifflin-St Jeor male/female formulas, boundary values, TDEE multipliers |
+| `apps/frontend/src/lib/unitConverter.ts` | Conversion errors silently corrupt BMR inputs — a 10lb error produces a meaningfully wrong floor | lbs→kg, ft+in→cm, round-trip accuracy |
+| `apps/frontend/src/lib/floorCalculator.ts` | Assembles BMR + target inputs into floor/ceiling values used by every progress bar | BMR passthrough for calorieFloor, ceiling buffer, protein/steps rounding |
 
 All five files are pure functions or thin hooks — tests run without mocking and execute fast.
 

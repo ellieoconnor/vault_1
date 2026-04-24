@@ -189,7 +189,7 @@ Phase 2 (gamification + adaptive layer), Phase 3 (Apple Health integration, nati
 
 *Where we meet her:* It's a Sunday afternoon, the first one. She's decided to build this for herself. She has her Cronometer targets in her head and three coaching tips from Alex's last text.
 
-*The opening:* She creates her account — username and password, nothing else. She enters her targets: 1,800 cal, 130g protein, 8,000 steps. The app calculates floors automatically: 1,550 cal floor, 104g protein floor, 4,000 steps floor. She sees them. That feels right — achievable on a hard day.
+*The opening:* She creates her account — username and password, nothing else. She works through three onboarding steps: first her biometrics (she picks imperial since she thinks in lbs and feet), then her goal type ("Lose weight"), then her calorie target — she taps "Suggest one for me" and sees a TDEE-based recommendation she edits slightly before confirming. She also enters her protein and steps targets. The app calculates her floors: calorie floor = her BMR, protein floor = target × 0.8, steps floor = target × 0.5. Ceiling = calorie target + 200. She sees them. That feels right — achievable on a hard day.
 
 *Rising action:* She types in her three Cheat Codes. "Eat the protein first." "Plan the snack before you need it." "One rough day is just data." She selects her first 3 active goals from the starter library: calorie floor, protein floor, walk 3 days/week.
 
@@ -197,7 +197,7 @@ Phase 2 (gamification + adaptive layer), Phase 3 (Apple Health integration, nati
 
 *Resolution:* She logs today's food. Presses Day Complete. The first day is in the books. One Sunday afternoon to set up, and the system is live.
 
-**Requirements revealed:** Account creation (username + password), target entry, automatic floor calculation (cal: target − 250, protein: target × 0.8, steps: target × 0.5), Cheat Code entry (max 3), starter goal library, goal selection, first-run dashboard state.
+**Requirements revealed:** Account creation (username + password), biometrics collection (weight, height, age, sex, activity level, measurement system preference), goal type selection (lose/maintain/build), calorie target with TDEE-based suggestion option, 1,400 cal hard minimum, BMR-based floor calculation, ceiling = target + 200, protein and steps target entry, Cheat Code entry (max 3), starter goal library, goal selection, first-run dashboard state.
 
 ---
 
@@ -493,8 +493,8 @@ WCAG 2.1 Level AA required (see Non-Functional Requirements). ADHD-aware UX phil
 
 ### Setup & Configuration
 
-- **FR6:** User can set daily targets for calories, protein, and steps
-- **FR7:** The system automatically calculates floor values when targets are set (calories: target−250, protein: target×0.8, steps: target×0.5)
+- **FR6:** User can provide biometrics (weight, height, age, biological sex, activity level) and set daily targets for calories, protein, and steps during onboarding
+- **FR7:** The system automatically calculates floor and ceiling values from biometrics and targets: calorieFloor = BMR calculated via Mifflin-St Jeor equation; calorieCeiling = calorieTarget + 200; proteinFloor = round(proteinTarget × 0.8); stepsFloor = round(stepsTarget × 0.5). Calorie entries below 1,400 cal are rejected at input regardless of calculated floor.
 - **FR8:** User can update their targets at any time
 - **FR9:** User can create up to 3 Cheat Codes (coaching strategy reminders)
 - **FR10:** User can edit and delete existing Cheat Codes

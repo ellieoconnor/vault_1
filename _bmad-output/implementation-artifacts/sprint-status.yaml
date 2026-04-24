@@ -52,7 +52,7 @@ development_status:
 
   # Epic 2: Daily Tracking Core
   epic-2: in-progress
-  2-1-user-onboarding-targets-floor-setup: in-progress
+  2-1-user-onboarding-targets-floor-setup: review
   2-2-cheat-codes-setup: backlog
   2-3-zone-calculation-engine: backlog
   2-4-win-the-day-dashboard-progress-bars-daily-log: backlog
