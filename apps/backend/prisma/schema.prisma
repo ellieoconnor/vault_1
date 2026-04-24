@@ -37,18 +37,41 @@ model PasswordResetToken {
 }
 
 model UserConfig {
-  id            String   @id @default(cuid())
-  userId        String   @unique @map("user_id")
-  calorieTarget Int      @map("calorie_target")
-  proteinTarget Int      @map("protein_target")
-  stepsTarget   Int      @map("steps_target")
-  calorieFloor  Int      @map("calorie_floor")
-  proteinFloor  Int      @map("protein_floor")
-  stepsFloor    Int      @map("steps_floor")
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id                String   @id @default(cuid())
+  userId            String   @unique @map("user_id")
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Measurement preference
+  measurementSystem String   @default("metric") @map("measurement_system")
+  // "metric" | "imperial"
 
-    @@map("user_config")
+  // Biometrics (stored in metric — canonical representation)
+  weightKg          Float    @map("weight_kg")
+  heightCm          Float    @map("height_cm")
+  age               Int
+  sex               String
+  // "male" | "female" — biological sex for BMR calculation
+  activityLevel     String   @map("activity_level")
+  // "sedentary" | "lightly_active" | "moderately_active" | "very_active" | "extra_active"
+
+  // Goal type
+  goalType          String   @map("goal_type")
+  // "lose" | "maintain" | "build"
+
+  // Calorie system
+  calorieTarget     Int      @map("calorie_target")
+  calorieFloor      Int      @map("calorie_floor")    // = BMR
+  calorieCeiling    Int      @map("calorie_ceiling")  // = calorieTarget + 200
+
+  // Protein & steps
+  proteinTarget     Int      @map("protein_target")
+  proteinFloor      Int      @map("protein_floor")    // = round(proteinTarget × 0.8)
+  stepsTarget       Int      @map("steps_target")
+  stepsFloor        Int      @map("steps_floor")      // = round(stepsTarget × 0.5)
+
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_config")
 }
