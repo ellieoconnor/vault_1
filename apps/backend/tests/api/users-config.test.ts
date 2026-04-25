@@ -12,21 +12,16 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { app, prisma } from '../../src/index.js';
 
-const uniqueUsername = () =>
-    `testuser_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+const uniqueUsername = () => `testuser_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 
 // Shared user + session for tests that need auth
 async function createAuthenticatedUser() {
     const username = uniqueUsername();
     const password = 'TestPassword123!';
 
-    const registerRes = await request(app)
-        .post('/api/auth/register')
-        .send({ username, password });
+    const registerRes = await request(app).post('/api/auth/register').send({ username, password });
 
-    const loginRes = await request(app)
-        .post('/api/auth/login')
-        .send({ username, password });
+    const loginRes = await request(app).post('/api/auth/login').send({ username, password });
 
     return {
         userId: registerRes.body.id as string,
@@ -37,7 +32,7 @@ async function createAuthenticatedUser() {
 // Minimal valid metric payload
 const metricPayload = {
     measurementSystem: 'metric',
-    weightInput: 70,        // kg
+    weightInput: 70, // kg
     heightInputPrimary: 175, // cm
     age: 30,
     sex: 'male',
@@ -72,23 +67,16 @@ describe('GET /api/users/config', () => {
         });
 
         it('returns 404 when no config exists yet', async () => {
-            const res = await request(app)
-                .get('/api/users/config')
-                .set('Cookie', cookie);
+            const res = await request(app).get('/api/users/config').set('Cookie', cookie);
 
             expect(res.status).toBe(404);
             expect(res.body.error).toBe('NOT_FOUND');
         });
 
         it('returns 200 with config after one has been created', async () => {
-            await request(app)
-                .post('/api/users/config')
-                .set('Cookie', cookie)
-                .send(metricPayload);
+            await request(app).post('/api/users/config').set('Cookie', cookie).send(metricPayload);
 
-            const res = await request(app)
-                .get('/api/users/config')
-                .set('Cookie', cookie);
+            const res = await request(app).get('/api/users/config').set('Cookie', cookie);
 
             expect(res.status).toBe(200);
             expect(res.body.userId).toBe(userId);
@@ -104,9 +92,7 @@ describe('GET /api/users/config', () => {
 
 describe('POST /api/users/config', () => {
     it('returns 401 when not authenticated', async () => {
-        const res = await request(app)
-            .post('/api/users/config')
-            .send(metricPayload);
+        const res = await request(app).post('/api/users/config').send(metricPayload);
         expect(res.status).toBe(401);
     });
 
@@ -124,10 +110,7 @@ describe('POST /api/users/config', () => {
         });
 
         it('returns 400 when body is missing required fields', async () => {
-            const res = await request(app)
-                .post('/api/users/config')
-                .set('Cookie', cookie)
-                .send({});
+            const res = await request(app).post('/api/users/config').set('Cookie', cookie).send({});
             expect(res.status).toBe(400);
         });
 
@@ -147,11 +130,11 @@ describe('POST /api/users/config', () => {
             expect(res.status).toBe(400);
         });
 
-        it('returns 400 when calorieTarget is below minimum (1399)', async () => {
+        it('returns 400 when calorieTarget is below minimum (1199)', async () => {
             const res = await request(app)
                 .post('/api/users/config')
                 .set('Cookie', cookie)
-                .send({ ...metricPayload, calorieTarget: 1399 });
+                .send({ ...metricPayload, calorieTarget: 1199 });
             expect(res.status).toBe(400);
         });
     });
@@ -209,22 +192,19 @@ describe('POST /api/users/config', () => {
             // 154 lbs → ~69.853 kg
             // 5 ft 9 in → 5×30.48 + 9×2.54 = 152.4 + 22.86 = 175.26 cm
 
-            const res = await request(app)
-                .post('/api/users/config')
-                .set('Cookie', cookie)
-                .send({
-                    measurementSystem: 'imperial',
-                    weightInput: 154,       // lbs
-                    heightInputPrimary: 5,  // feet
-                    heightInputSecondary: 9, // inches
-                    age: 30,
-                    sex: 'male',
-                    activityLevel: 'sedentary',
-                    goalType: 'lose',
-                    calorieTarget: 1800,
-                    proteinTarget: 130,
-                    stepsTarget: 8000,
-                });
+            const res = await request(app).post('/api/users/config').set('Cookie', cookie).send({
+                measurementSystem: 'imperial',
+                weightInput: 154, // lbs
+                heightInputPrimary: 5, // feet
+                heightInputSecondary: 9, // inches
+                age: 30,
+                sex: 'male',
+                activityLevel: 'sedentary',
+                goalType: 'lose',
+                calorieTarget: 1800,
+                proteinTarget: 130,
+                stepsTarget: 8000,
+            });
 
             expect(res.status).toBe(201);
             expect(res.body.weightKg).toBeCloseTo(69.853, 1);
@@ -247,21 +227,18 @@ describe('POST /api/users/config', () => {
 
         it('applies female offset (-161) in BMR calculation', async () => {
             // Female BMR = 10×60 + 6.25×165 - 5×25 - 161 = 1345.25 → 1345
-            const res = await request(app)
-                .post('/api/users/config')
-                .set('Cookie', cookie)
-                .send({
-                    measurementSystem: 'metric',
-                    weightInput: 60,
-                    heightInputPrimary: 165,
-                    age: 25,
-                    sex: 'female',
-                    activityLevel: 'lightly_active',
-                    goalType: 'maintain',
-                    calorieTarget: 1800,
-                    proteinTarget: 120,
-                    stepsTarget: 8000,
-                });
+            const res = await request(app).post('/api/users/config').set('Cookie', cookie).send({
+                measurementSystem: 'metric',
+                weightInput: 60,
+                heightInputPrimary: 165,
+                age: 25,
+                sex: 'female',
+                activityLevel: 'lightly_active',
+                goalType: 'maintain',
+                calorieTarget: 1800,
+                proteinTarget: 120,
+                stepsTarget: 8000,
+            });
 
             expect(res.status).toBe(201);
             expect(res.body.calorieFloor).toBe(1345);
@@ -275,10 +252,7 @@ describe('POST /api/users/config', () => {
         beforeAll(async () => {
             ({ userId, cookie } = await createAuthenticatedUser());
             // Create initial config
-            await request(app)
-                .post('/api/users/config')
-                .set('Cookie', cookie)
-                .send(metricPayload);
+            await request(app).post('/api/users/config').set('Cookie', cookie).send(metricPayload);
         });
 
         afterAll(async () => {
