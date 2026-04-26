@@ -2,7 +2,7 @@
 title: 'Auth Pages shadcn UI Polish'
 slug: 'auth-pages-shadcn-ui-polish'
 created: '2026-04-26'
-status: 'implementation-complete'
+status: 'completed'
 stepsCompleted: [1, 2, 3, 4]
 tech_stack: ['React 18 + TypeScript', 'Tailwind v4', 'shadcn/ui (radix-nova)', 'TanStack Query', 'React Router v6']
 files_to_modify:
@@ -184,6 +184,13 @@ Install shadcn `card` and `input` components. Wrap each auth page in a centered 
 - [x] AC 9: Given the existing Playwright E2E suite runs after these changes, when `npx playwright test tests/e2e/auth.spec.ts` executes, then all Login tests pass and all Register tests pass — **except** the pre-existing failure: the `creates account and redirects` test asserts `toHaveURL('/')` but `RegisterPage` navigates to `"/onboarding"` on success. This failure pre-dates this spec and is not introduced or fixed by it.
 
 - [x] AC 10: Given any auth page submit button is inspected, when the page renders, then the button text matches exactly what it was before (e.g. `"Log In"`, `"Register"`, `"Send reset link"`, `"Set new password"`) — no renames.
+
+## Review Notes
+
+- Adversarial review completed
+- Findings: 12 total, 9 fixed, 3 skipped (F4 pre-existing E2E bug out-of-scope, F11 low timing edge case, F12 low aria-live out-of-scope)
+- Resolution approach: auto-fix
+- Post-fix fixes applied: generalError mb-4 + block, email error role="alert", handleSubmit hoisted above early return, !token state nav link, isError link moved to CardFooter, formError mt-1→mb-4, confirmPassword autoComplete="off", labels added to LoginPage + ForgotPasswordPage inputs
 
 ## Additional Context
 

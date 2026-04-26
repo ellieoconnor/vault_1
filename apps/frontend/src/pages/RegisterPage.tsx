@@ -81,7 +81,7 @@ export default function RegisterPage() {
           </CardHeader>
           <CardContent>
             {generalError && (
-              <span role="alert" className="text-destructive text-sm">
+              <span role="alert" className="text-destructive text-sm mb-4 block">
                 {generalError}
               </span>
             )}
@@ -124,7 +124,7 @@ export default function RegisterPage() {
                   autoComplete="email"
                 />
                 {fieldErrors.email?.[0] && (
-                  <span className="text-destructive text-sm mt-1 block">
+                  <span role="alert" className="text-destructive text-sm mt-1 block">
                     {fieldErrors.email?.[0]}
                   </span>
                 )}
