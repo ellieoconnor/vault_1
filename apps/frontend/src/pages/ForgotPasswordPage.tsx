@@ -40,6 +40,17 @@ export default function ForgotPasswordPage() {
     },
   });
 
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setFormError(null);
+    const result = forgotPasswordSchema.safeParse({ username });
+    if (!result.success) {
+      setFormError("Please enter your username");
+      return;
+    }
+    mutation.mutate(result.data);
+  }
+
   if (submitted) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -63,17 +74,6 @@ export default function ForgotPasswordPage() {
     );
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setFormError(null);
-    const result = forgotPasswordSchema.safeParse({ username });
-    if (!result.success) {
-      setFormError("Please enter your username");
-      return;
-    }
-    mutation.mutate(result.data);
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <form onSubmit={handleSubmit}>
@@ -91,13 +91,19 @@ export default function ForgotPasswordPage() {
                 {formError}
               </p>
             )}
-            <Input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
-            />
+            <div className="space-y-1">
+              <label htmlFor="username" className="text-sm font-medium">
+                Username
+              </label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+              />
+            </div>
           </CardContent>
           <CardFooter className="flex-col gap-2">
             <Button

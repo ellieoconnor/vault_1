@@ -80,6 +80,11 @@ export default function ResetPasswordPage() {
           <CardContent>
             <p>Invalid reset link.</p>
           </CardContent>
+          <CardFooter>
+            <p className="text-sm text-center w-full">
+              <Link to="/forgot-password">Request a new reset link</Link>
+            </p>
+          </CardFooter>
         </Card>
       </div>
     );
@@ -115,8 +120,12 @@ export default function ResetPasswordPage() {
             <p role="alert" className="text-destructive text-sm">
               {msg}
             </p>
-            <Link to="/forgot-password">Request a new reset link</Link>
           </CardContent>
+          <CardFooter>
+            <p className="text-sm text-center w-full">
+              <Link to="/forgot-password">Request a new reset link</Link>
+            </p>
+          </CardFooter>
         </Card>
       </div>
     );
@@ -143,7 +152,7 @@ export default function ResetPasswordPage() {
           </CardHeader>
           <CardContent>
             {formError && (
-              <p role="alert" className="text-destructive text-sm mt-1">
+              <p role="alert" className="text-destructive text-sm mb-4">
                 {formError}
               </p>
             )}
@@ -160,7 +169,7 @@ export default function ResetPasswordPage() {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                autoComplete="new-password"
+                autoComplete="off"
               />
             </div>
           </CardContent>
