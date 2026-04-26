@@ -30,7 +30,7 @@ export interface SetTargetsInput {
     heightInputSecondary?: number;
     age:                   number;
     sex:                   'male' | 'female';
-    activityLevel:         string;
+    activityLevel:         'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active' | 'extra_active';
     goalType:              'lose' | 'maintain' | 'build';
     calorieTarget:         number;
     proteinTarget:         number;
@@ -40,6 +40,7 @@ export interface SetTargetsInput {
 export function useUserConfig() {
     return useQuery<UserConfig | null>({
         queryKey: ['userConfig'],
+        staleTime: Infinity,
         queryFn: async () => {
             const res = await fetch(`${API_URL}/api/users/config`, {
                 credentials: 'include',

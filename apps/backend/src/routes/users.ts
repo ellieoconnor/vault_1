@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { Prisma } from '../generated/prisma/client.js';
 import { requireAuth } from '../middleware/auth.js';
 import { validateBody } from '../middleware/validate.js';
 import { setTargetsSchema } from '../schemas/userConfigSchemas.js';
@@ -78,6 +79,9 @@ router.post('/config', requireAuth, validateBody(setTargetsSchema), async (req, 
 
         return res.status(201).json(config);
     } catch (err) {
+        if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+            return res.status(409).json({ error: 'CONFLICT', message: 'Config already exists' });
+        }
         next(err);
     }
 });
