@@ -122,11 +122,11 @@ describe('POST /api/users/config', () => {
             expect(res.status).toBe(400);
         });
 
-        it('returns 400 when age is below minimum (12)', async () => {
+        it('returns 400 when age is below minimum (13)', async () => {
             const res = await request(app)
                 .post('/api/users/config')
                 .set('Cookie', cookie)
-                .send({ ...metricPayload, age: 12 });
+                .send({ ...metricPayload, age: 13 });
             expect(res.status).toBe(400);
         });
 
@@ -260,14 +260,14 @@ describe('POST /api/users/config', () => {
             await prisma.user.delete({ where: { id: userId } });
         });
 
-        it('returns 500 when config already exists (unique constraint)', async () => {
+        it('returns 409 when config already exists (unique constraint)', async () => {
             const res = await request(app)
                 .post('/api/users/config')
                 .set('Cookie', cookie)
                 .send(metricPayload);
 
-            // Prisma unique constraint → uncaught error → 500 from errorHandler
-            expect(res.status).toBe(500);
+            expect(res.status).toBe(409);
+            expect(res.body.error).toBe('CONFLICT');
         });
     });
 });

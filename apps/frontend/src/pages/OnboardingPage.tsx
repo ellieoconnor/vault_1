@@ -1,7 +1,7 @@
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { z } from 'zod';
-import { useUserConfig, useSetUserConfig } from '@/api/useUserConfig';
+import { useUserConfig, useSetUserConfig, SetTargetsInput } from '@/api/useUserConfig';
 import { calculateBMR, calculateTDEE, ActivityLevel } from '@/lib/bmrCalculator';
 import { lbsToKg, ftInToCm } from '@/lib/unitConverter';
 import { step1Schema, step2Schema, step3Schema } from '@/schemas/onboarding';
@@ -140,7 +140,7 @@ export default function OnboardingPage() {
                     : undefined,
             age: Number(form.age),
             sex: form.sex as 'male' | 'female',
-            activityLevel: form.activityLevel,
+            activityLevel: form.activityLevel as SetTargetsInput['activityLevel'],
             goalType: form.goalType as 'lose' | 'maintain' | 'build',
             calorieTarget: Number(form.calorieTarget),
             proteinTarget: Number(form.proteinTarget),
@@ -148,29 +148,35 @@ export default function OnboardingPage() {
         };
         setUserConfig.mutate(payload, {
             onSuccess: () => navigate('/', { replace: true }),
-            onError: () =>
-                setStep3Errors({ form: ['Something went wrong. Please try again.'] }),
+            onError: () => setStep3Errors({ form: ['Something went wrong. Please try again.'] }),
         });
     }
 
     return (
-        <div>
+        <main>
             {step === 1 && (
-                <div>
-                    <p>Step 1 of 3</p>
+                <form>
+                    <h1>Step 1 of 3</h1>
 
                     <div>
                         <button
                             type="button"
                             onClick={() => handleMeasurementToggle('metric')}
-                            style={{ minHeight: '44px', fontWeight: form.measurementSystem === 'metric' ? 'bold' : 'normal' }}
+                            style={{
+                                minHeight: '44px',
+                                fontWeight: form.measurementSystem === 'metric' ? 'bold' : 'normal',
+                            }}
                         >
                             Metric (kg, cm)
                         </button>
                         <button
                             type="button"
                             onClick={() => handleMeasurementToggle('imperial')}
-                            style={{ minHeight: '44px', fontWeight: form.measurementSystem === 'imperial' ? 'bold' : 'normal' }}
+                            style={{
+                                minHeight: '44px',
+                                fontWeight:
+                                    form.measurementSystem === 'imperial' ? 'bold' : 'normal',
+                            }}
                         >
                             Imperial (lbs, ft + in)
                         </button>
@@ -181,7 +187,9 @@ export default function OnboardingPage() {
                         <input
                             type="number"
                             value={form.weightInput}
-                            onChange={(e) => setForm((f) => ({ ...f, weightInput: e.target.value }))}
+                            onChange={(e) =>
+                                setForm((f) => ({ ...f, weightInput: e.target.value }))
+                            }
                             style={{ fontSize: '16px', minHeight: '44px' }}
                         />
                     </label>
@@ -194,7 +202,12 @@ export default function OnboardingPage() {
                                 <input
                                     type="number"
                                     value={form.heightInputPrimary}
-                                    onChange={(e) => setForm((f) => ({ ...f, heightInputPrimary: e.target.value }))}
+                                    onChange={(e) =>
+                                        setForm((f) => ({
+                                            ...f,
+                                            heightInputPrimary: e.target.value,
+                                        }))
+                                    }
                                     style={{ fontSize: '16px', minHeight: '44px' }}
                                 />
                             </label>
@@ -209,7 +222,12 @@ export default function OnboardingPage() {
                                 <input
                                     type="number"
                                     value={form.heightInputPrimary}
-                                    onChange={(e) => setForm((f) => ({ ...f, heightInputPrimary: e.target.value }))}
+                                    onChange={(e) =>
+                                        setForm((f) => ({
+                                            ...f,
+                                            heightInputPrimary: e.target.value,
+                                        }))
+                                    }
                                     style={{ fontSize: '16px', minHeight: '44px' }}
                                 />
                             </label>
@@ -222,7 +240,10 @@ export default function OnboardingPage() {
                                     type="number"
                                     value={form.heightInputSecondary}
                                     onChange={(e) =>
-                                        setForm((f) => ({ ...f, heightInputSecondary: e.target.value }))
+                                        setForm((f) => ({
+                                            ...f,
+                                            heightInputSecondary: e.target.value,
+                                        }))
                                     }
                                     style={{ fontSize: '16px', minHeight: '44px' }}
                                 />
@@ -294,12 +315,12 @@ export default function OnboardingPage() {
                     <button type="button" onClick={handleNextStep1} style={{ minHeight: '44px' }}>
                         Next
                     </button>
-                </div>
+                </form>
             )}
 
             {step === 2 && (
-                <div>
-                    <p>Step 2 of 3</p>
+                <form>
+                    <h1>Step 2 of 3</h1>
 
                     <div>
                         {(['lose', 'maintain', 'build'] as const).map((type) => (
@@ -335,12 +356,12 @@ export default function OnboardingPage() {
                     <button type="button" onClick={handleNextStep2} style={{ minHeight: '44px' }}>
                         Next
                     </button>
-                </div>
+                </form>
             )}
 
             {step === 3 && (
-                <div>
-                    <p>Step 3 of 3</p>
+                <form>
+                    <h1>Step 3 of 3</h1>
 
                     <div>
                         <button
@@ -370,7 +391,9 @@ export default function OnboardingPage() {
                         <input
                             type="number"
                             value={form.calorieTarget}
-                            onChange={(e) => setForm((f) => ({ ...f, calorieTarget: e.target.value }))}
+                            onChange={(e) =>
+                                setForm((f) => ({ ...f, calorieTarget: e.target.value }))
+                            }
                             style={{ fontSize: '16px', minHeight: '44px' }}
                         />
                     </label>
@@ -381,7 +404,9 @@ export default function OnboardingPage() {
                         <input
                             type="number"
                             value={form.proteinTarget}
-                            onChange={(e) => setForm((f) => ({ ...f, proteinTarget: e.target.value }))}
+                            onChange={(e) =>
+                                setForm((f) => ({ ...f, proteinTarget: e.target.value }))
+                            }
                             style={{ fontSize: '16px', minHeight: '44px' }}
                         />
                     </label>
@@ -392,7 +417,9 @@ export default function OnboardingPage() {
                         <input
                             type="number"
                             value={form.stepsTarget}
-                            onChange={(e) => setForm((f) => ({ ...f, stepsTarget: e.target.value }))}
+                            onChange={(e) =>
+                                setForm((f) => ({ ...f, stepsTarget: e.target.value }))
+                            }
                             style={{ fontSize: '16px', minHeight: '44px' }}
                         />
                     </label>
@@ -418,8 +445,8 @@ export default function OnboardingPage() {
                     >
                         {setUserConfig.isPending ? 'Saving...' : 'Save & Continue'}
                     </button>
-                </div>
+                </form>
             )}
-        </div>
+        </main>
     );
 }

@@ -1,6 +1,6 @@
 # Story 2.1: User Onboarding — Targets & Floor Setup
 
-Status: review
+Status: done
 
 ## Why This Story Matters
 
@@ -594,5 +594,19 @@ claude-sonnet-4-6
 
 ### File List
 
+- `apps/backend/prisma/schema.prisma` (modified)
+- `apps/backend/prisma/migrations/20260424004339_add_user_config_biometrics/migration.sql` (created)
+- `apps/backend/src/index.ts` (modified — mounted usersRouter)
+- `apps/backend/src/routes/users.ts` (fixed bug + completed)
+- `apps/backend/src/schemas/userConfigSchemas.ts` (updated)
+- `apps/backend/tests/api/users-config.test.ts` (created)
+- `apps/frontend/src/api/useUserConfig.ts` (created)
+- `apps/frontend/src/lib/bmrCalculator.ts` (created)
+- `apps/frontend/src/lib/bmrCalculator.test.ts` (created)
+- `apps/frontend/src/lib/floorCalculator.ts` (created)
+- `apps/frontend/src/lib/floorCalculator.test.ts` (created)
+- `apps/frontend/src/lib/unitConverter.ts` (created)
+- `apps/frontend/src/lib/unitConverter.test.ts` (created)
 - `apps/frontend/src/schemas/onboarding.ts` (created)
 - `apps/frontend/src/pages/OnboardingPage.tsx` (replaced placeholder)
+- `tests/e2e/onboarding.spec.ts` (created)
