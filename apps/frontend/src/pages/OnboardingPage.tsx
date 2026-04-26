@@ -1,8 +1,10 @@
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { z } from 'zod';
-import { useUserConfig, useSetUserConfig, SetTargetsInput } from '@/api/useUserConfig';
-import { calculateBMR, calculateTDEE, ActivityLevel } from '@/lib/bmrCalculator';
+import { useUserConfig, useSetUserConfig } from '@/api/useUserConfig';
+import type { SetTargetsInput } from '@/api/useUserConfig';
+import { calculateBMR, calculateTDEE } from '@/lib/bmrCalculator';
+import type { ActivityLevel } from '@/lib/bmrCalculator';
 import { lbsToKg, ftInToCm } from '@/lib/unitConverter';
 import { step1Schema, step2Schema, step3Schema } from '@/schemas/onboarding';
 
