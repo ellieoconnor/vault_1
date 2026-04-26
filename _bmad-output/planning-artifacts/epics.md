@@ -347,9 +347,9 @@ So that the dashboard is meaningful from day one with thresholds that feel achie
 **When** the onboarding screen loads
 **Then** I see input fields for calorie target, protein target (g), and steps target
 
-**Given** I enter valid targets (e.g. 1800 cal, 130g protein, 8000 steps)
-**When** I submit the onboarding form
-**Then** the system calculates and saves my floors: calories = target − 250, protein = target × 0.8, steps = target × 0.5
+**Given** I complete the 3-step onboarding form (biometrics → goal type → targets)
+**When** I submit
+**Then** the system calculates BMR via Mifflin-St Jeor, sets calorieFloor = BMR, calorieCeiling = calorieTarget + 200, proteinFloor = round(proteinTarget × 0.8), stepsFloor = round(stepsTarget × 0.5), and persists all values including biometrics and goalType in UserConfig
 
 **Given** targets are saved
 **When** I'm redirected to the dashboard
@@ -405,7 +405,7 @@ So that all progress bar components source their zone logic from a single author
 
 **Given** `lib/zoneConstants.ts` exists
 **When** imported
-**Then** it exports `ZONE_COLORS`, `TIER_LABELS`, and `FLOOR_OFFSETS` constants — no inline color values exist anywhere else in the codebase
+**Then** it exports `ZONE_COLORS`, `TIER_LABELS`, `HARD_MIN_CALORIES`, and `CALORIE_CEILING_BUFFER` constants — no inline color values or magic numbers exist anywhere else in the codebase (`FLOOR_OFFSETS` does not exist — floors are not fixed offsets)
 
 **Given** a calorie value below the floor
 **When** `getZoneColor('calories', value, targets)` is called
@@ -415,11 +415,12 @@ So that all progress bar components source their zone logic from a single author
 **When** `getZoneColor('calories', value, targets)` is called
 **Then** it returns `zone-green` with label "On track"
 
-**Given** a calorie value between target and target + threshold (200 kcal)
+**Given** a calorie value between calorieTarget and calorieCeiling
 **When** `getZoneColor('calories', value, targets)` is called
+(where targets includes `{ calorieFloor, calorieTarget, calorieCeiling }`)
 **Then** it returns `zone-amber-over` with label "Heads up"
 
-**Given** a calorie value above target + threshold
+**Given** a calorie value above calorieCeiling
 **When** `getZoneColor('calories', value, targets)` is called
 **Then** it returns `zone-orange` with label "Rad Zone"
 
@@ -429,7 +430,7 @@ So that all progress bar components source their zone logic from a single author
 
 **Given** `lib/zoneCalculator.test.ts` exists
 **When** the test suite runs
-**Then** all zone boundary conditions pass (below floor, at floor, between floor–target, at target, above target+threshold)
+**Then** all zone boundary conditions pass including: below `HARD_MIN_CALORIES`, at calorieFloor (= BMR), between calorieFloor and calorieTarget, between calorieTarget and calorieCeiling, above calorieCeiling
 
 ---
 
@@ -549,19 +550,29 @@ So that my floors and progress bars stay accurate as my goals evolve.
 
 **Given** I navigate to `/settings`
 **When** the page loads
-**Then** I see my current targets pre-filled in the target form
+**Then** I see two pre-filled sections: Biometrics (weight, height, age, sex, activity level, goal type — displayed in my chosen measurement system) and Targets (calorie target, protein target, steps target)
 
-**Given** I update one or more target values and save
+**Given** I update biometrics only and save
 **When** the form is submitted
-**Then** new targets and recalculated floors are persisted and immediately reflected in the dashboard progress bars
+**Then** the server recalculates BMR from the new biometrics, updates calorieFloor = new BMR, and persists all changes
 
-**Given** I enter an invalid value (non-numeric or zero)
+**Given** I update calorie target only and save
+**When** the form is submitted
+**Then** the server recalculates calorieCeiling = new calorieTarget + 200 and persists all changes
+
+**Given** I enter a calorie target below 1,400
 **When** Zod validation runs
 **Then** I see a field-level error and the form does not submit
 
-**Given** updated targets
-**When** I view the dashboard after saving
-**Then** the progress bars recalculate against the new targets — today's logged values are re-evaluated against the new zones
+**Given** I enter an invalid value (non-numeric or zero) for any field
+**When** Zod validation runs
+**Then** I see a field-level error and the form does not submit
+
+**Given** any valid update is saved
+**When** I return to the dashboard
+**Then** progress bars immediately reflect the new floors and ceiling — today's logged values are re-evaluated against the updated zones
+
+*Note: This story requires `PATCH /api/users/config` — the POST in Story 2.1 is onboarding-only.*
 
 ---
 
