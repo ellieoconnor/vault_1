@@ -2,6 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginSchema } from "../schemas/auth";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -51,32 +60,53 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Log In</h1>
-      {formError && <p role="alert">{formError}</p>}
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        autoComplete="username"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        autoComplete="current-password"
-      />
-      <button disabled={mutation.isPending} type="submit">
-        {mutation.isPending ? "Logging in..." : "Log In"}
-      </button>
-      <p>
-        <Link to="/forgot-password">Forgot your password?</Link>
-      </p>
-      <p>
-        <Link to="/register">Don't have an account? Register</Link>
-      </p>
-    </form>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit}>
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Log In</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {formError && (
+              <p role="alert" className="text-destructive text-sm mb-4">
+                {formError}
+              </p>
+            )}
+            <div className="space-y-4">
+              <Input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="username"
+              />
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+            </div>
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Logging in..." : "Log In"}
+            </Button>
+            <p className="text-sm text-center w-full">
+              <Link to="/forgot-password">Forgot your password?</Link>
+            </p>
+            <p className="text-sm text-center w-full">
+              <Link to="/register">Don't have an account? Register</Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
   );
 }
