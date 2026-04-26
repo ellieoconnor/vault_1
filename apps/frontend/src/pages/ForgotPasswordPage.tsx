@@ -2,6 +2,15 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { forgotPasswordSchema } from "../schemas/auth";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function ForgotPasswordPage() {
   const [username, setUsername] = useState("");
@@ -33,15 +42,23 @@ export default function ForgotPasswordPage() {
 
   if (submitted) {
     return (
-      <div>
-        <h1>Check your email</h1>
-        <p>
-          If an account with that username has an email on file, you'll receive
-          a reset link shortly.
-        </p>
-        <p>
-          <Link to="/login">Back to login</Link>
-        </p>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Check your email</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              If an account with that username has an email on file, you'll
+              receive a reset link shortly.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <p className="text-sm text-center w-full">
+              <Link to="/login">Back to login</Link>
+            </p>
+          </CardFooter>
+        </Card>
       </div>
     );
   }
@@ -58,26 +75,45 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Reset your password</h1>
-      <p>
-        Enter your username and we'll send a reset link to the email on your
-        account.
-      </p>
-      {formError && <p role="alert">{formError}</p>}
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        autoComplete="username"
-      />
-      <button type="submit" disabled={mutation.isPending}>
-        {mutation.isPending ? "Sending..." : "Send reset link"}
-      </button>
-      <p>
-        <Link to="/login">Back to login</Link>
-      </p>
-    </form>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit}>
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Reset your password</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Enter your username and we'll send a reset link to the email on
+              your account.
+            </p>
+            {formError && (
+              <p role="alert" className="text-destructive text-sm mb-4">
+                {formError}
+              </p>
+            )}
+            <Input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
+            />
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Sending..." : "Send reset link"}
+            </Button>
+            <p className="text-sm text-center w-full">
+              <Link to="/login">Back to login</Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
   );
 }
