@@ -3,6 +3,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { registerSchema } from "../schemas/auth";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -64,44 +73,95 @@ export default function RegisterPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {generalError && <span>{generalError}</span>}
-      <label>
-        Username
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label>
-      {fieldErrors.username?.[0] && <span>{fieldErrors.username?.[0]}</span>}
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <form onSubmit={handleSubmit}>
+        <Card className="w-full max-w-sm">
+          <CardHeader>
+            <CardTitle>Create account</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {generalError && (
+              <span role="alert" className="text-destructive text-sm mb-4 block">
+                {generalError}
+              </span>
+            )}
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="username" className="text-sm font-medium">
+                  Username
+                </label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Username"
+                  autoComplete="username"
+                />
+                {fieldErrors.username?.[0] && (
+                  <span
+                    role="alert"
+                    className="text-destructive text-sm mt-1 block"
+                  >
+                    {fieldErrors.username?.[0]}
+                  </span>
+                )}
+              </div>
 
-      <label>
-        Email{" "}
-        <span style={{ fontWeight: "normal", fontSize: "0.875rem" }}>
-          (optional — needed for password reset)
-        </span>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="email"
-        />
-      </label>
-      {fieldErrors.email?.[0] && <span>{fieldErrors.email?.[0]}</span>}
+              <div className="space-y-1">
+                <label htmlFor="email" className="text-sm font-medium">
+                  Email{" "}
+                  <span className="font-normal text-sm text-muted-foreground">
+                    (optional — needed for password reset)
+                  </span>
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  autoComplete="email"
+                />
+                {fieldErrors.email?.[0] && (
+                  <span role="alert" className="text-destructive text-sm mt-1 block">
+                    {fieldErrors.email?.[0]}
+                  </span>
+                )}
+              </div>
 
-      <label>
-        Password
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      {fieldErrors.password?.[0] && <span>{fieldErrors.password?.[0]}</span>}
-      <button disabled={mutation.isPending} type="submit">
-        Register
-      </button>
-    </form>
+              <div className="space-y-1">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  autoComplete="new-password"
+                />
+                {fieldErrors.password?.[0] && (
+                  <span className="text-destructive text-sm mt-1 block">
+                    {fieldErrors.password?.[0]}
+                  </span>
+                )}
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={mutation.isPending}
+            >
+              Register
+            </Button>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
   );
 }
