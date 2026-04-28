@@ -55,13 +55,13 @@ so that my coaching strategies are captured in the app and ready to surface on m
 - [x] Task 2: Backend — Zod schema
     - [x] 2.1 Create `apps/backend/src/schemas/cheatCodeSchemas.ts` with `createCheatCodeSchema` and `updateCheatCodeSchema` (see Dev Notes)
 
-- [ ] Task 3: Backend — route handler
+- [x] Task 3: Backend — route handler
     - [x] 3.1 Create `apps/backend/src/routes/cheatCodes.ts` with 4 endpoints (see Dev Notes for full implementation)
-    - [ ] 3.2 `GET /api/cheat-codes` — return user's codes ordered by `sortOrder asc`
-    - [ ] 3.3 `POST /api/cheat-codes` — create, enforce max 3 server-side, auto-assign `sortOrder` as `MAX(sortOrder) + 1`
-    - [ ] 3.4 `PATCH /api/cheat-codes/:id` — update text only, verify ownership
-    - [ ] 3.5 `DELETE /api/cheat-codes/:id` — delete, verify ownership, return 204
-    - [ ] 3.6 Mount cheatCodesRouter in `apps/backend/src/index.ts`: `app.use('/api/cheat-codes', cheatCodesRouter)`
+    - [x] 3.2 `GET /api/cheat-codes` — return user's codes ordered by `sortOrder asc`
+    - [x] 3.3 `POST /api/cheat-codes` — create, enforce max 3 server-side, auto-assign `sortOrder` as `MAX(sortOrder) + 1`
+    - [x] 3.4 `PATCH /api/cheat-codes/:id` — update text only, verify ownership
+    - [x] 3.5 `DELETE /api/cheat-codes/:id` — delete, verify ownership, return 204
+    - [x] 3.6 Mount cheatCodesRouter in `apps/backend/src/index.ts`: `app.use('/api/cheat-codes', cheatCodesRouter)`
 
 - [ ] Task 4: Backend — API tests
     - [ ] 4.1 Create `apps/backend/tests/api/cheat-codes.test.ts` following the pattern of `tests/api/users-config.test.ts`
