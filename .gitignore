@@ -5,6 +5,7 @@ dist
 .env.test
 cookies.txt
 
+
 # Playwright
 test-results/
 playwright-report/

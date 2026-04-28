@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { Prisma } from '../generated/prisma/client.js';
 import { prisma } from '../index.js';
 import { requireAuth } from '../middleware/auth.js';
+import { validateBody } from '../middleware/validate.js';
 import { createCheatCodeSchema, updateCheatCodeSchema } from '../schemas/cheatCodeSchemas.js';
-import { SortOrder } from '../generated/prisma/internal/prismaNamespace.js';
 
 const router = Router();
 
@@ -43,7 +42,7 @@ router.post('/', requireAuth, validateBody(createCheatCodeSchema), async (req, r
             data: {
                 userId,
                 text: req.body.text,
-                SortOrder: nextSortOrder,
+                sortOrder: nextSortOrder,
             },
         });
         return res.status(201).json(code);
@@ -51,3 +50,42 @@ router.post('/', requireAuth, validateBody(createCheatCodeSchema), async (req, r
         next(err);
     }
 });
+
+// PATCH /api/cheat-codes/:id
+router.patch('/:id', requireAuth, validateBody(updateCheatCodeSchema), async (req, res, next) => {
+    try {
+        const { id } = req.params as { id: string };
+        const existing = await prisma.cheatCode.findUnique({
+            where: { id },
+        });
+        if (!existing || existing.userId !== req.session.userId) {
+            return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
+        }
+        const updated = await prisma.cheatCode.update({
+            where: { id },
+            data: { text: req.body.text },
+        });
+        return res.json(updated);
+    } catch (err) {
+        next(err);
+    }
+});
+
+// DELETE /api/cheat-codes/:id
+router.delete('/:id', requireAuth, async (req, res, next) => {
+    try {
+        const { id } = req.params as { id: string };
+        const existing = await prisma.cheatCode.findUnique({
+            where: { id },
+        });
+        if (!existing || existing.userId !== req.session.userId) {
+            return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
+        }
+        await prisma.cheatCode.delete({ where: { id } });
+        return res.status(204).send();
+    } catch (err) {
+        next(err);
+    }
+});
+
+export default router;
