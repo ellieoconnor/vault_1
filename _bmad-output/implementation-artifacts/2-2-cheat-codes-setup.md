@@ -63,19 +63,19 @@ so that my coaching strategies are captured in the app and ready to surface on m
     - [x] 3.5 `DELETE /api/cheat-codes/:id` — delete, verify ownership, return 204
     - [x] 3.6 Mount cheatCodesRouter in `apps/backend/src/index.ts`: `app.use('/api/cheat-codes', cheatCodesRouter)`
 
-- [ ] Task 4: Backend — API tests
-    - [ ] 4.1 Create `apps/backend/tests/api/cheat-codes.test.ts` following the pattern of `tests/api/users-config.test.ts`
-    - [ ] 4.2 Test GET returns empty array for new user
-    - [ ] 4.3 Test POST creates a code and returns 201
-    - [ ] 4.4 Test POST with 3 existing codes returns 400 MAX_CHEAT_CODES
-    - [ ] 4.5 Test POST with empty text returns 400 validation error
-    - [ ] 4.6 Test PATCH updates text and returns 200
-    - [ ] 4.7 Test PATCH for another user's code returns 404
-    - [ ] 4.8 Test DELETE removes code and returns 204
-    - [ ] 4.9 Test DELETE for another user's code returns 404
+- [x] Task 4: Backend — API tests
+    - [x] 4.1 Create `apps/backend/tests/api/cheat-codes.test.ts` following the pattern of `tests/api/users-config.test.ts`
+    - [x] 4.2 Test GET returns empty array for new user
+    - [x] 4.3 Test POST creates a code and returns 201
+    - [x] 4.4 Test POST with 3 existing codes returns 400 MAX_CHEAT_CODES
+    - [x] 4.5 Test POST with empty text returns 400 validation error
+    - [x] 4.6 Test PATCH updates text and returns 200
+    - [x] 4.7 Test PATCH for another user's code returns 404
+    - [x] 4.8 Test DELETE removes code and returns 204
+    - [x] 4.9 Test DELETE for another user's code returns 404
 
-- [ ] Task 5: Frontend — TanStack Query hook
-    - [ ] 5.1 Create `apps/frontend/src/api/useCheatCodes.ts` with `useCheatCodes`, `useCreateCheatCode`, `useUpdateCheatCode`, `useDeleteCheatCode` (see Dev Notes)
+- [x] Task 5: Frontend — TanStack Query hook
+    - [x] 5.1 Create `apps/frontend/src/api/useCheatCodes.ts` with `useCheatCodes`, `useCreateCheatCode`, `useUpdateCheatCode`, `useDeleteCheatCode` (see Dev Notes)
 
 - [ ] Task 6: Frontend — CheatCodeForm component and Settings page
     - [ ] 6.1 Create `apps/frontend/src/components/settings/CheatCodeForm.tsx` (see Dev Notes)
