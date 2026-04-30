@@ -52,8 +52,11 @@ export function CheatCodeForm() {
                         return next;
                     }),
                 onError: () =>
-                    setEditErrors((prev) => ({ ...prev, [id]: 'Could not save. Please try again.' })),
-            },
+                    setEditErrors((prev) => ({
+                        ...prev,
+                        [id]: 'Could not save. Please try again.',
+                    })),
+            }
         );
     }
 

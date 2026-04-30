@@ -3,38 +3,43 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 const API_URL = import.meta.env.VITE_API_URL;
 
 export interface UserConfig {
-    id:               string;
-    userId:           string;
+    id: string;
+    userId: string;
     measurementSystem: 'metric' | 'imperial';
-    weightKg:         number;
-    heightCm:         number;
-    age:              number;
-    sex:              'male' | 'female';
-    activityLevel:    string;
-    goalType:         'lose' | 'maintain' | 'build';
-    calorieTarget:    number;
-    calorieFloor:     number;
-    calorieCeiling:   number;
-    proteinTarget:    number;
-    proteinFloor:     number;
-    stepsTarget:      number;
-    stepsFloor:       number;
-    createdAt:        string;
-    updatedAt:        string;
+    weightKg: number;
+    heightCm: number;
+    age: number;
+    sex: 'male' | 'female';
+    activityLevel: string;
+    goalType: 'lose' | 'maintain' | 'build';
+    calorieTarget: number;
+    calorieFloor: number;
+    calorieCeiling: number;
+    proteinTarget: number;
+    proteinFloor: number;
+    stepsTarget: number;
+    stepsFloor: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface SetTargetsInput {
-    measurementSystem:     'metric' | 'imperial';
-    weightInput:           number;
-    heightInputPrimary:    number;
+    measurementSystem: 'metric' | 'imperial';
+    weightInput: number;
+    heightInputPrimary: number;
     heightInputSecondary?: number;
-    age:                   number;
-    sex:                   'male' | 'female';
-    activityLevel:         'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active' | 'extra_active';
-    goalType:              'lose' | 'maintain' | 'build';
-    calorieTarget:         number;
-    proteinTarget:         number;
-    stepsTarget:           number;
+    age: number;
+    sex: 'male' | 'female';
+    activityLevel:
+        | 'sedentary'
+        | 'lightly_active'
+        | 'moderately_active'
+        | 'very_active'
+        | 'extra_active';
+    goalType: 'lose' | 'maintain' | 'build';
+    calorieTarget: number;
+    proteinTarget: number;
+    stepsTarget: number;
 }
 
 export function useUserConfig() {

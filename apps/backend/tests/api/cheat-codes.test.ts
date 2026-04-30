@@ -103,7 +103,6 @@ describe('POST /api/cheat-codes', () => {
 
             expect(res.status).toBe(400);
         });
-
     });
 
     describe('authenticated user — max 3 enforcement', () => {
@@ -113,9 +112,18 @@ describe('POST /api/cheat-codes', () => {
         beforeAll(async () => {
             ({ userId, cookie } = await createAuthenticatedUser());
             // Seed 3 codes
-            await request(app).post('/api/cheat-codes').set('Cookie', cookie).send({ text: 'Code 1' });
-            await request(app).post('/api/cheat-codes').set('Cookie', cookie).send({ text: 'Code 2' });
-            await request(app).post('/api/cheat-codes').set('Cookie', cookie).send({ text: 'Code 3' });
+            await request(app)
+                .post('/api/cheat-codes')
+                .set('Cookie', cookie)
+                .send({ text: 'Code 1' });
+            await request(app)
+                .post('/api/cheat-codes')
+                .set('Cookie', cookie)
+                .send({ text: 'Code 2' });
+            await request(app)
+                .post('/api/cheat-codes')
+                .set('Cookie', cookie)
+                .send({ text: 'Code 3' });
         });
 
         afterAll(async () => {
