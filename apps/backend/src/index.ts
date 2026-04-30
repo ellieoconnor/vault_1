@@ -10,6 +10,7 @@ import { PrismaClient } from './generated/prisma/client.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import router from './routes/auth.js';
 import usersRouter from './routes/users.js';
+import cheatCodesRouter from './routes/cheatCodes.js';
 
 export const app = express();
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -55,6 +56,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', router);
 app.use('/api/users', usersRouter);
+app.use('/api/cheat-codes', cheatCodesRouter);
 
 app.use(errorHandler);
 
