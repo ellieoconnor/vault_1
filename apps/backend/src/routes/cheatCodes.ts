@@ -54,17 +54,17 @@ router.post('/', requireAuth, validateBody(createCheatCodeSchema), async (req, r
 // PATCH /api/cheat-codes/:id
 router.patch('/:id', requireAuth, validateBody(updateCheatCodeSchema), async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const existing = await prisma.cheatCode.findUnique({
-            where: { id },
+        const id = req.params.id as string;
+        const userId = req.session.userId!;
+        const updated = await prisma.$transaction(async (tx) => {
+            const result = await tx.cheatCode.updateMany({
+                where: { id, userId },
+                data: { text: req.body.text },
+            });
+            if (result.count === 0) return null;
+            return tx.cheatCode.findUnique({ where: { id } });
         });
-        if (!existing || existing.userId !== req.session.userId) {
-            return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
-        }
-        const updated = await prisma.cheatCode.update({
-            where: { id },
-            data: { text: req.body.text },
-        });
+        if (!updated) return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
         return res.json(updated);
     } catch (err) {
         next(err);
@@ -74,14 +74,11 @@ router.patch('/:id', requireAuth, validateBody(updateCheatCodeSchema), async (re
 // DELETE /api/cheat-codes/:id
 router.delete('/:id', requireAuth, async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const existing = await prisma.cheatCode.findUnique({
-            where: { id },
-        });
-        if (!existing || existing.userId !== req.session.userId) {
+        const id = req.params.id as string;
+        const userId = req.session.userId!;
+        const result = await prisma.cheatCode.deleteMany({ where: { id, userId } });
+        if (result.count === 0)
             return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
-        }
-        await prisma.cheatCode.delete({ where: { id } });
         return res.status(204).send();
     } catch (err) {
         next(err);
