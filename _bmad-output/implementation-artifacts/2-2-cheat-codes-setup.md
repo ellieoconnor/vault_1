@@ -77,18 +77,18 @@ so that my coaching strategies are captured in the app and ready to surface on m
 - [x] Task 5: Frontend — TanStack Query hook
     - [x] 5.1 Create `apps/frontend/src/api/useCheatCodes.ts` with `useCheatCodes`, `useCreateCheatCode`, `useUpdateCheatCode`, `useDeleteCheatCode` (see Dev Notes)
 
-- [ ] Task 6: Frontend — CheatCodeForm component and Settings page
-    - [ ] 6.1 Create `apps/frontend/src/components/settings/CheatCodeForm.tsx` (see Dev Notes)
-    - [ ] 6.2 Create `apps/frontend/src/pages/SettingsPage.tsx` that renders `<CheatCodeForm />`
-    - [ ] 6.3 Add a "Settings" link to `apps/frontend/src/pages/DashboardPage.tsx` so `/settings` is reachable without direct URL entry
-    - [ ] 6.4 Update `apps/frontend/src/App.tsx`: import `SettingsPage` and render it on the `/settings` route (replacing the placeholder `<div>`)
-    - [ ] 6.5 List existing Cheat Codes with inline edit (text input + save button per item)
-    - [ ] 6.6 "Add Cheat Code" input + button — disabled when 3 codes exist, showing "Maximum 3 Cheat Codes"
-    - [ ] 6.7 Delete button per code with immediate removal on success
-    - [ ] 6.8 Field-level validation: empty string shows error, no request sent
-    - [ ] 6.9 Handle `isError` from `useCheatCodes()` — show an error message, not a silent empty list
-    - [ ] 6.10 All inputs minimum 16px font size (prevents iOS Safari auto-zoom)
-    - [ ] 6.11 All interactive targets minimum 44×44px (NFR-A4)
+- [x] Task 6: Frontend — CheatCodeForm component and Settings page
+    - [x] 6.1 Create `apps/frontend/src/components/settings/CheatCodeForm.tsx` (see Dev Notes)
+    - [x] 6.2 Create `apps/frontend/src/pages/SettingsPage.tsx` that renders `<CheatCodeForm />`
+    - [x] 6.3 Add a "Settings" link to `apps/frontend/src/pages/DashboardPage.tsx` so `/settings` is reachable without direct URL entry
+    - [x] 6.4 Update `apps/frontend/src/App.tsx`: import `SettingsPage` and render it on the `/settings` route (replacing the placeholder `<div>`)
+    - [x] 6.5 List existing Cheat Codes with inline edit (text input + save button per item)
+    - [x] 6.6 "Add Cheat Code" input + button — disabled when 3 codes exist, showing "Maximum 3 Cheat Codes"
+    - [x] 6.7 Delete button per code with immediate removal on success
+    - [x] 6.8 Field-level validation: empty string shows error, no request sent
+    - [x] 6.9 Handle `isError` from `useCheatCodes()` — show an error message, not a silent empty list
+    - [x] 6.10 All inputs minimum 16px font size (prevents iOS Safari auto-zoom)
+    - [x] 6.11 All interactive targets minimum 44×44px (NFR-A4)
 
 ---
 

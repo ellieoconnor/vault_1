@@ -19,6 +19,7 @@ export function CheatCodeForm() {
     const [newError, setNewError] = useState('');
     const [editTexts, setEditTexts] = useState<Record<string, string>>({});
     const [editErrors, setEditErrors] = useState<Record<string, string>>({});
+    const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
 
     const atMax = codes.length >= MAX_CODES;
 
@@ -30,6 +31,7 @@ export function CheatCodeForm() {
         setNewError('');
         createCode.mutate(newText.trim(), {
             onSuccess: () => setNewText(''),
+            onError: () => setNewError('Could not save. Please try again.'),
         });
     }
 
@@ -40,11 +42,39 @@ export function CheatCodeForm() {
             return;
         }
         setEditErrors((prev) => ({ ...prev, [id]: '' }));
-        updateCode.mutate({ id, text: text.trim() });
+        updateCode.mutate(
+            { id, text: text.trim() },
+            {
+                onSuccess: () =>
+                    setEditTexts((prev) => {
+                        const next = { ...prev };
+                        delete next[id];
+                        return next;
+                    }),
+                onError: () =>
+                    setEditErrors((prev) => ({ ...prev, [id]: 'Could not save. Please try again.' })),
+            },
+        );
     }
 
     function handleDelete(id: string) {
-        deleteCode.mutate(id);
+        setDeletingIds((prev) => new Set(prev).add(id));
+        deleteCode.mutate(id, {
+            onSuccess: () =>
+                setEditTexts((prev) => {
+                    const next = { ...prev };
+                    delete next[id];
+                    return next;
+                }),
+            onError: () => {
+                setDeletingIds((prev) => {
+                    const next = new Set(prev);
+                    next.delete(id);
+                    return next;
+                });
+                setEditErrors((prev) => ({ ...prev, [id]: 'Could not delete. Please try again.' }));
+            },
+        });
     }
 
     if (isPending) return <div>Loading...</div>;
@@ -61,6 +91,7 @@ export function CheatCodeForm() {
                 {codes.map((code) => {
                     const editText = editTexts[code.id] ?? code.text;
                     const editError = editErrors[code.id] ?? '';
+                    const isDeleting = deletingIds.has(code.id);
                     return (
                         <li key={code.id}>
                             <input
@@ -68,7 +99,7 @@ export function CheatCodeForm() {
                                 value={editText}
                                 maxLength={MAX_LENGTH}
                                 style={{ fontSize: '16px' }}
-                                aria-label={`Edit Cheat Code: ${code.text}`}
+                                aria-label={`Edit Cheat Code: ${editText}`}
                                 onChange={(e) =>
                                     setEditTexts((prev) => ({ ...prev, [code.id]: e.target.value }))
                                 }
@@ -85,7 +116,7 @@ export function CheatCodeForm() {
                             <button
                                 type="button"
                                 onClick={() => handleDelete(code.id)}
-                                disabled={deleteCode.isPending}
+                                disabled={isDeleting}
                                 style={{ minHeight: '44px', minWidth: '44px' }}
                                 aria-label={`Delete Cheat Code: ${code.text}`}
                             >
