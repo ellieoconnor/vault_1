@@ -54,12 +54,12 @@ vault_1/
 │   │       └── schemas/  # Zod validation
 │   │
 │   └── backend/          # Express TypeScript REST API
+│       ├── prisma/       # Database schema + migrations
 │       └── src/
 │           ├── routes/
 │           ├── middleware/
 │           ├── services/
 │           └── schemas/
-│           └── prisma/   # Database schema + migrations
 │
 ├── .github/workflows/    # CI/CD pipelines
 └── vercel.json
@@ -157,7 +157,7 @@ Building the core daily tracking loop.
 | Epic 4: Weekly Planning Ritual | Planned | Consistency %, tier labels, goal review, Cheat Code updates |
 | Epic 5: Offline & PWA | Planned | Dexie queue, service worker, home screen install |
 
-**Go signal for Phase 2:** 4+ weeks of consistent personal use with 65%+ weekly consistency average.
+**Go signal for Phase 2:** MVP validation through consistent personal use.
 
 ---
 

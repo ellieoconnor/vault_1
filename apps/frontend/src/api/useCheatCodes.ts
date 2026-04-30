@@ -28,7 +28,7 @@ export function useCreateCheatCode() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (text: string) => {
-            const res = await fetch(`${API_URL}/api/cheat/codes`, {
+            const res = await fetch(`${API_URL}/api/cheat-codes`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

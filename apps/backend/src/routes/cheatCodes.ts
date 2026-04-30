@@ -6,7 +6,6 @@ import { createCheatCodeSchema, updateCheatCodeSchema } from '../schemas/cheatCo
 
 const router = Router();
 
-// GET /api/cheat-codes returns user's codes ordered
 // GET /api/cheat-codes
 router.get('/', requireAuth, async (req, res, next) => {
     try {
@@ -24,27 +23,28 @@ router.get('/', requireAuth, async (req, res, next) => {
 router.post('/', requireAuth, validateBody(createCheatCodeSchema), async (req, res, next) => {
     try {
         const userId = req.session.userId!;
-        const count = await prisma.cheatCode.count({ where: { userId } });
-        if (count >= 3) {
+        const code = await prisma.$transaction(async (tx) => {
+            const count = await tx.cheatCode.count({ where: { userId } });
+            if (count >= 3) return null;
+
+            // Use MAX(sortOrder) + 1 - NOT count - to avoid collisions after deletes
+            const maxResult = await tx.cheatCode.aggregate({
+                where: { userId },
+                _max: { sortOrder: true },
+            });
+            const nextSortOrder = (maxResult._max.sortOrder ?? -1) + 1;
+
+            return tx.cheatCode.create({
+                data: { userId, text: req.body.text, sortOrder: nextSortOrder },
+            });
+        });
+
+        if (!code) {
             return res.status(400).json({
                 error: 'MAX_CHEAT_CODES',
                 message: 'Maximum 3 Cheat Codes allowed',
             });
         }
-        // Use MAX(sortOrder) + 1 - NOT count - to avoid duplicates after deletes
-        const maxResult = await prisma.cheatCode.aggregate({
-            where: { userId },
-            _max: { sortOrder: true },
-        });
-        const nextSortOrder = (maxResult._max.sortOrder ?? -1) + 1;
-
-        const code = await prisma.cheatCode.create({
-            data: {
-                userId,
-                text: req.body.text,
-                sortOrder: nextSortOrder,
-            },
-        });
         return res.status(201).json(code);
     } catch (err) {
         next(err);
@@ -54,7 +54,7 @@ router.post('/', requireAuth, validateBody(createCheatCodeSchema), async (req, r
 // PATCH /api/cheat-codes/:id
 router.patch('/:id', requireAuth, validateBody(updateCheatCodeSchema), async (req, res, next) => {
     try {
-        const { id } = req.params as { id: string };
+        const { id } = req.params;
         const existing = await prisma.cheatCode.findUnique({
             where: { id },
         });
@@ -74,7 +74,7 @@ router.patch('/:id', requireAuth, validateBody(updateCheatCodeSchema), async (re
 // DELETE /api/cheat-codes/:id
 router.delete('/:id', requireAuth, async (req, res, next) => {
     try {
-        const { id } = req.params as { id: string };
+        const { id } = req.params;
         const existing = await prisma.cheatCode.findUnique({
             where: { id },
         });
