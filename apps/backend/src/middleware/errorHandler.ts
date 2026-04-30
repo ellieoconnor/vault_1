@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 /**
  * Catch-all api response for unhandled errors
@@ -7,16 +7,11 @@ import { Request, Response, NextFunction } from "express";
  * @param res
  * @param _next
  */
-export function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  _next: NextFunction,
-) {
-  console.error(err.stack);
-  res.status(500).json({
-    error: "INTERNAL_ERROR",
-    message: "An unexpected error occurred",
-    details: {},
-  });
+export function errorHandler(err: Error, req: Request, res: Response, _next: NextFunction) {
+    console.error(err.stack);
+    res.status(500).json({
+        error: 'INTERNAL_ERROR',
+        message: 'An unexpected error occurred',
+        details: {},
+    });
 }
