@@ -19,6 +19,7 @@ model User {
   updatedAt           DateTime             @updatedAt @map("updated_at")
   passwordResetTokens PasswordResetToken[]
   userConfig          UserConfig?
+  cheatCodes    CheatCode[]
 
   @@map("users")
 }
@@ -74,4 +75,17 @@ model UserConfig {
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_config")
+}
+
+model CheatCode {
+    id    String    @id @default(cuid())
+    userId    String    @map("user_id")
+    text    String
+    sortOrder    Int    @map("sort_order")
+    createdAt    DateTime    @default(now()) @map("created_at")
+    updatedAt    DateTime    @updatedAt @map("updated_at")
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("cheat_codes")
 }
