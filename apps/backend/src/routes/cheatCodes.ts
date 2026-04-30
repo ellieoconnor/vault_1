@@ -64,7 +64,8 @@ router.patch('/:id', requireAuth, validateBody(updateCheatCodeSchema), async (re
             if (result.count === 0) return null;
             return tx.cheatCode.findUnique({ where: { id } });
         });
-        if (!updated) return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
+        if (!updated)
+            return res.status(404).json({ error: 'NOT_FOUND', message: 'Cheat Code not found' });
         return res.json(updated);
     } catch (err) {
         next(err);

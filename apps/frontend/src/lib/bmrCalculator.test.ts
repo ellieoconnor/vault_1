@@ -57,9 +57,13 @@ describe('calculateTDEE', () => {
 
     it('all activity levels produce values in ascending order', () => {
         const levels: ActivityLevel[] = [
-            'sedentary', 'lightly_active', 'moderately_active', 'very_active', 'extra_active',
+            'sedentary',
+            'lightly_active',
+            'moderately_active',
+            'very_active',
+            'extra_active',
         ];
-        const tdees = levels.map(l => calculateTDEE(bmr, l));
+        const tdees = levels.map((l) => calculateTDEE(bmr, l));
         for (let i = 1; i < tdees.length; i++) {
             expect(tdees[i]).toBeGreaterThan(tdees[i - 1]);
         }
