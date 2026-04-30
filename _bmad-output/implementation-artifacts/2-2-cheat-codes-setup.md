@@ -1,6 +1,6 @@
 # Story 2.2: Cheat Codes Setup
 
-Status: ready-for-dev
+Status: done
 
 ## Why This Story Matters
 
@@ -666,13 +666,30 @@ apps/frontend/
 
 ### Agent Model Used
 
-<!-- To be filled by dev agent -->
+claude-sonnet-4-6
 
 ### Debug Log References
 
+None — implementation followed Dev Notes spec without significant deviations.
+
 ### Completion Notes List
+
+- POST route uses `$transaction` to prevent race condition on count check + create (improvement over spec)
+- `CheatCodeForm` adds per-item delete optimistic tracking via `deletingIds` Set (improvement over spec)
+- `CheatCodeForm` adds `onError` callbacks to surface network failures inline (improvement over spec)
+- Zod schema uses `.trim()` before `.min(1)` — whitespace-only codes blocked at API boundary
+- PATCH/DELETE rewritten post-review to use `updateMany`/`deleteMany` with `where: { id, userId }` — eliminates TOCTOU race condition
+- `req.params.id as string` assertion added to resolve `@types/express@5` widening issue
 
 ### File List
 
-$$
-$$
+- apps/backend/prisma/schema.prisma
+- apps/backend/src/index.ts
+- apps/backend/src/routes/cheatCodes.ts
+- apps/backend/src/schemas/cheatCodeSchemas.ts
+- apps/backend/tests/api/cheat-codes.test.ts
+- apps/frontend/src/App.tsx
+- apps/frontend/src/api/useCheatCodes.ts
+- apps/frontend/src/components/settings/CheatCodeForm.tsx
+- apps/frontend/src/pages/DashboardPage.tsx
+- apps/frontend/src/pages/SettingsPage.tsx
