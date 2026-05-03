@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import connectPgSimple from 'connect-pg-simple';
@@ -22,12 +21,23 @@ export { prisma };
 
 const PORT = process.env.PORT || 3000;
 
-app.use(
-    cors({
-        origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
-        credentials: true, // required for session cookies
-    })
-);
+app.use((req, res, next) => {
+    const allowed = [
+        process.env.CLIENT_ORIGIN,
+        'http://localhost:5173',
+    ].filter(Boolean) as string[];
+    const origin = req.headers.origin;
+    if (origin && allowed.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    }
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204);
+    }
+    next();
+});
 
 app.use(cookieParser());
 app.use(express.json());
