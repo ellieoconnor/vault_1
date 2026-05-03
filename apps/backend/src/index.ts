@@ -54,6 +54,14 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+app.get('/api/debug-cors', (req, res) => {
+    res.json({
+        CLIENT_ORIGIN: process.env.CLIENT_ORIGIN,
+        NODE_ENV: process.env.NODE_ENV,
+        requestOrigin: req.headers.origin,
+    });
+});
+
 app.use('/api/auth', router);
 app.use('/api/users', usersRouter);
 app.use('/api/cheat-codes', cheatCodesRouter);
