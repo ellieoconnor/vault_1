@@ -5,3 +5,4 @@ build
 coverage
 apps/*/node_modules
 apps/*/dist
+apps/backend/src/generated
