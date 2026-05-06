@@ -22,10 +22,9 @@ export { prisma };
 const PORT = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-    const allowed = [
-        process.env.CLIENT_ORIGIN,
-        'http://localhost:5173',
-    ].filter(Boolean) as string[];
+    const allowed = [process.env.CLIENT_ORIGIN, 'http://localhost:5173'].filter(
+        Boolean
+    ) as string[];
     const origin = req.headers.origin;
     if (origin && allowed.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
