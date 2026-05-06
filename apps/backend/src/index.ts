@@ -12,6 +12,7 @@ import usersRouter from './routes/users.js';
 import cheatCodesRouter from './routes/cheatCodes.js';
 
 export const app = express();
+app.set('trust proxy', 1);
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const PgSession = connectPgSimple(session);
 const adapter = new PrismaPg(pool);
