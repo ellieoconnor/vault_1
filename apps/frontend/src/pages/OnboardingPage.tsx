@@ -64,12 +64,12 @@ function computeTDEE(form: FormState): number {
     );
 }
 
-export default function OnboardingPage() {
+export default function OnboardingPage({ initialStep = 1 }: { initialStep?: 1 | 2 | 3 }) {
     const navigate = useNavigate();
     const { data: config, isLoading, isError } = useUserConfig();
     const setUserConfig = useSetUserConfig();
 
-    const [step, setStep] = useState<1 | 2 | 3>(1);
+    const [step, setStep] = useState<1 | 2 | 3>(initialStep);
     const [form, setForm] = useState<FormState>(initialFormState);
     const [step1Errors, setStep1Errors] = useState<Record<string, string[]>>({});
     const [step2Errors, setStep2Errors] = useState<Record<string, string[]>>({});
