@@ -39,6 +39,11 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/api', (req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+});
+
 app.use(cookieParser());
 app.use(express.json());
 
