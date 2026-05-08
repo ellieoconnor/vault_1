@@ -25,7 +25,7 @@ export const ZONE_COLORS: Record<ZoneColor, ZoneColor> = {
 // TODO: Weekly consistency tier labels (used by consistencyCalc.ts in story 4.1)
 export const TIER_LABELS = {
     STANDING: 'Still Standing', // <60%
-    SURVIVING: 'Surving the Wasteland', // 60-74%
+    SURVIVING: 'Surviving the Wasteland', // 60-74%
     VETERAN: 'Wasteland Veteran', // 75-89%
     CHOSEN: 'The Chosen One', // 90%+
 } as const;
