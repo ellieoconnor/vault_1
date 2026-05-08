@@ -20,6 +20,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   userConfig          UserConfig?
   cheatCodes    CheatCode[]
+  dailyLogs DailyLog[]
 
   @@map("users")
 }
@@ -88,4 +89,24 @@ model CheatCode {
     user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@map("cheat_codes")
+}
+
+model DailyLog {
+    id String @id @default(cuid())
+    userId String @map("user_id")
+    logDate DateTime @db.Date @map("log_date")
+    calories Int?
+    protein Int?
+    steps Int?
+    workoutDone Boolean @default(false) @map("workout_done")
+    dayComplete Boolean @default(false) @map("day_complete")
+    mood String?
+    roughDay Boolean? @map("rough_day")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, logDate])
+    @@map("daily_logs")
 }
