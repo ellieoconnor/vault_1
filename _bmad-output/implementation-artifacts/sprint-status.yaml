@@ -54,7 +54,7 @@ development_status:
   epic-2: in-progress
   2-1-user-onboarding-targets-floor-setup: done
   2-2-cheat-codes-setup: done
-  2-3-zone-calculation-engine: backlog
+  2-3-zone-calculation-engine: ready-for-dev
   2-4-win-the-day-dashboard-progress-bars-daily-log: backlog
   2-5-day-complete-mood-tag: backlog
   2-6-yesterday-completion-prompt: backlog
