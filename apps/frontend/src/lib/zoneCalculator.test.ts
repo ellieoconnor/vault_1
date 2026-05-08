@@ -155,4 +155,3 @@ describe('getZoneColor — steps (symmetric zone model, mirrors protein)', () =>
         expect(result.label).toBe('Below floor');
     });
 });
-
