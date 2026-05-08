@@ -135,9 +135,10 @@ export const ZONE_COLORS: Record<ZoneColor, ZoneColor> = {
 
 // Weekly consistency tier labels (used by consistencyCalc.ts in Story 4.1)
 export const TIER_LABELS = {
+    STANDING: 'Still Standing',           // <60%
     SURVIVING: 'Surviving the Wasteland', // 60–74%
-    THRIVING: 'Thriving', // 75–89%
-    ELITE: 'Elite', // 90%+
+    VETERAN: 'Wasteland Veteran',         // 75–89%
+    CHOSEN: 'The Chosen One',             // 90%+
 } as const;
 
 // Absolute calorie minimum — used as test boundary for zone calculator.
@@ -322,3 +323,7 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 ### File List
+
+- `apps/frontend/src/lib/zoneConstants.ts` — created
+- `apps/frontend/src/lib/zoneCalculator.ts` — created
+- `apps/frontend/src/lib/zoneCalculator.test.ts` — created

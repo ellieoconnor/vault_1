@@ -1,4 +1,4 @@
-import { ZONE_COLORS, type ZoneResult } from './zoneConstants';
+import { ZONE_COLORS, type ZoneResult } from '@/lib/zoneConstants';
 
 // Shape of user targets as persisted in UserConfig.
 // All floor and ceiling values are pre-computed server-side:
