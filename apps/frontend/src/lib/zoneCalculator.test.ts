@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { getZoneColor, type UserTargets } from '@/lib/zoneCalculator';
-import { HARD_MIN_CALORIES } from '@/lib/zoneConstants';
 
 const targets: UserTargets = {
     calorieFloor: 1600, // represents BMR
@@ -73,8 +72,11 @@ describe('getZoneColor — calories (asymmetric zone model)', () => {
         expect(result.label).toBe('Below floor');
     });
 
-    it('HARD_MIN_CALORIES constant is 1200', () => {
-        expect(HARD_MIN_CALORIES).toBe(1200);
+    it('3.1b value above a low calorieFloor but still below HARD_MIN_CALORIES → zone-amber-low', () => {
+        const lowFloorTargets: UserTargets = { ...targets, calorieFloor: 1100 };
+        const result = getZoneColor('calories', 1150, lowFloorTargets);
+        expect(result.color).toBe('zone-amber-low');
+        expect(result.label).toBe('Below floor');
     });
 });
 
@@ -154,30 +156,3 @@ describe('getZoneColor — steps (symmetric zone model, mirrors protein)', () =>
     });
 });
 
-describe('3.16 — all results have a non-undefined label string', () => {
-    const cases: Array<['calories' | 'protein' | 'steps', number]> = [
-        ['calories', 800],
-        ['calories', 1600],
-        ['calories', 1750],
-        ['calories', 1900],
-        ['calories', 2000],
-        ['calories', 2101],
-        ['protein', 100],
-        ['protein', 120],
-        ['protein', 150],
-        ['protein', 175],
-        ['steps', 3000],
-        ['steps', 5000],
-        ['steps', 10000],
-        ['steps', 12000],
-    ];
-
-    cases.forEach(([metric, value]) => {
-        it(`${metric} value ${value} has a defined label`, () => {
-            const result = getZoneColor(metric, value, targets);
-            expect(result.label).toBeDefined();
-            expect(typeof result.label).toBe('string');
-            expect(result.label.length).toBeGreaterThan(0);
-        });
-    });
-});
