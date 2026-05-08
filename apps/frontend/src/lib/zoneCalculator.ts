@@ -1,4 +1,4 @@
-import { ZONE_COLORS, type ZoneResult } from '@/lib/zoneConstants';
+import { HARD_MIN_CALORIES, type ZoneResult } from '@/lib/zoneConstants';
 
 // Shape of user targets as persisted in UserConfig.
 // All floor and ceiling values are pre-computed server-side:
@@ -23,28 +23,29 @@ export function getZoneColor(
     value: number,
     targets: UserTargets
 ): ZoneResult {
-    if (metric === 'calories') {
-        return getCalorieZone(value, targets);
+    switch (metric) {
+        case 'calories':
+            return getCalorieZone(value, targets);
+        case 'protein':
+            return getSymmetricZone(value, targets.proteinFloor, targets.proteinTarget);
+        case 'steps':
+            return getSymmetricZone(value, targets.stepsFloor, targets.stepsTarget);
     }
-    if (metric === 'protein') {
-        return getSymmetricZone(value, targets.proteinFloor, targets.proteinTarget);
-    }
-    return getSymmetricZone(value, targets.stepsFloor, targets.stepsTarget);
 }
 
 // Calorie zone model is asymmetric — over-target is amber-over (neutral heads-up),
 // not green. Above ceiling is orange (Rad Zone). Neither is a failure state.
 function getCalorieZone(value: number, targets: UserTargets): ZoneResult {
-    if (value < targets.calorieFloor) {
-        return { color: ZONE_COLORS['zone-amber-low'], label: 'Below floor' };
+    if (value < HARD_MIN_CALORIES || value < targets.calorieFloor) {
+        return { color: 'zone-amber-low', label: 'Below floor' };
     }
     if (value <= targets.calorieTarget) {
-        return { color: ZONE_COLORS['zone-green'], label: 'On track' };
+        return { color: 'zone-green', label: 'On track' };
     }
     if (value <= targets.calorieCeiling) {
-        return { color: ZONE_COLORS['zone-amber-over'], label: 'Heads up' };
+        return { color: 'zone-amber-over', label: 'Heads up' };
     }
-    return { color: ZONE_COLORS['zone-orange'], label: 'Rad Zone' };
+    return { color: 'zone-orange', label: 'Rad Zone' };
 }
 
 // Protein and steps use the symmetric model:
@@ -53,10 +54,10 @@ function getCalorieZone(value: number, targets: UserTargets): ZoneResult {
 // above target -> blue (bonus)
 function getSymmetricZone(value: number, floor: number, target: number): ZoneResult {
     if (value < floor) {
-        return { color: ZONE_COLORS['zone-amber'], label: 'Below floor' };
+        return { color: 'zone-amber', label: 'Below floor' };
     }
     if (value <= target) {
-        return { color: ZONE_COLORS['zone-green'], label: 'On track' };
+        return { color: 'zone-green', label: 'On track' };
     }
-    return { color: ZONE_COLORS['zone-blue'], label: 'Bonus' };
+    return { color: 'zone-blue', label: 'Bonus' };
 }
