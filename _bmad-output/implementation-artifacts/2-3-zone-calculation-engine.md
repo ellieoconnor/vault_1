@@ -1,6 +1,6 @@
 # Story 2.3: Zone Calculation Engine
 
-Status: ready-for-dev
+Status: done
 
 ## Why This Story Matters
 
@@ -62,33 +62,33 @@ so that all progress bar components source their zone logic from a single author
     - [x] 1.5 Export `ZoneColor` TypeScript type union of all valid zone string identifiers
     - [x] 1.6 Export `ZoneResult` interface `{ color: ZoneColor; label: string }`
 
-- [ ] Task 2: Create `apps/frontend/src/lib/zoneCalculator.ts`
-    - [ ] 2.1 Define `UserTargets` interface with fields: `calorieFloor`, `calorieTarget`, `calorieCeiling`, `proteinFloor`, `proteinTarget`, `stepsFloor`, `stepsTarget` (all `number`)
-    - [ ] 2.2 Implement `getZoneColor(metric: 'calories' | 'protein' | 'steps', value: number, targets: UserTargets): ZoneResult`
-    - [ ] 2.3 Calorie logic (asymmetric): `value < calorieFloor` → `zone-amber-low` / "Below floor"; `value >= calorieFloor && value <= calorieTarget` → `zone-green` / "On track"; `value > calorieTarget && value <= calorieCeiling` → `zone-amber-over` / "Heads up"; `value > calorieCeiling` → `zone-orange` / "Rad Zone"
-    - [ ] 2.4 Protein logic (symmetric): `value < proteinFloor` → `zone-amber` / "Below floor"; `value >= proteinFloor && value <= proteinTarget` → `zone-green` / "On track"; `value > proteinTarget` → `zone-blue` / "Bonus"
-    - [ ] 2.5 Steps logic (symmetric, identical pattern to protein): `value < stepsFloor` → `zone-amber` / "Below floor"; `value >= stepsFloor && value <= stepsTarget` → `zone-green` / "On track"; `value > stepsTarget` → `zone-blue` / "Bonus"
-    - [ ] 2.6 No inline color strings — all color values sourced from `ZONE_COLORS` in `zoneConstants.ts`
-    - [ ] 2.7 No React imports, no side effects — pure function only
+- [x] Task 2: Create `apps/frontend/src/lib/zoneCalculator.ts`
+    - [x] 2.1 Define `UserTargets` interface with fields: `calorieFloor`, `calorieTarget`, `calorieCeiling`, `proteinFloor`, `proteinTarget`, `stepsFloor`, `stepsTarget` (all `number`)
+    - [x] 2.2 Implement `getZoneColor(metric: 'calories' | 'protein' | 'steps', value: number, targets: UserTargets): ZoneResult`
+    - [x] 2.3 Calorie logic (asymmetric): `value < calorieFloor` → `zone-amber-low` / "Below floor"; `value >= calorieFloor && value <= calorieTarget` → `zone-green` / "On track"; `value > calorieTarget && value <= calorieCeiling` → `zone-amber-over` / "Heads up"; `value > calorieCeiling` → `zone-orange` / "Rad Zone"
+    - [x] 2.4 Protein logic (symmetric): `value < proteinFloor` → `zone-amber` / "Below floor"; `value >= proteinFloor && value <= proteinTarget` → `zone-green` / "On track"; `value > proteinTarget` → `zone-blue` / "Bonus"
+    - [x] 2.5 Steps logic (symmetric, identical pattern to protein): `value < stepsFloor` → `zone-amber` / "Below floor"; `value >= stepsFloor && value <= stepsTarget` → `zone-green` / "On track"; `value > stepsTarget` → `zone-blue` / "Bonus"
+    - [x] 2.6 No inline color strings — all color values sourced from `ZONE_COLORS` in `zoneConstants.ts`
+    - [x] 2.7 No React imports, no side effects — pure function only
 
-- [ ] Task 3: Create `apps/frontend/src/lib/zoneCalculator.test.ts`
-    - [ ] 3.1 Test calorie zone: value below `HARD_MIN_CALORIES` (e.g. 800) → `zone-amber-low`
-    - [ ] 3.2 Test calorie zone: value at `calorieFloor` exactly (boundary at-floor) → `zone-green` (floor is inclusive lower bound of green zone)
-    - [ ] 3.3 Test calorie zone: value below `calorieFloor` (e.g. 1 below floor) → `zone-amber-low`
-    - [ ] 3.4 Test calorie zone: value between floor and target → `zone-green` "On track"
-    - [ ] 3.5 Test calorie zone: value at `calorieTarget` exactly → `zone-green` (target is inclusive upper bound of green zone)
-    - [ ] 3.6 Test calorie zone: value 1 above `calorieTarget` → `zone-amber-over` "Heads up"
-    - [ ] 3.7 Test calorie zone: value between target and ceiling → `zone-amber-over` "Heads up"
-    - [ ] 3.8 Test calorie zone: value at `calorieCeiling` exactly → `zone-amber-over` (ceiling is inclusive upper bound of amber-over)
-    - [ ] 3.9 Test calorie zone: value 1 above `calorieCeiling` → `zone-orange` "Rad Zone"
-    - [ ] 3.10 Test protein zone: below floor → `zone-amber` "Below floor"
-    - [ ] 3.11 Test protein zone: at floor (inclusive) → `zone-green` "On track"
-    - [ ] 3.12 Test protein zone: between floor and target → `zone-green` "On track"
-    - [ ] 3.13 Test protein zone: at target (inclusive) → `zone-green` "On track"
-    - [ ] 3.14 Test protein zone: above target → `zone-blue` "Bonus"
-    - [ ] 3.15 Test steps zone: mirrors protein — below floor, at floor, between, at target, above target
-    - [ ] 3.16 Test label strings are present on every result (never undefined)
-    - [ ] 3.17 Run `npm test` in `apps/frontend/` and confirm all tests pass
+- [x] Task 3: Create `apps/frontend/src/lib/zoneCalculator.test.ts`
+    - [x] 3.1 Test calorie zone: value below `HARD_MIN_CALORIES` (e.g. 800) → `zone-amber-low`
+    - [x] 3.2 Test calorie zone: value at `calorieFloor` exactly (boundary at-floor) → `zone-green` (floor is inclusive lower bound of green zone)
+    - [x] 3.3 Test calorie zone: value below `calorieFloor` (e.g. 1 below floor) → `zone-amber-low`
+    - [x] 3.4 Test calorie zone: value between floor and target → `zone-green` "On track"
+    - [x] 3.5 Test calorie zone: value at `calorieTarget` exactly → `zone-green` (target is inclusive upper bound of green zone)
+    - [x] 3.6 Test calorie zone: value 1 above `calorieTarget` → `zone-amber-over` "Heads up"
+    - [x] 3.7 Test calorie zone: value between target and ceiling → `zone-amber-over` "Heads up"
+    - [x] 3.8 Test calorie zone: value at `calorieCeiling` exactly → `zone-amber-over` (ceiling is inclusive upper bound of amber-over)
+    - [x] 3.9 Test calorie zone: value 1 above `calorieCeiling` → `zone-orange` "Rad Zone"
+    - [x] 3.10 Test protein zone: below floor → `zone-amber` "Below floor"
+    - [x] 3.11 Test protein zone: at floor (inclusive) → `zone-green` "On track"
+    - [x] 3.12 Test protein zone: between floor and target → `zone-green` "On track"
+    - [x] 3.13 Test protein zone: at target (inclusive) → `zone-green` "On track"
+    - [x] 3.14 Test protein zone: above target → `zone-blue` "Bonus"
+    - [x] 3.15 Test steps zone: mirrors protein — below floor, at floor, between, at target, above target
+    - [x] 3.16 Test label strings are present on every result (never undefined)
+    - [x] 3.17 Run `npm test` in `apps/frontend/` and confirm all tests pass
 
 ---
 
