@@ -10,6 +10,7 @@ import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
     return (
+        <h1>Hello</h1>
         <BrowserRouter>
             <Routes>
                 {/* Public routes */}
@@ -64,4 +65,6 @@ export default function App() {
             </Routes>
         </BrowserRouter>
     );
+
+    // this is a change!!!
 }
