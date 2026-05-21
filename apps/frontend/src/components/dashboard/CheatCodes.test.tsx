@@ -37,7 +37,7 @@ describe('CheatCodes', () => {
         mockUseCheatCodes.mockReturnValue({
             data: undefined,
             isLoading: true,
-        } as ReturnType<typeof useCheatCodes>);
+        } as unknown as ReturnType<typeof useCheatCodes>);
         const { container } = render(<CheatCodes />);
         expect(container.firstChild).toBeNull();
     });
@@ -46,7 +46,7 @@ describe('CheatCodes', () => {
         mockUseCheatCodes.mockReturnValue({
             data: [],
             isLoading: false,
-        } as ReturnType<typeof useCheatCodes>);
+        } as unknown as ReturnType<typeof useCheatCodes>);
         render(<CheatCodes />);
         expect(screen.getByText('No Cheat Codes yet — add them in Settings.')).toBeDefined();
     });
@@ -55,7 +55,7 @@ describe('CheatCodes', () => {
         mockUseCheatCodes.mockReturnValue({
             data: sampleCodes,
             isLoading: false,
-        } as ReturnType<typeof useCheatCodes>);
+        } as unknown as ReturnType<typeof useCheatCodes>);
         render(<CheatCodes />);
         expect(screen.getByText('Eat protein first')).toBeDefined();
         expect(screen.getByText('Walk 10 mins after meals')).toBeDefined();
@@ -66,7 +66,7 @@ describe('CheatCodes', () => {
         mockUseCheatCodes.mockReturnValue({
             data: [],
             isLoading: false,
-        } as ReturnType<typeof useCheatCodes>);
+        } as unknown as ReturnType<typeof useCheatCodes>);
         render(<CheatCodes />);
         expect(
             screen.getByRole('region', { name: 'Cheat Codes — active coaching strategies' })
@@ -77,7 +77,7 @@ describe('CheatCodes', () => {
         mockUseCheatCodes.mockReturnValue({
             data: [],
             isLoading: false,
-        } as ReturnType<typeof useCheatCodes>);
+        } as unknown as ReturnType<typeof useCheatCodes>);
         render(<CheatCodes />);
         expect(screen.getByText(/CHEAT CODES/)).toBeDefined();
     });
@@ -86,7 +86,7 @@ describe('CheatCodes', () => {
         mockUseCheatCodes.mockReturnValue({
             data: sampleCodes,
             isLoading: false,
-        } as ReturnType<typeof useCheatCodes>);
+        } as unknown as ReturnType<typeof useCheatCodes>);
         expect(() => render(<CheatCodes />)).not.toThrow();
     });
 });
