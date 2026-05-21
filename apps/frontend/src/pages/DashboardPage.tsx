@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useLogout } from '@/api/useAuth';
@@ -9,25 +9,28 @@ import { ProgressBar } from '@/components/dashboard/ProgressBar';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { UserTargets } from '@/lib/zoneCalculator';
 
+// Local edits override server values while the user is actively typing.
+// When undefined, the server value (from todayLog) is shown instead.
+interface LogEdits {
+    calories?: string;
+    protein?: string;
+    steps?: string;
+    workoutDone?: boolean;
+}
+
 export default function DashboardPage() {
     const logout = useLogout();
     const { data: todayLog } = useTodayLog();
     const { data: userConfig, isLoading: configLoading } = useUserConfig();
     const upsertLog = useUpsertLog();
 
-    const [caloriesInput, setCaloriesInput] = useState('');
-    const [proteinInput, setProteinInput] = useState('');
-    const [stepsInput, setStepsInput] = useState('');
-    const [workoutDone, setWorkoutDone] = useState(false);
+    const [edits, setEdits] = useState<LogEdits>({});
 
-    useEffect(() => {
-        if (todayLog) {
-            setCaloriesInput(todayLog.calories?.toString() ?? '');
-            setProteinInput(todayLog.protein?.toString() ?? '');
-            setStepsInput(todayLog.steps?.toString() ?? '');
-            setWorkoutDone(todayLog.workoutDone);
-        }
-    }, [todayLog]);
+    // Server data is the default; local edits take priority once the user types
+    const caloriesInput = edits.calories ?? todayLog?.calories?.toString() ?? '';
+    const proteinInput = edits.protein ?? todayLog?.protein?.toString() ?? '';
+    const stepsInput = edits.steps ?? todayLog?.steps?.toString() ?? '';
+    const workoutDone = edits.workoutDone ?? todayLog?.workoutDone ?? false;
 
     const caloriesValue = caloriesInput === '' ? null : parseInt(caloriesInput, 10) || 0;
     const proteinValue = proteinInput === '' ? null : parseInt(proteinInput, 10) || 0;
@@ -61,7 +64,7 @@ export default function DashboardPage() {
 
     const handleWorkoutChange = (checked: boolean | 'indeterminate') => {
         const done = checked === true;
-        setWorkoutDone(done);
+        setEdits((prev) => ({ ...prev, workoutDone: done }));
         upsertLog.mutate({ logDate: todayDate, workoutDone: done });
     };
 
@@ -106,7 +109,9 @@ export default function DashboardPage() {
                                     inputMode="decimal"
                                     min="0"
                                     value={caloriesInput}
-                                    onChange={(e) => setCaloriesInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setEdits((prev) => ({ ...prev, calories: e.target.value }))
+                                    }
                                     onBlur={handleCaloriesBlur}
                                     className="min-h-[44px] w-24 rounded-lg border border-input bg-transparent px-2 text-right text-[16px] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                                     aria-label="Calories logged"
@@ -132,7 +137,9 @@ export default function DashboardPage() {
                                     inputMode="decimal"
                                     min="0"
                                     value={proteinInput}
-                                    onChange={(e) => setProteinInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setEdits((prev) => ({ ...prev, protein: e.target.value }))
+                                    }
                                     onBlur={handleProteinBlur}
                                     className="min-h-[44px] w-24 rounded-lg border border-input bg-transparent px-2 text-right text-[16px] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                                     aria-label="Protein logged in grams"
@@ -158,7 +165,9 @@ export default function DashboardPage() {
                                     inputMode="decimal"
                                     min="0"
                                     value={stepsInput}
-                                    onChange={(e) => setStepsInput(e.target.value)}
+                                    onChange={(e) =>
+                                        setEdits((prev) => ({ ...prev, steps: e.target.value }))
+                                    }
                                     onBlur={handleStepsBlur}
                                     className="min-h-[44px] w-24 rounded-lg border border-input bg-transparent px-2 text-right text-[16px] outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                                     aria-label="Steps logged"
@@ -219,10 +228,7 @@ export default function DashboardPage() {
 
             {/* Nav — small, non-competing */}
             <div className="flex justify-between text-sm">
-                <Link
-                    to="/settings"
-                    className="text-muted-foreground underline underline-offset-4"
-                >
+                <Link to="/settings" className="text-muted-foreground underline underline-offset-4">
                     Settings
                 </Link>
                 <button

@@ -107,12 +107,7 @@ function DashboardShell({ calories, protein, steps }: DashboardShellProps) {
                             <span>Steps</span>
                             <span className="tabular-nums">{steps ?? 0}</span>
                         </div>
-                        <ProgressBar
-                            value={steps}
-                            metric="steps"
-                            targets={TARGETS}
-                            label="Steps"
-                        />
+                        <ProgressBar value={steps} metric="steps" targets={TARGETS} label="Steps" />
                     </div>
                 </div>
             </section>

@@ -10,7 +10,14 @@ vi.mock('@/api/useCheatCodes', () => ({
 const mockUseCheatCodes = vi.mocked(useCheatCodes);
 
 const sampleCodes: CheatCode[] = [
-    { id: '1', userId: 'u1', text: 'Eat protein first', sortOrder: 0, createdAt: '', updatedAt: '' },
+    {
+        id: '1',
+        userId: 'u1',
+        text: 'Eat protein first',
+        sortOrder: 0,
+        createdAt: '',
+        updatedAt: '',
+    },
     {
         id: '2',
         userId: 'u1',

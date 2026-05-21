@@ -92,7 +92,9 @@ describe('ProgressBar', () => {
             calorieTarget: 1800,
             calorieCeiling: 2000,
         };
-        render(<ProgressBar value={1850} metric="calories" targets={ac4Targets} label="Calories" />);
+        render(
+            <ProgressBar value={1850} metric="calories" targets={ac4Targets} label="Calories" />
+        );
         expect(screen.getByText('Heads up')).toBeDefined();
     });
 });

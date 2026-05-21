@@ -26,7 +26,11 @@ const ZONE_TEXT_CLASSES: Record<ZoneColor, string> = {
     'zone-blue': 'text-zone-blue',
 };
 
-function getFillPct(metric: ProgressBarProps['metric'], value: number, targets: UserTargets): number {
+function getFillPct(
+    metric: ProgressBarProps['metric'],
+    value: number,
+    targets: UserTargets
+): number {
     if (metric === 'calories') {
         return Math.min(100, Math.round((value / targets.calorieCeiling) * 100));
     }
