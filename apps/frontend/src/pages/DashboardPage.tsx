@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { useLogout } from '@/api/useAuth';
@@ -8,6 +8,12 @@ import { CheatCodes } from '@/components/dashboard/CheatCodes';
 import { ProgressBar } from '@/components/dashboard/ProgressBar';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { UserTargets } from '@/lib/zoneCalculator';
+
+function parseMetric(input: string): number | null {
+    if (input === '') return null;
+    const parsed = parseInt(input, 10);
+    return Number.isNaN(parsed) ? null : parsed;
+}
 
 // Local edits override server values while the user is actively typing.
 // When undefined, the server value (from todayLog) is shown instead.
@@ -32,33 +38,37 @@ export default function DashboardPage() {
     const stepsInput = edits.steps ?? todayLog?.steps?.toString() ?? '';
     const workoutDone = edits.workoutDone ?? todayLog?.workoutDone ?? false;
 
-    const caloriesValue = caloriesInput === '' ? null : parseInt(caloriesInput, 10) || 0;
-    const proteinValue = proteinInput === '' ? null : parseInt(proteinInput, 10) || 0;
-    const stepsValue = stepsInput === '' ? null : parseInt(stepsInput, 10) || 0;
+    const caloriesValue = parseMetric(caloriesInput);
+    const proteinValue = parseMetric(proteinInput);
+    const stepsValue = parseMetric(stepsInput);
 
-    const targets: UserTargets | null = userConfig
-        ? {
-              calorieFloor: userConfig.calorieFloor,
-              calorieTarget: userConfig.calorieTarget,
-              calorieCeiling: userConfig.calorieCeiling,
-              proteinFloor: userConfig.proteinFloor,
-              proteinTarget: userConfig.proteinTarget,
-              stepsFloor: userConfig.stepsFloor,
-              stepsTarget: userConfig.stepsTarget,
-          }
-        : null;
+    const targets = useMemo<UserTargets | null>(() => {
+        if (!userConfig) return null;
+        return {
+            calorieFloor: userConfig.calorieFloor,
+            calorieTarget: userConfig.calorieTarget,
+            calorieCeiling: userConfig.calorieCeiling,
+            proteinFloor: userConfig.proteinFloor,
+            proteinTarget: userConfig.proteinTarget,
+            stepsFloor: userConfig.stepsFloor,
+            stepsTarget: userConfig.stepsTarget,
+        };
+    }, [userConfig]);
 
     const todayDate = new Date().toISOString().split('T')[0];
 
     const handleCaloriesBlur = () => {
+        if (caloriesValue === (todayLog?.calories ?? null)) return;
         upsertLog.mutate({ logDate: todayDate, calories: caloriesValue });
     };
 
     const handleProteinBlur = () => {
+        if (proteinValue === (todayLog?.protein ?? null)) return;
         upsertLog.mutate({ logDate: todayDate, protein: proteinValue });
     };
 
     const handleStepsBlur = () => {
+        if (stepsValue === (todayLog?.steps ?? null)) return;
         upsertLog.mutate({ logDate: todayDate, steps: stepsValue });
     };
 
@@ -78,7 +88,7 @@ export default function DashboardPage() {
         <div className="mx-auto flex max-w-[480px] flex-col gap-4 p-4 pb-8">
             {/* App header */}
             <header className="flex items-baseline justify-between">
-                <h1 className="font-mono text-2xl font-bold tracking-widest text-[#FFD700]">
+                <h1 className="font-mono text-2xl font-bold tracking-widest text-brand-gold">
                     WIN THE DAY
                 </h1>
                 <span className="text-xs text-muted-foreground">{displayDate}</span>
@@ -93,6 +103,12 @@ export default function DashboardPage() {
                     Today's Metrics
                 </h2>
 
+                {upsertLog.isError && (
+                    <p role="alert" className="text-sm text-destructive">
+                        Save failed — check your connection and try again.
+                    </p>
+                )}
+
                 {configLoading ? (
                     <p className="text-sm text-muted-foreground">Loading your targets…</p>
                 ) : targets ? (
@@ -106,7 +122,7 @@ export default function DashboardPage() {
                                 <input
                                     id="calories-input"
                                     type="number"
-                                    inputMode="decimal"
+                                    inputMode="numeric"
                                     min="0"
                                     value={caloriesInput}
                                     onChange={(e) =>
@@ -134,7 +150,7 @@ export default function DashboardPage() {
                                 <input
                                     id="protein-input"
                                     type="number"
-                                    inputMode="decimal"
+                                    inputMode="numeric"
                                     min="0"
                                     value={proteinInput}
                                     onChange={(e) =>
@@ -162,7 +178,7 @@ export default function DashboardPage() {
                                 <input
                                     id="steps-input"
                                     type="number"
-                                    inputMode="decimal"
+                                    inputMode="numeric"
                                     min="0"
                                     value={stepsInput}
                                     onChange={(e) =>
@@ -221,7 +237,7 @@ export default function DashboardPage() {
             <button
                 type="button"
                 disabled
-                className="min-h-[44px] w-full cursor-not-allowed rounded-xl border-2 border-[#FFD700] py-3 font-mono text-sm font-bold uppercase tracking-widest text-[#FFD700] opacity-40"
+                className="min-h-[44px] w-full cursor-not-allowed rounded-xl border-2 border-brand-gold py-3 font-mono text-sm font-bold uppercase tracking-widest text-brand-gold opacity-40"
             >
                 DAY COMPLETE
             </button>
