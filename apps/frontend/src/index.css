@@ -140,6 +140,7 @@
    VALUES ARE PLACEHOLDERS — Story 2.3 replaces transparent with final oklch/hex values
    ============================================================= */
 @theme {
+    --color-brand-gold: #FFD700;
     --color-zone-amber-low: #a87800; /* calories below BMR floor — muted gold */
     --color-zone-green: #22c55e; /* on track (floor → target) */
     --color-zone-amber-over: #f97316; /* calories target → ceiling — amber-orange */
