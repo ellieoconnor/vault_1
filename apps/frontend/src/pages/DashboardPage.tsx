@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 import { useLogout } from '@/api/useAuth';
 import { useTodayLog, useUpsertLog } from '@/api/useDailyLog';
 import { useUserConfig } from '@/api/useUserConfig';
+import { MoodPicker } from '@/components/dashboard/MoodPicker';
 import { CheatCodes } from '@/components/dashboard/CheatCodes';
 import { ProgressBar } from '@/components/dashboard/ProgressBar';
 import { Checkbox } from '@/components/ui/checkbox';
+import { MOOD_OPTIONS, type MoodValue } from '@/lib/zoneConstants';
 import type { UserTargets } from '@/lib/zoneCalculator';
 
 function parseMetric(input: string): number | null {
@@ -31,6 +34,7 @@ export default function DashboardPage() {
     const upsertLog = useUpsertLog();
 
     const [edits, setEdits] = useState<LogEdits>({});
+    const [moodPickerOpen, setMoodPickerOpen] = useState(false);
 
     // Server data is the default; local edits take priority once the user types
     const caloriesInput = edits.calories ?? todayLog?.calories?.toString() ?? '';
@@ -76,6 +80,18 @@ export default function DashboardPage() {
         const done = checked === true;
         setEdits((prev) => ({ ...prev, workoutDone: done }));
         upsertLog.mutate({ logDate: todayDate, workoutDone: done });
+    };
+
+    const handleDayComplete = (mood: MoodValue | null) => {
+        setMoodPickerOpen(false);
+        upsertLog.mutate(
+            { logDate: todayDate, dayComplete: true, mood },
+            {
+                onSuccess: () => {
+                    toast('Day logged. Vault secure.', { duration: 3000 });
+                },
+            }
+        );
     };
 
     const displayDate = new Date().toLocaleDateString('en-US', {
@@ -233,14 +249,34 @@ export default function DashboardPage() {
                 </p>
             </section>
 
-            {/* Day Complete placeholder — Story 2.5 */}
-            <button
-                type="button"
-                disabled
-                className="min-h-[44px] w-full cursor-not-allowed rounded-xl border-2 border-brand-gold py-3 font-mono text-sm font-bold uppercase tracking-widest text-brand-gold opacity-40"
-            >
-                DAY COMPLETE
-            </button>
+            {/* Day Complete — Story 2.5 */}
+            {todayLog?.dayComplete ? (
+                <div className="rounded-xl border-2 border-brand-gold/40 p-4 text-center">
+                    <p className="font-mono text-sm font-bold tracking-widest text-brand-gold">
+                        DAY LOGGED. VAULT SECURE.
+                    </p>
+                    {todayLog.mood &&
+                        (() => {
+                            const option = MOOD_OPTIONS.find((o) => o.value === todayLog.mood);
+                            return option ? (
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {option.emoji} {option.label}
+                                </p>
+                            ) : null;
+                        })()}
+                </div>
+            ) : (
+                <button
+                    type="button"
+                    onClick={() => setMoodPickerOpen(true)}
+                    className="min-h-[44px] w-full rounded-xl border-2 border-brand-gold py-3 font-mono text-sm font-bold uppercase tracking-widest text-brand-gold hover:bg-brand-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold"
+                    aria-label="Complete today's log"
+                >
+                    DAY COMPLETE
+                </button>
+            )}
+
+            <MoodPicker open={moodPickerOpen} onClose={handleDayComplete} />
 
             {/* Nav — small, non-competing */}
             <div className="flex justify-between text-sm">
