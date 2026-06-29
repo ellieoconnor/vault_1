@@ -19,4 +19,6 @@ export interface UpsertLogInput {
     protein?: number | null;
     steps?: number | null;
     workoutDone?: boolean;
+    dayComplete?: boolean;
+    mood?: string | null;
 }

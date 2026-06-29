@@ -30,9 +30,15 @@ router.get('/today', requireAuth, async (req, res, next) => {
 router.post('/', requireAuth, validateBody(upsertLogSchema), async (req, res, next) => {
     try {
         const userId = req.session.userId!;
-        const { logDate, calories, protein, steps, workoutDone } = req.body;
+        const { logDate, calories, protein, steps, workoutDone, dayComplete, mood } = req.body;
         // convert logDate string into a Date object
         const logDateObj = new Date(logDate);
+
+        // roughDay is computed server-side
+        // Pre-Epic 3: no active goals exist, so roughDay is always false when day completes.
+        // Epic 3 will replace this with: (goals met today) / (total active goals) < 0.5
+        const roughDay = dayComplete === true ? false : undefined;
+
         const log = await prisma.dailyLog.upsert({
             where: { userId_logDate: { userId, logDate: logDateObj } },
             create: {
@@ -42,12 +48,18 @@ router.post('/', requireAuth, validateBody(upsertLogSchema), async (req, res, ne
                 protein: protein,
                 steps: steps,
                 workoutDone: workoutDone,
+                dayComplete: dayComplete,
+                mood: mood,
+                ...(roughDay !== undefined && { roughDay }),
             },
             update: {
                 calories: calories,
                 protein: protein,
                 steps: steps,
                 workoutDone: workoutDone,
+                dayComplete: dayComplete,
+                mood: mood,
+                ...(roughDay !== undefined && { roughDay }),
             },
         });
         return res.json(log);
