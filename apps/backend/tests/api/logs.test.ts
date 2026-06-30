@@ -96,16 +96,13 @@ describe('POST /api/daily-logs', () => {
         });
 
         it('creates a log with calories, protein, steps, workoutDone', async () => {
-            const res = await request(app)
-                .post('/api/daily-logs')
-                .set('Cookie', cookie)
-                .send({
-                    logDate: today,
-                    calories: 1800,
-                    protein: 140,
-                    steps: 8000,
-                    workoutDone: true,
-                });
+            const res = await request(app).post('/api/daily-logs').set('Cookie', cookie).send({
+                logDate: today,
+                calories: 1800,
+                protein: 140,
+                steps: 8000,
+                workoutDone: true,
+            });
 
             expect(res.status).toBe(200);
             expect(res.body.calories).toBe(1800);
