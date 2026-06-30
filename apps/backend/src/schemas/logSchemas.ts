@@ -6,6 +6,8 @@ export const upsertLogSchema = z.object({
     protein: z.number().int().min(0).nullable().optional(),
     steps: z.number().int().min(0).nullable().optional(),
     workoutDone: z.boolean().optional(),
+    dayComplete: z.boolean().optional(),
+    mood: z.string().nullable().optional(),
 });
 
 export type UpsertLogInput = z.infer<typeof upsertLogSchema>;

@@ -10,6 +10,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import router from './routes/auth.js';
 import usersRouter from './routes/users.js';
 import cheatCodesRouter from './routes/cheatCodes.js';
+import logsRouter from './routes/logs.js';
 
 export const app = express();
 app.set('trust proxy', 1);
@@ -58,8 +59,8 @@ app.use(
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // HTTPS only in prod
-            sameSite: 'none',
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
         },
     })
@@ -80,6 +81,7 @@ app.get('/api/debug-cors', (req, res) => {
 app.use('/api/auth', router);
 app.use('/api/users', usersRouter);
 app.use('/api/cheat-codes', cheatCodesRouter);
+app.use('/api/daily-logs', logsRouter);
 
 app.use(errorHandler);
 
