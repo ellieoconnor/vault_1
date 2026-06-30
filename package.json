@@ -13,8 +13,7 @@
         "test:pact:consumer": "vitest run --config vitest.config.pact.ts",
         "publish:pact": ". ./scripts/env-setup.sh && ./scripts/publish-pact.sh",
         "can:i:deploy:consumer": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/can-i-deploy.sh",
-        "record:consumer:deployment": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/record-deployment.sh",
-        "dev": "concurrently --kill-others-on-fail --names FRONTEND,BACKEND --prefix-colors cyan,yellow \"npm run dev --workspace=apps/frontend\" \"npm run dev --workspace=apps/backend\""
+        "record:consumer:deployment": ". ./scripts/env-setup.sh && PACTICIPANT=vault-1-frontend ./scripts/record-deployment.sh"
     },
     "workspaces": [
         "apps/*"
@@ -32,7 +31,6 @@
     "description": "",
     "devDependencies": {
         "@pact-foundation/pact": "^16.3.0",
-        "concurrently": "^9.0.0",
         "prettier": "^3.8.3"
     }
 }
