@@ -94,7 +94,7 @@ export default function DashboardPage() {
                 }
             );
         },
-        [upsertLog.mutate, todayDate]
+        [upsertLog, todayDate]
     );
 
     const displayDate = new Date().toLocaleDateString('en-US', {
