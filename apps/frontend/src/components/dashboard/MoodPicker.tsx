@@ -7,7 +7,7 @@ interface MoodPickerProps {
     onClose: (mood: MoodValue | null) => void;
 }
 
-const TIMEOUT_SECONDS = 8;
+const TIMEOUT_SECONDS = 20;
 
 export function MoodPicker({ open, onClose }: MoodPickerProps) {
     const [countdown, setCountdown] = useState(TIMEOUT_SECONDS);
