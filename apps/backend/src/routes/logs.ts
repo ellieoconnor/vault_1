@@ -32,7 +32,15 @@ router.post('/', requireAuth, validateBody(upsertLogSchema), async (req, res, ne
         // Epic 3 will replace this with: (goals met today) / (total active goals) < 0.5
         const roughDay = dayComplete === true ? false : undefined;
 
-        const data = { calories, protein, steps, workoutDone, dayComplete, mood, ...(roughDay !== undefined && { roughDay }) };
+        const data = {
+            calories,
+            protein,
+            steps,
+            workoutDone,
+            dayComplete,
+            mood,
+            ...(roughDay !== undefined && { roughDay }),
+        };
         const log = await prisma.dailyLog.upsert({
             where: { userId_logDate: { userId, logDate: logDateObj } },
             create: { userId, logDate: logDateObj, ...data },
