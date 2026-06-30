@@ -16,7 +16,7 @@ export function MoodPicker({ open, onClose }: MoodPickerProps) {
         if (!open) return;
 
         const timer = setTimeout(() => onClose(null), TIMEOUT_SECONDS * 1000);
-        const tick = setInterval(() => setCountdown((n) => n - 1), 1000);
+        const tick = setInterval(() => setCountdown((n) => Math.max(0, n - 1)), 1000);
 
         return () => {
             clearTimeout(timer);

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -82,23 +82,30 @@ export default function DashboardPage() {
         upsertLog.mutate({ logDate: todayDate, workoutDone: done });
     };
 
-    const handleDayComplete = (mood: MoodValue | null) => {
-        setMoodPickerOpen(false);
-        upsertLog.mutate(
-            { logDate: todayDate, dayComplete: true, mood },
-            {
-                onSuccess: () => {
-                    toast('Day logged. Vault secure.', { duration: 3000 });
-                },
-            }
-        );
-    };
+    const handleDayComplete = useCallback(
+        (mood: MoodValue | null) => {
+            setMoodPickerOpen(false);
+            upsertLog.mutate(
+                { logDate: todayDate, dayComplete: true, mood },
+                {
+                    onSuccess: () => {
+                        toast('Day logged. Vault secure.', { duration: 3000 });
+                    },
+                }
+            );
+        },
+        [upsertLog.mutate, todayDate]
+    );
 
     const displayDate = new Date().toLocaleDateString('en-US', {
         weekday: 'long',
         month: 'long',
         day: 'numeric',
     });
+
+    const moodOption = todayLog?.mood
+        ? (MOOD_OPTIONS.find((o) => o.value === todayLog.mood) ?? null)
+        : null;
 
     return (
         <div className="mx-auto flex max-w-[480px] flex-col gap-4 p-4 pb-8">
@@ -255,15 +262,11 @@ export default function DashboardPage() {
                     <p className="font-mono text-sm font-bold tracking-widest text-brand-gold">
                         DAY LOGGED. VAULT SECURE.
                     </p>
-                    {todayLog.mood &&
-                        (() => {
-                            const option = MOOD_OPTIONS.find((o) => o.value === todayLog.mood);
-                            return option ? (
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                    {option.emoji} {option.label}
-                                </p>
-                            ) : null;
-                        })()}
+                    {moodOption && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            {moodOption.emoji} {moodOption.label}
+                        </p>
+                    )}
                 </div>
             ) : (
                 <button
