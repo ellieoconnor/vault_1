@@ -26,7 +26,7 @@ export const HARD_MIN_CALORIES = 1200;
 export const MOOD_OPTIONS = [
     { value: 'crushing-it', label: 'Crushing it', emoji: '🔥' },
     { value: 'solid', label: 'Solid', emoji: '💪' },
-    { value: 'powered-up', label: 'Powered up', emoji: '⚡️' },
+    { value: 'powered-up', label: 'Powered up', emoji: '⚡' },
     { value: 'okay', label: 'Okay', emoji: '👍' },
     { value: 'scattered', label: 'Scattered', emoji: '🌀' },
     { value: 'drained', label: 'Drained', emoji: '😴' },

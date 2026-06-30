@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MoodPicker } from './MoodPicker';
 import { MOOD_OPTIONS } from '@/lib/zoneConstants';
 
@@ -28,9 +28,9 @@ describe('MoodPicker', () => {
         expect(onClose).toHaveBeenCalledWith('solid');
     });
 
-    it('calls onClose with null when the Sheet close button is clicked', () => {
+    it('calls onClose with null when the Sheet is dismissed via the close button', () => {
         render(<MoodPicker open={true} onClose={onClose} />);
-        const closeButton = screen.getByRole('button', { name: 'Close' });
+        const closeButton = screen.getByRole('button', { name: /close/i });
         fireEvent.click(closeButton);
         expect(onClose).toHaveBeenCalledWith(null);
     });
@@ -50,5 +50,25 @@ describe('MoodPicker', () => {
     it('shows the "How are you feeling?" title when open', () => {
         render(<MoodPicker open={true} onClose={onClose} />);
         expect(screen.getByText('How are you feeling?')).toBeDefined();
+    });
+
+    describe('auto-dismiss timer', () => {
+        beforeEach(() => vi.useFakeTimers());
+        afterEach(() => vi.useRealTimers());
+
+        it('calls onClose with null after 20 seconds', () => {
+            render(<MoodPicker open={true} onClose={onClose} />);
+            act(() => vi.advanceTimersByTime(20_000));
+            expect(onClose).toHaveBeenCalledWith(null);
+        });
+
+        it('countdown decrements each second and never goes below 0', () => {
+            render(<MoodPicker open={true} onClose={onClose} />);
+            expect(screen.getByText(/Closes in 20s/)).toBeDefined();
+            act(() => vi.advanceTimersByTime(3_000));
+            expect(screen.getByText(/Closes in 17s/)).toBeDefined();
+            act(() => vi.advanceTimersByTime(18_000));
+            expect(screen.getByText(/Closes in 0s/)).toBeDefined();
+        });
     });
 });
